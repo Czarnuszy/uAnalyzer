@@ -1,0 +1,14 @@
+Device ID,Health Info,Health Status
+1,"Neighbors=10,RouteChanges=0, Errors=0",10
+2,Neighbors=9 RouteChanges=0 Errors=0,10
+3,Neighbors=8 RouteChanges=2 Errors=0,9
+4,Neighbors=6 RouteChanges=4 Errors=0,8
+5,Neighbors=10 RouteChanges=0 Errors=0,10
+6,Neighbors=6 RouteChanges=0 Errors=0,10
+7,Neighbors=10 RouteChanges=0 Errors=0,10
+9,Neighbors=4 RouteChanges=0 Errors=0,10
+10,Neighbors=10 RouteChanges=0 Errors=0,10
+11,"Not Tested, Sensor Device",NA
+12,Neighbors=4 RouteChanges=0 Errors=0,10
+13,Neighbors=1 RouteChanges=0 Errors=9,1
+14,Neighbors=10 RouteChanges=0 Errors=0,10
