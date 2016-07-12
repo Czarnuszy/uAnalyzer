@@ -1,6 +1,6 @@
 #!/bin/bash
 
 echo "start"
-python /home/magni/public_html/analyzer/zniffer/zniffer.py --output_csv --region US -i /dev/ttyACM0 -o /tmp/zniffer.zlf
+python /home/magni/public_html/analyzer/zniffer/zniffer.py --output_csv --region US -i /dev/ttyACM2 -o /home/magni/public_html/analyzer/zniffer/data/zniffer.zlf
 
 echo "start"
