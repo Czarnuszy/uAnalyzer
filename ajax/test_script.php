@@ -4,12 +4,12 @@ include("inc/jqgrid_dist.php");
 
 ////////////MM
 mysql_connect("localhost", "root", "razdwa3");
-mysql_select_db("analyzer");
+mysql_select_db("parser_test7");
 
 include(PHPGRID_LIBPATH."inc/jqgrid_dist.php");
 $g = new jqgrid($db_conf);
 
-$g->select_command = "SELECT ID, rssi, date, source, destination, sequence FROM csv";
+$g->select_command = "SELECT lp, RSSI, DATETIME, SOURCE_ID, DESTINATION_ID, ROUTE FROM zniffer";
 // set few params
 $grid["forceFit"] = true;
 $grid["autowidth"] = true;
@@ -21,13 +21,13 @@ $grid["ignoreCase"] = true; // do case insensitive sorting
 $grid["resizable"] = true;
 //$grid["scroll"] = true;  //true tip for large tables
 $grid["rowNum"] = 100;
-$e["js_on_load_complete"] = "do_onload";
+#$e["js_on_load_complete"] = "do_onload";
 $grid["loadtext"] ="...";
 
 
 $col = array();
 $col["title"] = "ID"; // caption of column
-$col["name"] = "ID";
+$col["name"] = "lp";
 $col["width"] = "10";
 $col["align"] = "center";
 $col["sortable"] = false;
@@ -37,7 +37,7 @@ $cols[] = $col;
 
 $col = array();
 $col["title"] = "Rssi"; // caption of column
-$col["name"] = "rssi";
+$col["name"] = "RSSI";
 $col["width"] = "8";
 $col["align"] = "left";
 //$col["cellcss"] = "'color':'green'";
@@ -47,7 +47,7 @@ $cols[] = $col;
 
 $col = array();
 $col["title"] = "Date"; // caption of column
-$col["name"] = "date";
+$col["name"] = "DATETIME";
 $col["width"] = "30";
 $col["align"] = "center";
 $cols[] = $col;
@@ -55,21 +55,21 @@ $cols[] = $col;
 
 $col = array();
 $col["title"] = "Source"; // caption of column
-$col["name"] = "source";
+$col["name"] = "SOURCE_ID";
 $col["align"] = "center";
 $col["width"] = "10";
 $cols[] = $col;
 
 $col = array();
 $col["title"] = "Route"; // caption of column
-$col["name"] = "route";
+$col["name"] = "ROUTE";
 $col["align"] = "center";
 $col["width"] = "20";
 $cols[] = $col;
 
 $col = array();
 $col["title"] = "Destination"; // caption of column
-$col["name"] = "destination";
+$col["name"] = "DESTINATION_ID";
 $col["align"] = "center";
 $col["width"] = "12";
 $cols[] = $col;
@@ -85,7 +85,7 @@ $cols[] = $col;
 
 $col = array();
 $col["title"] = "Sequence"; // caption of column
-$col["name"] = "sequence";
+$col["name"] = "SEQ_NUM";
 $col["align"] = "center";
 $col["width"] = "20";
 $col["search"] = false;
@@ -250,6 +250,7 @@ $g->set_actions(array(
             "search" => false // show single/multi field search condition (e.g. simple or advance)
           )
         );
+
 $g->set_events($e);
 
 $g->set_options($grid);

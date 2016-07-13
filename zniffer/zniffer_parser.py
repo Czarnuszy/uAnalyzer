@@ -31,7 +31,7 @@ config = {
   'raise_on_warnings': True,
 }
 
-DB_NAME = 'zniff2'
+DB_NAME = 'parser_test7'
 
 TABLES = {}
 TABLES['zniffer'] = (
@@ -44,11 +44,13 @@ TABLES['zniffer'] = (
     "  `ROUTING_NODES` VARCHAR (50) NOT NULL, "
     "  `DESTINATION_ID` VARCHAR (10) NOT NULL, "
     "  `HEADER_TYPE` VARCHAR (50) NOT NULL, "
-    "  `PAYLOAD` VARCHAR (100) NOT NULL, "
+    "  `PAYLOAD` VARCHAR (3000) NULL, "
     "  `SEQ_NUM` VARCHAR (10) NOT NULL, "
     "  `ROUTE_COUNT` VARCHAR (10) NOT NULL, "
     "  `COUNT` VARCHAR (10) NOT NULL, "
     "  `PROPERTIES` VARCHAR (10) NOT NULL, "
+    "  `ROUTE` VARCHAR (50) NOT NULL, "
+    "  `COMMAND` VARCHAR (100) NOT NULL, "
     "  PRIMARY KEY (`lp`)"
     ") ENGINE=InnoDB")
 
@@ -91,8 +93,8 @@ add_record = ("INSERT INTO zniffer"
               "(DATETIME, RSSI, HOME_ID, SOURCE_ID,"
               "ROUTING_NODES, DESTINATION_ID,"
               "HEADER_TYPE, PAYLOAD, SEQ_NUM,"
-              " ROUTE_COUNT, COUNT, PROPERTIES)"
-              "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+              " ROUTE_COUNT, COUNT, PROPERTIES, ROUTE, COMMAND)"
+              "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
 
 
 
@@ -129,6 +131,8 @@ class ZnifferFrame(object):
         self.hops_count=INVALID
         self.repeaters_count=INVALID
         self.hops_nodes=[]
+        self.route = INVALID
+        self.command = INVALID
 
     def get_csv_header(self):
         s=""
@@ -182,11 +186,12 @@ class ZnifferFrame(object):
             s+=("%03d"% self.properties_3)+CSV_DELIM
 
             s+="\n"
-            print "csv" + s
+
         return s
 
     def to_db(self):
         tab = []
+        route_comunicats_tab = ["Ack", "No Ack from: "]
         if self.transport_payload_idx != INVALID:
             tab.append( self.zwave_ts.get_utc_timestamp().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
             tab.append( ("%02d"% self.rssi))
@@ -200,14 +205,102 @@ class ZnifferFrame(object):
             tab.append( ("%02d" % self.hops_count))
             tab.append( ("%03d" % self.repeaters_count))
             tab.append( ("%03d" % self.properties_3))
-            print "tab"
-            print  tab
+
+            hop = "%02d" % self.hops_count
+           
+            count = "%03d" % self.repeaters_count
+            header = "%03d" % self.properties_3
+            repeater = "%s"% '-'.join(map(str, self.hops_nodes))
+            source = "%03d"% self.source_id
+
+            if hop == "-1":
+                self.route = ">"
+                self.command = " "
+
+            elif hop == "01":
+                if count == "000" and header == "000":
+                    self.route = "> {} -".format(repeater)
+                    self.command = " "
+
+                elif count == "001" and header == "000":
+                    self.route = "-" + repeater + ">"
+                    self.command = " "
+
+                elif count == "000" and header == "003":
+                    self.route = ">" + repeater + "-"
+                    self.command = route_comunicats_tab[0]
+
+                elif count == "015" and header == "003":
+                    self.route = "-" + repeater + ">"
+                    self.command = route_comunicats_tab[0]
+
+                elif count == "015" and header == "021":
+                    self.route = "x" + repeater + ">"
+                    self.command = route_comunicats_tab[1] + source
+                else:
+                    self.route = " "
+                    self.command = " "
+
+            elif hop == "02":
+                if count == "000" and header == "000":
+                    self.route = ">" + repeater + "-"
+                    self.command = " "
+
+                elif count == "01" and header == "000":
+                    self.route = "-" + repeater[0:-4] + ">" + repeater[-3:]
+                    self.command = " "
+
+                elif count == "002" and header == "000":
+                    self.route = "-" + repeater + ">"
+                    self.command = " "
+
+                elif count == "001" and header == "003":
+                    self.route = ">" + repeater[-3:] + "-" + repeater[0:-4] + "-"
+                    self.command = route_comunicats_tab[0]
+
+                elif count == "000" and header == "003":
+                    self.route = "-" + repeater[-3:] + ">" + repeater[0:-4] + "-"
+                    self.command = route_comunicats_tab[0]
+
+                elif count == "015" and header == "003":
+                    self.route = "-" + repeater[-3:] + "-" + repeater[0:-4] + ">"
+                    self.command = route_comunicats_tab[0]
+
+                elif count == "015" and header == "021":
+                    self.route = "-" + repeater[-3:] + "-" + repeater[0:-4] + "x"
+                    self.command = route_comunicats_tab[1] + source
+
+                elif count == "000" and header == "037":
+                    self.route = "x" + repeater[-3:] + "-" + repeater[0:-4] + "-"
+                    self.command = route_comunicats_tab[1] + source
+
+                elif count == "015" and header == "037":
+                    self.route = "x" + repeater[-3:] + "-" + repeater[0:-4] + ">"
+                    self.command = route_comunicats_tab[1] + source
+                else:
+                    self.route = " "
+                    self.command = " "
+
+            elif hop == "03":
+                self.route = self.route
+                self.command = " "
+
+            elif hop == "04":
+                self.route = self.route
+                self.command = " "
+
+
+
+            tab.append(self.route)
+           # print self.route
+            tab.append(self.command)
+
             cursor.execute(add_record, tab)
             lp = cursor.lastrowid
             cnx.commit()
 
-
         return tab
+
 
 class ZnifferSerialDataParser(object):
     def clean(self):
