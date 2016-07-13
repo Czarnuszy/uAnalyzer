@@ -1,4 +1,6 @@
 import os, sys, inspect
+import mysql.connector
+from mysql.connector import errorcode
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -20,6 +22,79 @@ CSV_DELIM=","
 
 def empty():
     return
+
+config = {
+  'user': 'root',
+  'password': 'razdwa3',
+  'host': 'localhost',
+  'database': 'analyzer',
+  'raise_on_warnings': True,
+}
+
+DB_NAME = 'zniff2'
+
+TABLES = {}
+TABLES['zniffer'] = (
+    "CREATE TABLE `zniffer` ("
+    "  `lp` int(11) NOT NULL AUTO_INCREMENT,"
+    "  `DATETIME` VARCHAR(30) NOT NULL,"
+    "  `RSSI` VARCHAR(10) NOT NULL, "
+    "  `HOME_ID` VARCHAR(15) NOT NULL, "
+    "  `SOURCE_ID` VARCHAR (10) NOT NULL, "
+    "  `ROUTING_NODES` VARCHAR (50) NOT NULL, "
+    "  `DESTINATION_ID` VARCHAR (10) NOT NULL, "
+    "  `HEADER_TYPE` VARCHAR (50) NOT NULL, "
+    "  `PAYLOAD` VARCHAR (100) NOT NULL, "
+    "  `SEQ_NUM` VARCHAR (10) NOT NULL, "
+    "  `ROUTE_COUNT` VARCHAR (10) NOT NULL, "
+    "  `COUNT` VARCHAR (10) NOT NULL, "
+    "  `PROPERTIES` VARCHAR (10) NOT NULL, "
+    "  PRIMARY KEY (`lp`)"
+    ") ENGINE=InnoDB")
+
+
+cnx = mysql.connector.connect(**config)
+cursor = cnx.cursor()
+
+
+def create_database(cursor):
+    try:
+        cursor.execute(
+            "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
+    except mysql.connector.Error as err:
+        print("Failed creating database: {}".format(err))
+        exit(1)
+
+try:
+    cnx.database = DB_NAME
+except mysql.connector.Error as err:
+    if err.errno == errorcode.ER_BAD_DB_ERROR:
+        create_database(cursor)
+        cnx.database = DB_NAME
+    else:
+        print(err)
+        exit(1)
+
+for name, ddl in TABLES.iteritems():
+    try:
+        print "Creating table {}: ".format(name)
+        cursor.execute(ddl)
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
+            print("already exists.")
+        else:
+            print(err.msg)
+    else:
+        print("OK")
+
+add_record = ("INSERT INTO zniffer"
+              "(DATETIME, RSSI, HOME_ID, SOURCE_ID,"
+              "ROUTING_NODES, DESTINATION_ID,"
+              "HEADER_TYPE, PAYLOAD, SEQ_NUM,"
+              " ROUTE_COUNT, COUNT, PROPERTIES)"
+              "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ")
+
+
 
 class ZnifferFrame(object):
 
@@ -54,19 +129,22 @@ class ZnifferFrame(object):
         self.hops_count=INVALID
         self.repeaters_count=INVALID
         self.hops_nodes=[]
+
     def get_csv_header(self):
         s=""
-        s+="DATETIME"+CSV_DELIM
-        s+="RSSI"+CSV_DELIM
-        s+="HOME_ID"+CSV_DELIM
-        s+="SOURCE_ID"+CSV_DELIM
+        s+="DATETIME"+CSV_DELIM #1
+        s+="RSSI"+CSV_DELIM#2
+        s+="HOME_ID"+CSV_DELIM #3
+        s+="SOURCE_ID"+CSV_DELIM#4
         s+="ROUTING_NODES"+CSV_DELIM
         s+="DESTINATION_ID"+CSV_DELIM
         s+="HEADER_TYPE"+CSV_DELIM
-        s+="PAYLOAD"+CSV_DELIM
-        s+="SEQ_NUM"+CSV_DELIM
-        s+="ROUTE_COUNT"+CSV_DELIM
+        s+="PAYLOAD"+CSV_DELIM#8
+        s+="SEQ_NUM"+CSV_DELIM #9
+        s+="ROUTE_COUNT"+CSV_DELIM#10
         s+="_COUNT"+CSV_DELIM
+        s+= "PROPERTIES" + CSV_DELIM
+
         s+="\n"
         return s
 
@@ -102,11 +180,35 @@ class ZnifferFrame(object):
             s+=("%02d"% self.hops_count)+CSV_DELIM
             s+=("%03d"% self.repeaters_count)+CSV_DELIM
             s+=("%03d"% self.properties_3)+CSV_DELIM
-            #s+=(self.transport_payload_idx)+CSV_DELIM
 
             s+="\n"
+            print "csv" + s
         return s
-            
+
+    def to_db(self):
+        tab = []
+        if self.transport_payload_idx != INVALID:
+            tab.append( self.zwave_ts.get_utc_timestamp().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
+            tab.append( ("%02d"% self.rssi))
+            tab.append( ("%08X"% self.home_id))
+            tab.append( ("%03d"% self.source_id))
+            tab.append( ("%s"% '-'.join(map(str, self.hops_nodes))))
+            tab.append( ("%03d" % self.destination_id))
+            tab.append( ("%s" % self.header_type_tostring()))
+            tab.append( bytes_array_to_hex_string(bin_to_array(self.raw_payload[self.transport_payload_idx:])))
+            tab.append( ("%02d" % self.sequence_number))
+            tab.append( ("%02d" % self.hops_count))
+            tab.append( ("%03d" % self.repeaters_count))
+            tab.append( ("%03d" % self.properties_3))
+            print "tab"
+            print  tab
+            cursor.execute(add_record, tab)
+            lp = cursor.lastrowid
+            cnx.commit()
+
+
+        return tab
+
 class ZnifferSerialDataParser(object):
     def clean(self):
         self.serial_frames=[] 

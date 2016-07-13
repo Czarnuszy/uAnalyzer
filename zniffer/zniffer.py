@@ -14,7 +14,9 @@ import os
 from datetime import datetime
 import inspect
 import resource
-
+import mysql.connector
+from mysql.connector import errorcode
+from zniffer_parser import ZnifferFrame
 
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -87,9 +89,15 @@ def open_serial(string):
     ser.open()
     return ser
 
+
+###########################################
+
+
+
 class CRC(object):
     def __init__(self,buf):
         self.buf=buf
+
     def compute(self):
         #update_crc
         #print (len(self.buf))
@@ -125,7 +133,8 @@ class CRC(object):
             if xor_flag != 0:
                 crc_sum = (crc_sum ^ POLY) & 0xffff
         return BinaryItem("crc_sum", 2, crc_sum)
-                    
+
+
 class RXSerialLoopThread(Thread):
 
     def __init__(self, zniffer):
@@ -165,7 +174,6 @@ class RXSerialLoopThread(Thread):
                 dbglog(CRASHDBG, "thread: no message")
             time.sleep (SLEEP_TIME)
         dbglog(CRASHDBG,"thread loop")
-
 
 
 class Zniffer(object):
@@ -224,18 +232,19 @@ class Zniffer(object):
                 dbglog(ENABLE, "writing to file: "+current_filename)
         return [changed, current_filename]
 
-
     def log_raw_data_to_zlf_file(self,raw_data):
         return self.log_raw_data_to_file(raw_data, ZLF_FILE_SUFFIX, self.prepare_zlf_header)
 
-    def log_raw_data_to_csv_file(self,raw_data):
-        return self.log_raw_data_to_file(raw_data,CSV_FILE_SUFFIX, self.prepare_csv_header)
+    def log_raw_data_to_csv_file(self,raw_data, db):
+        return self.log_raw_data_to_file(raw_data,CSV_FILE_SUFFIX, self.prepare_csv_header, db)
+
 
     def prepare_csv_header(self):
         dbglog(CRASHDBG, 'entering')
+        print ZnifferFrame().get_csv_header()
         return ZnifferFrame().get_csv_header()
         
-    def log_raw_data_to_file(self, raw_data, extension, header_preparator):
+    def log_raw_data_to_file(self, raw_data, extension, header_preparator, *db):
         dbglog(CRASHDBG, 'entering'+ extension)
         if self.args.output_filename ==None:
             return
@@ -254,6 +263,11 @@ class Zniffer(object):
         f.write(raw_data)
         #file_write_counter is handled by log_all_files()
         f.close()
+###############################################################  DB?
+
+        ZnifferFrame().to_db()
+
+##################################################33
         dbglog(CRASHDBG, 'exiting')
         return
 
@@ -269,6 +283,7 @@ class Zniffer(object):
             data_copy=data_copy[MAX_SERIAL_DATA_SIZE:] #nibble, gobble
             
         return splitted_data
+
     def log_to_zlf_file(self, zniffer_frame, tx): #tx:True rx:False .
         dbglog(CRASHDBG, 'entering')
         zlf_line=self.create_zlf_line(zniffer_frame,tx)
@@ -296,6 +311,7 @@ class Zniffer(object):
         self.serial_handler.write(data)
         dbglog(CRASHDBG,'exiting')
         return data
+
     def rx_serial(self):
         dbglog(CRASHDBG, 'entering')
         raw_data=""
@@ -345,8 +361,9 @@ class Zniffer(object):
     def log_to_all_files(self,zniffer_frame,tx):
         self.log_to_zlf_file(zniffer_frame, tx=False)
         if args.output_csv == True:
-            self.log_raw_data_to_csv_file(zniffer_frame.to_csv())
+            self.log_raw_data_to_csv_file(zniffer_frame.to_csv(), zniffer_frame.to_db())
         self.file_write_counter+=1
+
     def tx_log_cmd_rx_log(self,cmd):
         dbglog(CRASHDBG,'entering')
         serial_data=self.tx_serial(cmd)
@@ -569,5 +586,6 @@ while True:
 
 #ctrl -c led us here
 z.rx_serial_t.join()
-
+cursor.close()
+cnx.close()
 #and quit
