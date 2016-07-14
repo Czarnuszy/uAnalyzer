@@ -37,8 +37,8 @@
       <file leaf-file-name="zniffer_parser.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/zniffer_parser.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
-              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+            <state relative-caret-position="405">
+              <caret line="33" column="16" selection-start-line="33" selection-start-column="16" selection-end-line="33" selection-end-column="16" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
                 <marker date="1468433274270" expanded="true" signature="694:1416" placeholder="CREATE TABLE... zniffer" />
@@ -225,8 +225,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/zniffer_parser.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        <state relative-caret-position="405">
+          <caret line="33" column="16" selection-start-line="33" selection-start-column="16" selection-end-line="33" selection-end-column="16" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
             <marker date="1468433274270" expanded="true" signature="694:1416" placeholder="CREATE TABLE... zniffer" />

@@ -9,11 +9,11 @@ mysql_select_db("parser_test7");
 include(PHPGRID_LIBPATH."inc/jqgrid_dist.php");
 $g = new jqgrid($db_conf);
 
-$g->select_command = "SELECT lp, RSSI, DATETIME, SOURCE_ID, DESTINATION_ID, ROUTE FROM zniffer";
+$g->select_command = "SELECT lp, RSSI, DATETIME, SOURCE_ID, PAYLOAD, DESTINATION_ID, ROUTE FROM zniffer";
 // set few params
 $grid["forceFit"] = true;
 $grid["autowidth"] = true;
-//$grid["autoheight"] = true;
+$grid["autoheight"] = true;
 $grid["multiselect"] = false;
 $grid["ignoreCase"] = true; // do case insensitive sorting
 //$grid["rowList"] = array();
@@ -76,7 +76,7 @@ $cols[] = $col;
 
 $col = array();
 $col["title"] = "Command";
-$col["name"] = "command";
+$col["name"] = "PAYLOAD";
 $col["width"] = "40";
 $col["align"] = "center";
 //$col["search"] = false;

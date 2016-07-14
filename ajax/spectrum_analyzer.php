@@ -42,7 +42,7 @@
 							<div class="widget-toolbar">
 
 								<div class="btn-group" data-toggle="buttons">
-							        <label class="btn btn-default btn-xs " id="start-a3">
+							        <label class="btn btn-default btn-xs " id="play-a3">
 							          <input type="radio" name="style-a1" id="style-a1"> <i class="fa fa-play"></i> Capture
 							        </label>
 
@@ -96,21 +96,31 @@ var pagefunction = function() {
 	}
 
 	$("#play-a3").click(function(){
-				  myInterval = setInterval(load, 2000);
-				  $.SmartMessageBox({
-				title : "Smart Notification: Buttons",
-				content : "Lots of buttons to go...",
-				buttons : '[Need?][You][Do][Buttons][Many][How]'
-			});
+
+		  myInterval = setInterval(load, 3000);
+			$.smallBox({
+          title : "Z-Wave Spectrum Analyzer",
+      		content : "<i class='fa fa-clock-o'></i> <i>Start</i>",
+      		color : "#C46A69",
+      		iconSmall : "fa fa-times fa-2x fadeInRight animated",
+      		timeout : 3000
+		    });
 
 			e.preventDefault();
+
 
 	});
 
 	$("#stop-a3").click(function(){
 
-
-
+		clearInterval(myInterval);
+		$.smallBox({
+				title : "Z-Wave Spectrum Analyzer",
+				content : "<i class='fa fa-clock-o'></i> <i>Stop</i>",
+				color : "#C46A69",
+				iconSmall : "fa fa-times fa-2x fadeInRight animated",
+				timeout : 3000
+			});
 	});
 
 

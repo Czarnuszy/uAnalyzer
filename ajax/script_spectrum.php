@@ -1,6 +1,6 @@
 <?php
 
-$base=mysqli_connect("localhost","root","","analyzer");
+$base=mysqli_connect("localhost","root","razdwa3","analyzer");
 
 $records = mysqli_query($base,"SELECT * FROM analyzerdata");
 
@@ -53,14 +53,12 @@ $max = count($AnalyzerData)-1;
 			labels : [
 				    <?php
 					for ($i=0; $i < $max; $i++){
-				echo $AnalyzerData[$i][0].',';
+			          echo $AnalyzerData[$i][0].',';
           //echo (int)$row['1']/1000 . ",";
           }
 //          while($row = mysqli_fetch_array($wynik))
 
   //        {echo $row[0]/1000 . ","; }
-
-
 				    ?>
 				],
 			datasets : [
