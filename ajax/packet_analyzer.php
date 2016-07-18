@@ -1,6 +1,6 @@
 <?php
 
-	/*session_start();
+	session_start();
 
 	if (!isset($_SESSION['logged']))
 	{
@@ -9,7 +9,7 @@
 	}
 ////////////MM
 
-*/
+
 
 ?>
 
@@ -22,6 +22,7 @@
     <script src="lib/js/themes/jquery-ui.custom.min.js" type="text/javascript"></script>
     <script src="lib/js/notification/SmartNotification.min.js"></script>
   <script src="lib/js/jarvis.widget.min.js" type="text/javascript"></script>
+  <script src="ajax/reloadJsGrid.js" type="text/javascript"></script>
 
 </head>
 <body>
@@ -136,14 +137,59 @@
 
 
   function refresh(){
-  jQuery("#list1").trigger("reloadGrid");
+	var grid_rec = w2ui.grid.records.length;
 
-  //	$("#list1").setGridParam({page:2}).trigger("reloadGrid")
+	var NumberofLines;
+	var form_data;
 
-  }
+				$.ajax({
+				      type: "POST",
+				      url: "ajax/AnalyzerDataSize.php",
+				      data: { DisplayedRecords: grid_rec },
+				      success: function(response) {
+				      	NumberofLines= response -1;
+								count();
+								}
+							});
+
+
+					 $.ajax({
+						     url: "ajax/jsGridData.php",
+						     type: 'POST',
+						     data: form_data,
+						     dataType:"json",
+						     success: function(data) {
+												console.log("File: " + NumberofLines);
+												console.log("Grid: " + grid_rec);
+
+									 if (NumberofLines -1>grid_rec){
+										 console.log("more");
+
+											for(x=grid_rec; x<NumberofLines; x++){
+													grid_rec = w2ui.grid.records.length;
+
+													w2ui['grid'].add({
+													recid : grid_rec+1,
+													 id: grid_rec+1,
+													rssi: data[x][1],
+													data: data[x][0],
+													source: data[x][3],
+													route: data[x][12],
+													destination: data[x][5],
+												 command: data[x][7],
+												 });
+										 }
+									 }
+
+						    }
+
+						});
+
+
+ }
 
 	function load(){
-		$( "#body-w" ).load( "ajax/test_script.php" );
+		$( "#body-w" ).load( "ajax/jsGrid.php" );
 	}
 
 	function cleartrace(){
@@ -163,8 +209,20 @@
     return false;
   }
 
-	$("#play-a1").click(function(){
-				  myInterval = setInterval(refresh, 2000);
+  function count(){
+    $.get("ajax/jsGridData.php");
+    return false;
+  }
+
+	$("#play-a1").click(function(data){
+
+    w2ui.grid.clear();
+
+
+		setTimeout(function(){
+		      myInterval = setInterval(refresh, 200);
+		}, 2000);
+
           start_analyzer();
 				  $.smallBox({
 			title : "Z-Wave Packet Analyzer",
@@ -185,7 +243,7 @@
 			iconSmall : "fa fa-check fa-2x fadeInRight animated",
 			timeout : 3000
 		    });
-      
+
 	});
 
 
@@ -206,7 +264,7 @@
 	});
 
 	$("#refresh-a1").click(function(){
-
+  w2ui.grid.clear();
 		$.smallBox({
 			title : "Z-Wave Packet Analyzer",
 			content : "<i class='fa fa-clock-o'></i> <i>I am here </i>",
@@ -235,7 +293,7 @@
 
 			//$.post("ajax/savetrace.php?filename="+Value");
 			$( "#body-w" ).load( "ajax/savetrace.php?filename=" + Value);
-			//window.location.href = "ajax/savetrace.php?filename=" + Value; //save file
+			//.location.href = "ajax/savetrace.php?filename=" + Value; //save file
     			//var req = new Request({url: 'ajax/savetrace.php?filename='+Value});
 			//req.send();
 
