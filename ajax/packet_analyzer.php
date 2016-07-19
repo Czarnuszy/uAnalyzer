@@ -90,15 +90,15 @@
 
 							<div class="btn-group" data-toggle="buttons">
 					        <label class="btn btn-default btn-xs " id="play-a1">
-					          <input type="radio" name="style-a1" id="style-a1" > <i class="fa fa-play"></i> Capture
+					          <input type="radio" name="button" id="style-a1" value="start" > <i class="fa fa-play"></i> Capture
 					        </label>
 
 					       	<label class="btn btn-default btn-xs " id="pause-a1">
-					          <input type="radio" name="style-a2" id="style-a2"> <i class="fa fa-pause"></i> Pause
+					          <input type="radio" name="button" id="style-a2" value="pause" > <i class="fa fa-pause"></i> Pause
 					        </label>
 
 					        <label class="btn btn-default btn-xs active " id="stop-a1">
-					          <input type="radio" name="style-a3" id="style-a3" > <i class="fa fa-stop"></i> Stop
+					          <input type="radio" name="button" id="style-a3" value="stop" checked="checked" > <i class="fa fa-stop"></i> Stop
 					        </label>
 
 						</div>
@@ -131,62 +131,69 @@
 
 <script type="text/javascript">
 
+var radioButton;
+
+ $('input').on('change', function() {
+		radioButton = $('input[name=button]:checked').val();
+		console.log(radioButton);
+ });
+
 	$(document).ready(function() {
 		load();
   });
 
 
   function refresh(){
-	var grid_rec = w2ui.grid.records.length;
+		var grid_rec = w2ui.grid.records.length;
+		var NumberofLines;
+		var form_data;
 
-	var NumberofLines;
-	var form_data;
-
-				$.ajax({
-				      type: "POST",
-				      url: "ajax/AnalyzerDataSize.php",
-				      data: { DisplayedRecords: grid_rec },
-				      success: function(response) {
-				      	NumberofLines= response -1;
-								count();
-								}
-							});
+					$.ajax({
+					      type: "POST",
+					      url: "ajax/AnalyzerDataSize.php",
+					      data: { DisplayedRecords: grid_rec },
+					      success: function(response) {
+					      	NumberofLines= response -1;
+								//	count();
+									}
+								});
 
 
-					 $.ajax({
-						     url: "ajax/jsGridData.php",
-						     type: 'POST',
-						     data: form_data,
-						     dataType:"json",
-						     success: function(data) {
-												console.log("File: " + NumberofLines);
-												console.log("Grid: " + grid_rec);
+						 $.ajax({
+							     url: "ajax/jsGridData.php",
+							     type: 'POST',
+							     data: form_data,
+							     dataType:"json",
+							     success: function(data) {
+													console.log("File: " + NumberofLines);
+													console.log("Grid: " + grid_rec);
 
-									 if (NumberofLines -1>grid_rec){
-										 console.log("more");
+										 if (NumberofLines -1>grid_rec){
+											 console.log("more");
 
-											for(x=grid_rec; x<NumberofLines; x++){
-													grid_rec = w2ui.grid.records.length;
+												for(x=grid_rec; x<NumberofLines; x++){
+														grid_rec = w2ui.grid.records.length;
 
-													w2ui['grid'].add({
-													recid : grid_rec+1,
-													 id: grid_rec+1,
-													rssi: data[x][1],
-													data: data[x][0],
-													source: data[x][3],
-													route: data[x][12],
-													destination: data[x][5],
-												 command: data[x][7],
-												 });
+														w2ui['grid'].add({
+														recid : grid_rec+1,
+														 id: grid_rec+1,
+														rssi: data[x][1],
+														data: data[x][0],
+														source: data[x][3],
+														route: data[x][12],
+														destination: data[x][5],
+													 command: data[x][7],
+													 });
+											 }
 										 }
-									 }
 
-						    }
+							    }
 
-						});
-
-
+							});
  }
+
+
+
 
 	function load(){
 		$( "#body-w" ).load( "ajax/jsGrid.php" );
@@ -214,16 +221,22 @@
     return false;
   }
 
-	$("#play-a1").click(function(data){
+	$("#play-a1").click(function(){
 
-    w2ui.grid.clear();
+			if(radioButton == "stop"){
+				console.log("start after stop");
 
-
-		setTimeout(function(){
-		      myInterval = setInterval(refresh, 200);
-		}, 2000);
-
-          start_analyzer();
+			    w2ui.grid.clear();
+					setTimeout(function(){
+					      myInterval = setInterval(refresh, 200);
+							}, 2000);
+			    start_analyzer();
+				}
+				else if (radioButton == "pause") {
+					console.log("start after pause");
+					refresh();
+					myInterval = setInterval(refresh, 200);
+				}
 				  $.smallBox({
 			title : "Z-Wave Packet Analyzer",
 			content : "<i class='fa fa-clock-o'></i> <i>trace started</i>",
@@ -232,10 +245,17 @@
 			timeout : 3000
 		    });
 
-
 	});
+
+
 	$("#pause-a1").click(function(){
-				  //myInterval = setInterval(load, 2000);
+		if(radioButton == 'start'){
+				clearInterval(myInterval);
+				console.log("pause after start");
+			} else if(radioButton == 'stop') {
+				clearInterval(myInterval);
+				console.log("pause after stop");
+			}
 				  $.smallBox({
 			title : "Z-Wave Packet Analyzer",
 			content : "<i class='fa fa-clock-o'></i> <i>refresh stopped</i>",
@@ -249,16 +269,48 @@
 
 	$("#stop-a1").click(function(){
 
-      clearInterval(myInterval);
-      stop_analyzer();
+		$.SmartMessageBox({
+	title : "Z-Wave Packet Analyzer",
+	content : "Are sure to stop? //add smth here",
+	buttons : "[STOP][Cancel]",
+			}, function(ButtonPress, Value) {
 
-		  $.smallBox({
-          title : "Z-Wave Packet Analyzer",
-      		content : "<i class='fa fa-clock-o'></i> <i>trace capture stopped</i>",
-      		color : "#C46A69",
-      		iconSmall : "fa fa-times fa-2x fadeInRight animated",
-      		timeout : 3000
-		    });
+	if (ButtonPress === "STOP") {
+
+		if(radioButton == "start"){
+			console.log("stop after start k");
+			clearInterval(myInterval);
+			stop_analyzer();
+		}else	if (radioButton == "pause") {
+				console.log("stop after pause");
+				stop_analyzer();
+
+		}else	if (radioButton == "stop") {
+				console.log("stop after stop");
+				stop_analyzer();
+				clearInterval(myInterval);
+				refresh();
+		}
+
+		$.smallBox({
+				title : "Z-Wave Packet Analyzer",
+				content : "<i class='fa fa-clock-o'></i> <i>trace capture stopped</i>",
+				color : "#C46A69",
+				iconSmall : "fa fa-times fa-2x fadeInRight animated",
+				timeout : 3000
+			});
+	}
+	if (ButtonPress=== "Cancel") {
+				$.smallBox({
+						title : "Z-Wave Packet Analyzer",
+						content : "<i class='fa fa-clock-o'></i> <i>trace in progres</i>",
+						color : "#659265",
+						iconSmall : "fa fa-times fa-2x fadeInRight animated",
+						timeout : 3000
+					});
+					}
+		});
+
 
 
 	});

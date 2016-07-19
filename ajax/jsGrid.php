@@ -47,12 +47,12 @@ var config = {
         },
         columns: [
             { field: 'id', caption: 'ID', size: '5%', sortable: true, searchable: 'int', resizable: true },
-						{ field: 'data', caption: 'Date', size: '15%', sortable: true, searchable: 'text', resizable: true },
+						{ field: 'data', caption: 'Date', size: '20%', sortable: true, searchable: 'text', resizable: true },
             { field: 'rssi', caption: 'Rssi', size: '10%', sortable: true, searchable: 'int', resizable: true },
             { field: 'source', caption: 'Source', size: '10%', resizable: true, searchable: 'int', sortable: true },
             { field: 'route', caption: 'Route', size: '10%', resizable: true, sortable: true, searchable: 'text'},
             { field: 'destination', caption: 'Destination', size: '10%', resizable: true, sortable: true },
-	    			{ field: 'command', caption: 'Command', size: '40%', sortable: true, searchable: 'int', resizable: true },
+	    			{ field: 'command', caption: 'Command', size: '35%', sortable: true, searchable: 'int', resizable: true },
 		//{ field: 'test2', caption: 'test2', size: '100px', type: "text", sortable: true, searchable: 'text',  resizable: true },
         ]
     }
@@ -89,38 +89,6 @@ $(function () {
 
     $('#gbod').w2render('grid');
 });
-
-$(function add_new_records(line) {
-	<?php $new_data = readCSV($csvFile);
-		$start_line = 19;
-	 ?>
-
-	 var rssi = [<?php for ($i=$start_line; $i < $max; $i++){ echo "'".$AnalyzerData[$i][1]."',";}   ?>]
-	 var data = [<?php for ($i=$start_line; $i < $max; $i++){ echo "'".$AnalyzerData[$i][0]."',";}   ?>]
-	 var source = [<?php for ($i=$start_line; $i < $max; $i++){ echo "'".$AnalyzerData[$i][3]."',";}   ?>]
-	 var payload = [<?php for ($i=$start_line; $i < $max; $i++){ echo "'".$AnalyzerData[$i][7]."',";}   ?>]
-	 var route = [<?php for ($i=$start_line; $i < $max; $i++){ echo "'".$AnalyzerData[$i][12]."',";}   ?>]
-	 var destination = [<?php for ($i=$start_line; $i < $max; $i++){ echo "'".$AnalyzerData[$i][5]."',";}   ?>]
-	 var command = [<?php for ($i=$start_line; $i < $max; $i++){ echo "'".$AnalyzerData[$i][7]."',";}   ?>]
-
-	 	var max = <?php echo $max; ?>;
-
-	 for (var i = line; i < max; i++) {
-			 w2ui['grid'].records.push({
-					 recid : i+1,
-				 		id: i+1,
-					 rssi: rssi[i],
-					 data: data[i],
-					 source: source[i],
-					 route: route[i],
-					 destination:destination[i],
-					command: payload[i] ,
-
-
-			 });
-		 }
-});
-
 
 </script>
 
