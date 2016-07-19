@@ -235,8 +235,8 @@ class Zniffer(object):
     def log_raw_data_to_zlf_file(self,raw_data):
         return self.log_raw_data_to_file(raw_data, ZLF_FILE_SUFFIX, self.prepare_zlf_header)
 
-    def log_raw_data_to_csv_file(self,raw_data, db):
-        return self.log_raw_data_to_file(raw_data,CSV_FILE_SUFFIX, self.prepare_csv_header, db)
+    def log_raw_data_to_csv_file(self,raw_data):
+        return self.log_raw_data_to_file(raw_data,CSV_FILE_SUFFIX, self.prepare_csv_header)
 
 
     def prepare_csv_header(self):
@@ -265,7 +265,6 @@ class Zniffer(object):
         f.close()
 ###############################################################  DB?
 
-        ZnifferFrame().to_db()
 
 ##################################################33
         dbglog(CRASHDBG, 'exiting')
@@ -361,7 +360,7 @@ class Zniffer(object):
     def log_to_all_files(self,zniffer_frame,tx):
         self.log_to_zlf_file(zniffer_frame, tx=False)
         if args.output_csv == True:
-            self.log_raw_data_to_csv_file(zniffer_frame.to_csv(), zniffer_frame.to_db())
+            self.log_raw_data_to_csv_file(zniffer_frame.to_csv())
         self.file_write_counter+=1
 
     def tx_log_cmd_rx_log(self,cmd):
@@ -586,6 +585,5 @@ while True:
 
 #ctrl -c led us here
 z.rx_serial_t.join()
-cursor.close()
-cnx.close()
+
 #and quit
