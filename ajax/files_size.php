@@ -12,8 +12,9 @@
     	 fclose($file_handle);
     	 return $line_count;
     }
+      $file_name = $_POST['DisplayedRecords'];
 
-      $csvFile = '../zniffer/data/zniffer.csv';
+      $csvFile = '../data/Saves/'.$file_name;
       $max = readForLines($csvFile) ;
       echo $max;
 

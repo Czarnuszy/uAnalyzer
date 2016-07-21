@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo "stop"
-pkill -f /home/magni/public_html/analyzer/zniffer/zniffer.py
+pkill -f ../../analyzer/zniffer/zniffer.py

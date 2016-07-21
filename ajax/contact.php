@@ -5,12 +5,12 @@
 <?php
 
 	session_start();
-	
+
 	if (!isset($_SESSION['logged']))
 	{
 		header('Location: login.php');
 		exit();
-	} 
+	}
 	
 ?>
 
@@ -20,44 +20,44 @@
 			<!-- a blank row to get started -->
 			<!-- your contents here -->
 			<div class="jarviswidget" id="wid-id-6"
-			data-widget-editbutton="false"
-			data-widget-custombutton="false"
-			data-widget-colorbutton="false"			
-			data-widget-togglebutton="false"
-			data-widget-deletebutton="false"
-			data-widget-fullscreenbutton="false"
+					data-widget-editbutton="false"
+					data-widget-custombutton="false"
+					data-widget-colorbutton="false"
+					data-widget-togglebutton="false"
+					data-widget-deletebutton="false"
+					data-widget-fullscreenbutton="false"
 			  >
-				
+
 				<header>
 					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-					<h2>Contacts form </h2>				
-					
+					<h2>Contacts form </h2>
+
 				</header>
 
 				<!-- widget div-->
 				<div>
 					<div class="jarviswidget-editbox">
 						<!-- This area used as dropdown edit box -->
-						
+
 					</div>
-												
+
 					<!-- widget content -->
 					<div class="widget-body no-padding">
-						
+
 						<form action="<?php echo APP_URL; ?>/ajax/emailcontacts.php" method="post" id="contact-form" class="smart-form">
-							
-							<header>	
+
+							<header>
 									<h1>
 									<font face="Futura PT 300" color="#3c608b">	<b>CONTACT US</b></font>  </br>
 										</h1>
-										<span> 
+										<span>
 											<font face="Futura PT 300">Please fill out the form below and we will respond to your inquiry.
 										</span>
-									
+
 							</header>
-							
-							
-							<fieldset>					
+
+
+							<fieldset>
 								<div class="row">
 									<section class="col col-6">
 										<label class="label">Name</label>
@@ -109,41 +109,41 @@
 								<section>
 									<label class="checkbox"><input type="checkbox" name="copy" id="copy"><i></i>Send a copy to my e-mail address</label>
 								</section>
-								
+
 							</fieldset>
-							
+
 							<footer>
 								<button type="submit" class="btn btn-left btn-default">Submit</button>
 							</footer>
-							
+
 							<div class="message">
 								<i class="fa fa-thumbs-up"></i>
 								<p>Your message was successfully sent!</p>
 							</div>
-						</form>						
+						</form>
 						</font>
 					</div>
 					<!-- end widget content -->
-					
+
 				</div>
 				<!-- end widget div -->
-				
-			</div>
-			<!-- end widget -->		
 
-	
-			
-	
+			</div>
+			<!-- end widget -->
+
+
+
+
 		</article>
-		
+
 	</div>
-		
+
 </section>
 
 
 
 <script type="text/javascript">
-	
+
 
 
 
@@ -178,32 +178,32 @@
 	 */
 
 	pageSetUp();
-	
+
 	/*
 	 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
 	 * eg alert("my home function");
-	 * 
+	 *
 	 * var pagefunction = function() {
 	 *   ...
 	 * }
 	 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
-	 * 
+	 *
 	 * TO LOAD A SCRIPT:
-	 * var pagefunction = function (){ 
-	 *  loadScript(".../plugin.js", run_after_loaded);	
+	 * var pagefunction = function (){
+	 *  loadScript(".../plugin.js", run_after_loaded);
 	 * }
-	 * 
+	 *
 	 * OR you can load chain scripts by doing
-	 * 
+	 *
 	 * loadScript(".../plugin.js", function(){
 	 * 	 loadScript("../plugin.js", function(){
 	 * 	   ...
 	 *   })
 	 * });
 	 */
-	
+
 	// pagefunction
-	
+
 	var pagefunction = function() {
 
 
@@ -262,10 +262,10 @@
 
 
 	};
-	
+
 	// end pagefunction
 	loadScript("js/jquery-form/jquery-form.min.js", pagefunction);
 	// run pagefunction
-	
-	
+
+
 </script>

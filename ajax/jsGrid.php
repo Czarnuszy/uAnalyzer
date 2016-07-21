@@ -16,6 +16,10 @@ $csvFile = '../zniffer/data/zniffer.csv';
 $AnalyzerData = readCSV($csvFile);
 $max = count($AnalyzerData) -1;
 
+$fileID = fopen("../zniffer/data/id.txt", "r") or die("Unable to open file!");
+$homeid = fgets($fileID);
+fclose($fileID);
+
 
 ?>
 
@@ -41,26 +45,34 @@ var config = {
     grid: {
         name: 'grid',
         show: {
-					header         : true,
+
             footer    : true,
             toolbar    : true
         },
         columns: [
-            { field: 'id', caption: 'ID', size: '5%', sortable: true, searchable: 'int', resizable: true },
-						{ field: 'data', caption: 'Date', size: '20%', sortable: true, searchable: 'text', resizable: true },
-            { field: 'rssi', caption: 'Rssi', size: '10%', sortable: true, searchable: 'int', resizable: true },
-            { field: 'source', caption: 'Source', size: '10%', resizable: true, searchable: 'int', sortable: true },
-            { field: 'route', caption: 'Route', size: '10%', resizable: true, sortable: true, searchable: 'text'},
-            { field: 'destination', caption: 'Destination', size: '10%', resizable: true, sortable: true },
-	    			{ field: 'command', caption: 'Command', size: '35%', sortable: true, searchable: 'int', resizable: true },
+					{ field: 'h_id', caption: 'h_id', size: '10%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+
+            { field: 'id', caption: 'ID', size: '5%', sortable: true, searchable: 'int', resizable: true,  attr: "align=center" },
+						{ field: 'data', caption: 'Date', size: '20%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+            { field: 'rssi', caption: 'Rssi', size: '10%', sortable: true, searchable: 'int', resizable: true, attr: "align=center" },
+            { field: 'source', caption: 'Source', size: '10%', resizable: true, searchable: 'int', sortable: true, attr: "align=center" },
+            { field: 'route', caption: 'Route', size: '10%', resizable: true, sortable: true, searchable: 'text', attr: "align=center"},
+            { field: 'destination', caption: 'Destination', size: '10%', resizable: true, sortable: true, searchable: 'text', attr: "align=center" },
+	    			{ field: 'command', caption: 'Command', size: '25%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+
 		//{ field: 'test2', caption: 'test2', size: '100px', type: "text", sortable: true, searchable: 'text',  resizable: true },
-        ]
+	],
+	searches: [
+				{ field: 'h_id', caption: 'I', type: 'int', hidden: true },
+
+				]
     }
 }
 
 $(function () {
     // initialization
     $().w2grid(config.grid);
+		var user_home_id= <?php  echo "'".$homeid."'"; ?>;
 
 		var rssi = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][1]."',";}   ?>]
 		var data = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][0]."',";}   ?>]
@@ -69,26 +81,41 @@ $(function () {
 		var route = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][12]."',";}   ?>]
 		var destination = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][5]."',";}   ?>]
 		var command = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][7]."',";}   ?>]
+		var home_id = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][2]."',";}   ?>]
 
-		var max = <?php echo $max; ?>;
-
-    for (var i = 0; i < max; i++) {
-        w2ui['grid'].records.push({
-            recid : i+1,
-          id: i+1,
-            rssi: rssi[i],
-            data: data[i],
-            source: source[i],
-            route: route[i],
-            destination:destination[i],
-	    			command: payload[i] ,
-
+		var max = <?php echo $max ; ?>;
+		var x =1;
+		for (var i = 0; i < max; i++) {
+			if(home_id[i] != user_home_id){
+					source[i] = '-';
+					destination[i] = '-';
+			}
+	        w2ui['grid'].records.push({
+	            recid : i+1,
+	          	id: i+1,
+	            rssi: rssi[i],
+	            data: data[i],
+	            source: source[i],
+	            route: route[i],
+	            destination:destination[i],
+		    			command: payload[i] ,
+							h_id: home_id[i],
         });
+
+			//	var recs = w2ui['grid'].find({ h_id: user_home_id });
+
+		//			for(x=1; x<max; x++){
+			//			if($.inArray(x, recs) == -1 )
+			//				w2ui['grid'].set(x, { source: '-', destination: '-' });
+					//	}
+
     }
     w2ui.grid.refresh();
 
     $('#gbod').w2render('grid');
 });
+
+w2ui['grid'].hideColumn('h_id');
 
 </script>
 

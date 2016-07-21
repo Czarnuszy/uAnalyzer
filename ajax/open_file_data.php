@@ -8,11 +8,9 @@ function readCSV($csvFile){
   	 return $line_of_text;
 
 }
-$csvFile = '../zniffer/data/zniffer.csv';
-
+$file_name = $_POST['data'];
+$csvFile = '../data/Saves/'.$file_name;
 $AnalyzerData = readCSV($csvFile);
-$max = count($AnalyzerData) -1;
-//$start_line = $_POST['data'];
 
 echo json_encode($AnalyzerData);
 
