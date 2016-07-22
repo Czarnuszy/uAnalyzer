@@ -1,6 +1,3 @@
-
-
-
 <?php
 
 class Process{
@@ -30,7 +27,7 @@ class Process{
 
     public function status(){
         $command = 'ps -p '.$this->pid;
-        exec($command,$op);      
+        exec($command,$op);
         if (!isset($op[1]))return false;
         else return true;
     }
