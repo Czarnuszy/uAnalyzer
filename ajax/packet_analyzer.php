@@ -86,10 +86,6 @@
 					</div>
 
 						<div class="widget-toolbar">
-							 <label class="btn btn-default btn-xs " id="trash-a1"></i> Clear
-						     	<i class="fa fa-trash-o"></i>
-					    	</label>
-
 								<label class="btn btn-default btn-xs " id="save-a1"></i> Save
 					    		<i class="fa fa-save"></i>
 						    </label>
@@ -159,6 +155,42 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 		load();
   });
 
+function parse_sqnum(x, data){
+	var color = "";
+	if (data[x][8]== "01")
+		color = "#f0f0f0";
+	else if (data[x][8]  === "02")
+		color = "#E8E8E8";
+	else if (data[x][8] == "03")
+		color = "#E0E0E0";
+	else if (data[x][8]  == "04")
+		color = "#D8D8D8";
+	else if (data[x][8]  == "05")
+		color = "#D0D0D0";
+	else if (data[x][8]  == "06")
+		color = "#C8C8C8";
+	else if (data[x][8]  == "07")
+		color = "#C0C0C0";
+	else if (data[x][8]  == "08")
+		color = "#B8B8B8";
+	else if (data[x][8]  == "09")
+		color = "#B0B0B0";
+	else if (data[x][8] == "10")
+		color = "#A8A8A8";
+	else if (data[x][8] == "11")
+		color = "#A0A0A0";
+	else if (data[x][8]  == "12")
+		color = "#989898";
+	else if (data[x][8]  == "13")
+		color = "#909090";
+	else if (data[x][8]  == "14")
+		color = "#888888";
+	else if (data[x][8] == "15")
+		color = "#808080";
+
+	return color;
+}
+
 
   function refresh(){
 		var grid_rec = w2ui.grid.records.length;
@@ -171,10 +203,8 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 					      data: { DisplayedRecords: grid_rec },
 					      success: function(response) {
 					      	NumberofLines= response -1;
-
 									}
 								});
-
 
 						 $.ajax({
 							     url: "ajax/jsGridData.php",
@@ -184,7 +214,7 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 							     success: function(data) {
 													console.log("File: " + NumberofLines);
 													console.log("Grid: " + grid_rec);
-
+													var color = "";
 										 if (NumberofLines -1>grid_rec){
 											 console.log("more");
 											 grid_rec = w2ui.grid.records.length;
@@ -192,6 +222,10 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 														if (data[x][2] != home_id){
 																data[x][3] = '-';
 																data[x][5] = '-';
+															}else{
+															//	if(seq_num[i] === "00")
+															//		color = "#f0f0f0";
+															color = parse_sqnum(x, data);
 															}
 														  w2ui['grid'].add({
 																	recid : grid_rec,
@@ -203,9 +237,9 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 																	destination: data[x][5],
 																  command: data[x][7],
 																	h_id: data[x][2],
+																	style: "background-color: " + color
 												 	 								 });
 																			 grid_rec++;
-
 											 }
 										 }
 
@@ -213,9 +247,6 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 
 							});
  }
-
-
-
 
 	function load(){
 		$( "#body-w" ).load( "ajax/jsGrid.php" );
@@ -227,12 +258,10 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 		$( "#body-w" ).load( "ajax/clear_trace.php" );
 	}
 
-
   function start_analyzer(){
 
     $.get("ajax/stick.php");
     return false;
-
   }
 
   function stop_analyzer(){
@@ -251,15 +280,11 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 		//	$.get("ajax/open_files.php");
 		openPopup();
 
-
 	});
 
-
 	$("#play-a1").click(function(){
-
 			if(radioButton == "stop"){
 				console.log("start after stop");
-
 			    w2ui.grid.clear();
 					setTimeout(function(){
 					      myInterval = setInterval(refresh, 200);
@@ -435,43 +460,7 @@ $('#network_checkbox').click(function() {
 
 	    e.preventDefault();
 	})
-	   $("#delete-a1").click(function(e) {
 
-	    $.SmartMessageBox({
-		title : "Z-Wave Packet Analyzer",
-		content : "Are sure to clear trace",
-		buttons : "[OK][Cancel]",
-		placeholder : "Enter filename"
-	    }, function(ButtonPress, Value) {
-
-		if (ButtonPress === "OK") {
-
-		    cleartrace();
-
-		    $.smallBox({
-			title : "Z-Wave Packet Analyzer",
-			content : "<i class='fa fa-clock-o'></i> <i>Trace Cleared </i>",
-			color : "#659265",
-			iconSmall : "fa fa-check fa-2x fadeInRight animated",
-			timeout : 4000
-		    });
-		}
-		if (ButtonPress=== "Cancel") {
-		    $.smallBox({
-			title : "Z-Wave Packet Analyzer",
-			content : "<i class='fa fa-clock-o'></i> <i>Aborted...</i>",
-			color : "#C46A69",
-			iconSmall : "fa fa-times fa-2x fadeInRight animated",
-			timeout : 4000
-		    });
-		}
-	    });
-
-
-
-
-	    e.preventDefault();
-	})
 
 	    $("#join-a1").click(function(e) {
 
@@ -486,11 +475,10 @@ $('#network_checkbox').click(function() {
 
 				start_analyzer();
 				w2ui.grid.lock('In progres', true);
-				if(home_id === "empty")
-					hid_interval = setInterval(get_homeid, 2000);
-				else {
-					clearInterval(hid_interval);
-				}
+
+				hid_interval = setInterval(get_homeid, 2000);
+
+
 				//	while (home_id === "empty") {
 				//		get_homeid();
 				//	}
@@ -577,10 +565,13 @@ var config = {
                             dataType:'. '"json"'. ',
                             success: function(data) {
                               w2ui.grid.clear();
+															var color = "";
                               for(x=0; x<	NumberofLines; x++){
 																if (data[x][2] != home_id){
 																		data[x][3] = '."'-'".';
 																		data[x][5] = '."'-';".'
+																	}else {
+																		color = parse_sqnum(x, data);
 																	}
                                 w2ui['."'grid'".'].records.push({
                                   recid : x+1,
@@ -592,6 +583,8 @@ var config = {
                                   destination: data[x][5],
                                  command: data[x][7],
 																 h_id: data[x][2],
+																 style: "background-color: " + color
+
                                  });
 
                             }
@@ -669,6 +662,7 @@ function get_homeid(){
 															clearInterval(hid_interval);
 															w2ui.grid.clear();
 															load();
+
 															$.ajax({
 																		type: "POST",
 																		url: "ajax/homeid_save.php",
@@ -677,6 +671,14 @@ function get_homeid(){
 																			console.log("saved");
 																			}
 																		});
+
+																		$.smallBox({
+																title : "Z-Wave Packet Analyzer",
+																content : "<i class='fa fa-clock-o'></i> <i>Joined!</i>",
+																color : "#659265",
+																iconSmall : "fa fa-check fa-2x fadeInRight animated",
+																timeout : 3000
+															    });
 															break;
 
 													}
@@ -752,37 +754,6 @@ function get_homeid(){
 	*/
 
 	// With Callback
-
-	$("#trash-a1").click(function(e) {
-	    $.SmartMessageBox({
-		title : "Z-Wave Packet Analyzer",
-		content : "Are you sure to clear trace!!!!",
-		buttons : '[Cancel][Yes]'
-	    }, function(ButtonPressed) {
-		if (ButtonPressed === "Yes") {
-		    //ClearFile();
-		   	cleartrace();
-		    $.smallBox({
-			title : "Z-Wave Packet Analyzer",
-			content : "<i class='fa fa-clock-o'></i> <i>Trace cleared</i>",
-			color : "#659265",
-			iconSmall : "fa fa-check fa-2x fadeInRight animated",
-			timeout : 4000
-		    });
-		}
-		if (ButtonPressed === "Cancel") {
-		    $.smallBox({
-			title : "Z-Wave Packet Analyzer",
-			content : "<i class='fa fa-clock-o'></i> <i>Aborted</i>",
-			color : "#C46A69",
-			iconSmall : "fa fa-times fa-2x fadeInRight animated",
-			timeout : 4000
-		    });
-		}
-
-	    });
-	    e.preventDefault();
-	})
 
 	};
 

@@ -82,14 +82,52 @@ $(function () {
 		var destination = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][5]."',";}   ?>]
 		var command = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][7]."',";}   ?>]
 		var home_id = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][2]."',";}   ?>]
+		var seq_num = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][8]."',";}   ?>]
 
 		var max = <?php echo $max ; ?>;
 		var x =1;
+		var color = "#000000";
+
 		for (var i = 0; i < max; i++) {
 			if(home_id[i] != user_home_id){
 					source[i] = '-';
 					destination[i] = '-';
-			}
+				}else{
+				//	if(seq_num[i] === "00")
+				//		color = "#f0f0f0";
+					if (seq_num[i] == "01")
+						color = "#f0f0f0";
+					else if (seq_num[i]  === "02")
+						color = "#E8E8E8";
+					else if (seq_num[i]  == "03")
+						color = "#E0E0E0";
+					else if (seq_num[i]  == "04")
+						color = "#D8D8D8";
+					else if (seq_num[i]  == "05")
+						color = "#D0D0D0";
+					else if (seq_num[i]  == "06")
+						color = "#C8C8C8";
+					else if (seq_num[i]  == "07")
+						color = "#C0C0C0";
+					else if (seq_num[i]  == "08")
+						color = "#B8B8B8";
+					else if (seq_num[i]  == "09")
+						color = "#B0B0B0";
+					else if (seq_num[i]  == "10")
+						color = "#A8A8A8";
+					else if (seq_num[i]  == "11")
+						color = "#A0A0A0";
+					else if (seq_num[i]  == "12")
+						color = "#989898";
+					else if (seq_num[i]  == "13")
+						color = "#909090";
+					else if (seq_num[i]  == "14")
+						color = "#888888";
+					else if (seq_num[i]  == "15")
+						color = "#808080";
+				}
+				var bg = "background-color: "
+				var sty = bg + color;
 	        w2ui['grid'].records.push({
 	            recid : i+1,
 	          	id: i+1,
@@ -100,6 +138,8 @@ $(function () {
 	            destination:destination[i],
 		    			command: payload[i] ,
 							h_id: home_id[i],
+							seq_num: seq_num[i],
+							style: "background-color: " + color
         });
 
 			//	var recs = w2ui['grid'].find({ h_id: user_home_id });
@@ -111,7 +151,7 @@ $(function () {
 
     }
     w2ui.grid.refresh();
-
+;
     $('#gbod').w2render('grid');
 });
 
