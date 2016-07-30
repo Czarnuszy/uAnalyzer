@@ -7,7 +7,7 @@
 		header('Location: login.php');
 		exit();
 	}
-////////////MM
+////////////
 
   $directory = '../data/Saves';
   $scanned_directory = array_diff(scandir($directory), array('..', '.'));
@@ -219,9 +219,11 @@ function parse_sqnum(x, data){
 											 console.log("more");
 											 grid_rec = w2ui.grid.records.length;
 												for(x=grid_rec; x<NumberofLines; x++){
+													color = "red";
 														if (data[x][2] != home_id){
 																data[x][3] = '-';
 																data[x][5] = '-';
+																data[x][12] = '-';
 															}else{
 															//	if(seq_num[i] === "00")
 															//		color = "#f0f0f0";
@@ -250,16 +252,14 @@ function parse_sqnum(x, data){
 
 	function load(){
 		$( "#body-w" ).load( "ajax/jsGrid.php" );
-
+			console.log(	window.innerHeight);
 	}
 
 	function cleartrace(){
-
 		$( "#body-w" ).load( "ajax/clear_trace.php" );
 	}
 
   function start_analyzer(){
-
     $.get("ajax/stick.php");
     return false;
   }
@@ -279,6 +279,8 @@ function parse_sqnum(x, data){
 	//	$( "#body-w" ).load( "ajax/jsGrid.php" );
 		//	$.get("ajax/open_files.php");
 		openPopup();
+		$( "#popupmain" ).load( "ajax/open_file.php" );
+
 
 	});
 
@@ -313,7 +315,8 @@ function parse_sqnum(x, data){
 				clearInterval(myInterval);
 				console.log("pause after start");
 			} else if(radioButton == 'stop') {
-				clearInterval(myInterval);
+				if(myInterval)
+					clearInterval(myInterval);
 				console.log("pause after stop");
 			}
 				  $.smallBox({
@@ -328,7 +331,7 @@ function parse_sqnum(x, data){
 
 
 	$("#stop-a1").click(function(){
-
+		if(radioButton == "start" || radioButton == "pause"){
 		$.SmartMessageBox({
 	title : "Z-Wave Packet Analyzer",
 	content : "Are sure to stop? //add smth here",
@@ -371,7 +374,7 @@ function parse_sqnum(x, data){
 $('input:radio[name="button"]').filter('[value="stop"]').attr('checked', false);
 
 		$('input:radio[name="button"]').filter('[value="start"]').attr('checked', true);
-
+			if(radioButton == "start"){
 				$.smallBox({
 						title : "Z-Wave Packet Analyzer",
 						content : "<i class='fa fa-clock-o'></i> <i>trace in progres</i>",
@@ -379,17 +382,18 @@ $('input:radio[name="button"]').filter('[value="stop"]').attr('checked', false);
 						iconSmall : "fa fa-times fa-2x fadeInRight animated",
 						timeout : 3000
 					});
+				}else if(radioButton == "pause") {
 
+				}
 					}
 		});
-
+}
 	});
 
 
 $('#network_checkbox').click(function() {
 	if(this.checked){
 		w2ui['grid'].search('h_id', home_id);
-
 	}
 	else
 		w2ui['grid'].search('h_id', '');
@@ -401,7 +405,6 @@ $('#network_checkbox').click(function() {
 					w2ui['grid'].set(x, { source: '-', destination: '-' });
 				}*/
 	});
-
 
 	$("#refresh-a1").click(function(){
   w2ui.grid.clear();
@@ -478,11 +481,6 @@ $('#network_checkbox').click(function() {
 
 				hid_interval = setInterval(get_homeid, 2000);
 
-
-				//	while (home_id === "empty") {
-				//		get_homeid();
-				//	}
-
 		    $.smallBox({
 			title : "Z-Wave Packet Analyzer",
 			content : "<i class='fa fa-clock-o'></i> <i>Looking for new My Network</i>",
@@ -514,91 +512,7 @@ var config = {
             { type: 'left', size: 400, resizable: true, minSize: 120 },
         //    { type: 'main', minSize: 350, overflow: 'hidden' }
         ]
-    },
-    sidebar: {
-        name: 'sidebar',
-        nodes: [
-            { id: 'general', text: 'Z wave	', group: true, expanded: true, nodes: [
-              <?php
-                for($i = 2; $i <= $amount_files; $i+=3)
-                  echo "{ id: '".$scanned_directory[$i]."', text: '".$scanned_directory[$i]."', img: 'icon-page' },";
-                ?>
-            ]}
-        ],
-        onClick: function (event) {
-            switch (event.target) {
-                <?php
-                    //echo "w2ui.grid.clear();";
-                  for($i = 2; $i <= $amount_files; $i+=3){
-                      echo "case '".$scanned_directory[$i]."': ";
-                    //  echo "w2ui.grid.clear(); ";
-                  //  echo "w2ui.grid.clear();";
-                      echo "console.log('ds'); ";
-                    // echo   "w2ui.layout.content('main',  w2ui.grid); ";
-                      echo "$('#gbod').w2render('grid')";
-                      echo "
-                      var NumberofLines;
-                      $.ajax({
-                            url: "."'ajax/files_size.php',
-            					      type: "."'POST'".',
-            					      data: { DisplayedRecords:'. "'".$scanned_directory[$i]."'"." },
-            					      success: function(response) {
-            					      	NumberofLines= response-1;
-                                console.log(response);
-            									}
-            								});
-														$.ajax({
-																	url: "."'ajax/open_homeid.php',
-																	type: "."'POST'".',
-																	data: { fileName:'. "'".$scanned_directory[$i+1]."'"." },
-																	success: function(response) {
-																		home_id = response;
-																		console.log(3432);
-																			console.log(response);
-																		}
-																	});
-
-                      $.ajax({
-                            url: "."'ajax/open_file_data.php',
-                            type: "."'POST'".',
-                            data: {'."'data'".":'".$scanned_directory[$i]."'".'}'.',
-                            dataType:'. '"json"'. ',
-                            success: function(data) {
-                              w2ui.grid.clear();
-															var color = "";
-                              for(x=0; x<	NumberofLines; x++){
-																if (data[x][2] != home_id){
-																		data[x][3] = '."'-'".';
-																		data[x][5] = '."'-';".'
-																	}else {
-																		color = parse_sqnum(x, data);
-																	}
-                                w2ui['."'grid'".'].records.push({
-                                  recid : x+1,
-                                   id: x+1,
-                                  rssi: data[x][1],
-                                  data: data[x][0],
-                                  source: data[x][3],
-                                  route: data[x][12],
-                                  destination: data[x][5],
-                                 command: data[x][7],
-																 h_id: data[x][2],
-																 style: "background-color: " + color
-
-                                 });
-
-                            }
-                          }
-                        });';
-
-                      echo  "break; ";
-                   }
-                 ?>
-            }
-        //    w2popup.close();
-
-        }
-    },
+    }
 
 }
 
@@ -616,20 +530,26 @@ function openPopup() {
         width   : 400,
         height  : 400,
         showMax : true,
-        body    : '<div id="main" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px;"></div>',
+        body    : '<div id="popupmain" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px;"></div>',
         onOpen  : function (event) {
             event.onComplete = function () {
-                $('#w2ui-popup #main').w2render('layout');
-                w2ui.layout.content('left', w2ui.sidebar);
+            //    $('#w2ui-popup #main').w2render('layout');
+            //    w2ui.layout.content('left', w2ui.sidebar);
+							//	w2ui.grid.refresh();
+
           //    w2ui.layout.content('main', w2ui.grid);
             }
         },
         onToggle: function (event) {
             event.onComplete = function () {
-                w2ui.layout.resize();
+            //    w2ui.layout.resize();
+								w2ui.grid.refresh();
+
             }
         }
+
     });
+
 }
 
 function get_homeid(){

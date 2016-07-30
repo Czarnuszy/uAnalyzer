@@ -37,9 +37,20 @@ fclose($fileID);
 </head>
 <body>
 
-<div id="gbod" style="width: 100%; height: 400px;"></div>
+<div id="gbod" style="width: 100%; height: 600px;"></div>
 
 <script type="text/javascript">
+//var h = window.innerHeight - 250+'px';
+//var h2 = document.getElementById('body-w').clientHeight-10; + 'px';
+//console.log(h2);
+//$('#gbod').css({"height": h2});
+
+$( window ).resize(function() {
+//	var h2 = document.getElementById('body-w').clientHeight; + 'px';
+	var h = window.innerHeight - 275+'px';
+  $('#gbod').css({"height": h});
+	console.log(h);
+});
 // widget configuration
 var config = {
     grid: {
@@ -50,8 +61,6 @@ var config = {
             toolbar    : true
         },
         columns: [
-					{ field: 'h_id', caption: 'h_id', size: '10%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
-
             { field: 'id', caption: 'ID', size: '5%', sortable: true, searchable: 'int', resizable: true,  attr: "align=center" },
 						{ field: 'data', caption: 'Date', size: '20%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
             { field: 'rssi', caption: 'Rssi', size: '10%', sortable: true, searchable: 'int', resizable: true, attr: "align=center" },
@@ -63,7 +72,7 @@ var config = {
 		//{ field: 'test2', caption: 'test2', size: '100px', type: "text", sortable: true, searchable: 'text',  resizable: true },
 	],
 	searches: [
-				{ field: 'h_id', caption: 'I', type: 'int', hidden: true },
+				{ field: 'h_id', caption: 'h_id', type: 'int', hidden: true },
 
 				]
     }
@@ -72,6 +81,9 @@ var config = {
 $(function () {
     // initialization
     $().w2grid(config.grid);
+		if(w2ui.grid.records.length > 0)
+			w2ui['grid'].clear();
+
 		var user_home_id= <?php  echo "'".$homeid."'"; ?>;
 
 		var rssi = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][1]."',";}   ?>]
@@ -86,45 +98,47 @@ $(function () {
 
 		var max = <?php echo $max ; ?>;
 		var x =1;
-		var color = "#000000";
+		var color = "red";
 
 		for (var i = 0; i < max; i++) {
+			color = "red";
 			if(home_id[i] != user_home_id){
 					source[i] = '-';
 					destination[i] = '-';
+					route[i] = '-';
 				}else{
 				//	if(seq_num[i] === "00")
 				//		color = "#f0f0f0";
 					if (seq_num[i] == "01")
 						color = "#f0f0f0";
 					else if (seq_num[i]  === "02")
-						color = "#E8E8E8";
+						color = "#808080";
 					else if (seq_num[i]  == "03")
-						color = "#E0E0E0";
-					else if (seq_num[i]  == "04")
-						color = "#D8D8D8";
-					else if (seq_num[i]  == "05")
 						color = "#D0D0D0";
-					else if (seq_num[i]  == "06")
-						color = "#C8C8C8";
-					else if (seq_num[i]  == "07")
+					else if (seq_num[i]  == "04")
+						color = "#909090";
+					else if (seq_num[i]  == "05")
 						color = "#C0C0C0";
-					else if (seq_num[i]  == "08")
+					else if (seq_num[i]  == "06")
+						color = "#A0A0A0";
+					else if (seq_num[i]  == "07")
 						color = "#B8B8B8";
+					else if (seq_num[i]  == "08")
+						color = "#A8A8A8";
 					else if (seq_num[i]  == "09")
 						color = "#B0B0B0";
 					else if (seq_num[i]  == "10")
-						color = "#A8A8A8";
-					else if (seq_num[i]  == "11")
-						color = "#A0A0A0";
-					else if (seq_num[i]  == "12")
 						color = "#989898";
-					else if (seq_num[i]  == "13")
-						color = "#909090";
-					else if (seq_num[i]  == "14")
+					else if (seq_num[i]  == "11")
+						color = "#C8C8C8";
+					else if (seq_num[i]  == "12")
 						color = "#888888";
+					else if (seq_num[i]  == "13")
+						color = "#D8D8D8";
+					else if (seq_num[i]  == "14")
+						color = "#E0E0E0";
 					else if (seq_num[i]  == "15")
-						color = "#808080";
+						color = "#E8E8E8";
 				}
 				var bg = "background-color: "
 				var sty = bg + color;

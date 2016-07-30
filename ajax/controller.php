@@ -17,42 +17,42 @@
 
 <script>
 
-	
-	var max = <?php echo $max ?>;	
+
+	var max = <?php echo $max ?>;
 	var div = "";
 	//dynamic div 
 		for(i = 0; i < max*max; i++){
 					var element = "sq" + i;
-					div = div + '<div class ="sq"  id="'+element+'"></div>';
-				if((i+1)%max == 0) 		
+					div = div + '<div class ="sq" id="'+element+'"></div>';
+				if((i+1)%max == 0)
 					div = div +'<div style = "clear:both;"></div>';
-							
+
 			}
-		
-		
-		
-	var data=[<?php 
-				for ($i=0; $i < $max; $i++){ 
+
+
+
+	var data=[<?php
+				for ($i=0; $i < $max; $i++){
 					for ($k=0; $k < $max; $k++)
 						echo  json_encode($NetworkConnections[$i][$k] ).',';
 					}
 				    	?>];
-		
+
 			//print
-		
+
 	$(function(){
-	
+
 			$("#controller").html(div);
-	
+
 			for(i = 0; i < max*max; i++){
 				if(i <max || ((i+1)%max)==0 ){
 					var k=i+1;
-					$("#sq"+k).css({background: '#006699' });		
+					$("#sq"+k).css({background: '#006699' });
 			}
 		}
 	});
 
-	
+
 
 	$(function(){
 		var clientWidth = document.getElementById('controller').clientWidth;
@@ -61,18 +61,18 @@
 			$("#sq"+i).css({width: size,
 							height: size})
 			painting();
-			
+
 		}
 	});
 
 function painting(){
-	
+
 	$(function(){
-		
+
 		for(i = 0; i < max*max; i++){
 					//var k=i+1;
 					$("#sq"+i).html(data[i]);
-						
+
 				if($("#sq"+i).html() == "NC")
 					$("#sq"+i).css({background: 'white',
 									fontSize: 0,
@@ -92,10 +92,10 @@ function painting(){
 				if(i <max || ((i+1)%max)==0 ){
 					var k=i+1;
 					$("#sq"+k).css({background: '#006699',
-					opacity: 1 });		
+					opacity: 1 });
 					}
 				$("#sq0").css({background: '#006699',
-				opacity: 1 });	
+				opacity: 1 });
 			}
 
 		});
@@ -103,27 +103,27 @@ function painting(){
 
 	$(".sq").on({
     mouseenter: function () {
-		var divID = $(this).attr('id'); 
+		var divID = $(this).attr('id');
 		var divNB = divID.slice(2);
 		var k = divNB%max;
 
     			$('#'+divID).css({opacity: 0.7});
-    		
+
     			for(i = (divNB-k); i < divNB; i++)
     				$('#sq'+i).css({opacity: 0.7});
-    			for(i = k; i < divNB  ; i+=max) 
+    			for(i = k; i < divNB  ; i+=max)
     				$('#sq'+i).css({opacity: 0.7});
-    			    			
+
     		    },
     mouseleave: function () {
         //stuff to do on mouse leave
         painting();
-			
+
 
     	}
 	});
-	
-	
+
+
 
 
 </script>
@@ -134,6 +134,6 @@ function painting(){
 	<div id="conteiner">
 		<div id="controller"></div>
 	</div>
-	
+
 
 </body>
