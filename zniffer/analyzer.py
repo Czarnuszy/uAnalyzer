@@ -25,9 +25,9 @@ def isdigits(s):
     idtrans=string.maketrans('0123456789','xxxxxxxxxx')
     sint=s.translate(idtrans).strip('x')
     if sint:
-	return False
+        return False
     else:
-	return True
+        return True
 
 
 
@@ -38,150 +38,160 @@ import os
 #sleep(30)
 
 
+with serial.Serial("/dev/ttyUSB0",baudrate=115200, timeout=0.5) as port:
 
-port = serial.Serial("/dev/ttyUSB1",baudrate=115200, timeout=1.5)
+    #rcv = readlineCR(port)
+    #print rcv
+    #port.write("\r")
+    #rcv = readlineCR(port)
+    #print rcv
+    time.sleep(0.5)
 
-rcv = readlineCR(port)
-print rcv
-port.write("\r")
-rcv = readlineCR(port)
-print rcv
+    #start sweep test
+    port.write(b"r")
+    port.write(b"x")
+    port.write(b"s")
+    port.write(b"w")
+    port.write(b"e")
+    port.write(b"e")
+    port.write(b"p")
+    port.write("\r")
 
-#start sweep test
-port.write(b"r")
-port.write(b"x")
-port.write(b"s")
-port.write(b"w")
-port.write(b"e")
-port.write(b"e")
-port.write(b"p")
-port.write("\r")
-
-
-rcv = readlineCR(port)
-print rcv
-
-
-
-#start frequency
-port.write(b"9")
-port.write(b"0")
-port.write(b"0")
-port.write(b"0")
-port.write(b"0")
-port.write(b"0")
-port.write(b"\r")
-
-
-rcv = readlineCR(port)
-print rcv
-rcv = readlineCR(port)
-print rcv
-rcv = readlineCR(port)
-print rcv
-
-port.write(b"9")
-port.write(b"2")
-port.write(b"0")
-port.write(b"4")
-port.write(b"0")
-port.write(b"0")
-
-rcv = readlineCR(port)
-print rcv
-port.write(b"\r")
-rcv = readlineCR(port)
-print rcv
-rcv = readlineCR(port)
-print rcv
-rcv = readlineCR(port)
-print rcv
-
-# step is 200kHz
-#port.write(b"1")
-port.write(b"2")
-port.write(b"0")
-port.write(b"0")
-port.write(b"\r")
-rcv = readlineCR(port)
-print rcv
-
-#port.write(b"\r")
-
-#fo = open("/tmp/tmpAnalyzerData.txt", "w")
-#fo.seek(0,0)
-
-
-rcv = readlineCR(port)
-rcv = readlineCR(port)
-rcv = readlineCR(port)
-rcv = readlineCR(port)
-rcv = readlineCR(port)
-print rcv
-
-
-port.write(b"y")
-rcv = readlineCR(port)
-print rcv
-
-while 1:
     rcv = readlineCR(port)
     print rcv
 
+    #start frequency
+    port.write(b"9")
+    port.write(b"0")
+    port.write(b"0")
+    port.write(b"0")
+    port.write(b"0")
+    port.write(b"0")
+    port.write(b"\r")
 
-# write datat to file
-frequency = []
-rssi = []
-for i in range(0,120):
-    frequency.append(0)
-    rssi.append(0)
-while 1:
-    x = 0
-    while True:
-	rcv = readlineCR(port)
-	buffersize = len(rcv)
-	#print rcv
-	temprssi = str(rcv.rfind("*",0,len(rcv)))
-        print str(x)+":"+rcv[1:7]+"--"+temprssi
-        #if rcv[1:7] == "900000":
-        #    x = 0
-    	# testing for errors
-    	if buffersize > 10:
+    rcv = readlineCR(port)
+    print rcv
+    rcv = readlineCR(port)
+    print rcv
+    rcv = readlineCR(port)
+    print rcv
+    time.sleep(0.5)
 
-    	    if rcv[1] == "9" and temprssi[0] > "0":
-    		tfrequency = rcv[1:7]
-    		if tfrequency == "900000":
-    		    x = 0
-    		    print "sync"
-    		if isdigits(tfrequency):
-    		    frequency[x] = rcv[1:7]
-    		    rssi[x] = temprssi
-    	    	    print "OK:"+ str(buffersize)
+    port.write(b"9")
+    port.write(b"2")
+    port.write(b"2")
+    port.write(b"0")
+    port.write(b"0")
+    port.write(b"0")
+    time.sleep(0.5)
 
-    	    else:
-    		print "oops"
-    		if x>1:
-    		    x -= 1
-    	else:
-    	    if x >1:
-    		x -= 1
+    #port.write(b"9")
+    #port.write(b"2")
+    #port.write(b"2")
+    #port.write(b"0")
+    #port.write(b"0")
+    #port.write(b"0")
 
-        if frequency[x] == "920000" or frequency[x]=="920200" or frequency[x]=="920400":
-    	    if x > 50:
-    		break
-    	    x = 0
-        x += 1
-        if x >110:
-    	    x=0; # protect buffer
+    rcv = readlineCR(port)
+    print rcv
+    port.write(b"\r")
+    rcv = readlineCR(port)
+    print rcv
+    rcv = readlineCR(port)
+    print rcv
+    rcv = readlineCR(port)
+    print rcv
+
+    time.sleep(1)
+
+    # step is 200kHz
+    port.write(b"2")
+    port.write(b"0")
+    port.write(b"0")
+    port.write(b"\r")
+    rcv = readlineCR(port)
+    print rcv
+
+    #port.write(b"\r")
+
+    #fo = open("/tmp/tmpAnalyzerData.txt", "w")
+    #fo.seek(0,0)
+
+    rcv = readlineCR(port)
+    rcv = readlineCR(port)
+    rcv = readlineCR(port)
+    rcv = readlineCR(port)
+    rcv = readlineCR(port)
+    print rcv
+    time.sleep(0.5)
+    port.write(b"y")
+    rcv = readlineCR(port)
+    print rcv
+
+    # write datat to file
+    frequency = []
+    rssi = []
+    for i in range(0, 120):
+        frequency.append(0)
+        rssi.append(0)
+
+    #while 1:
+    #    rcv = readlineCR(port)
+    #    print rcv
+    def save_to_file(buffersize):
+        fo = open("../zniffer/data/AnalyzerData.csv", "w")
+        fo.seek(0, 0)
+        
+        for i in range(0, buffersize):
+            fo.write(str(frequency[i]) + "," + str(rssi[i]) + "\n")
+
+        fo.close()
+
+    while 1:
+        x = 0
+        while True:
+            rcv = readlineCR(port)
+            print rcv
+
+            buffersize = len(rcv)
+            #print rcv
+            #temprssi = str(rcv.rfind("*", 0, len(rcv)))
+            temprssi = rcv[-3:-1]
+           # tfrequency = ""
+
+            #   if rcv[1:7] == "900000":
+            #      x = 0
+            # testing for errors
+            print str(x)+":" + rcv[1:7] + "--|"+temprssi
+         #   print int(temprssi)
+            x += 1
+            if buffersize > 10:
+                if rcv[1] == "9" and temprssi > 0:
+                    tfrequency = rcv[1:7]
+                    if float(tfrequency) < 901000:
+                        x = 0
+                        print "sync"
+                    if isdigits(tfrequency):
+                        frequency[x] = rcv[1:7]
+                        rssi[x] = temprssi
+                        print "OK:" + str(buffersize)
+                else:
+                    print "oops"
+                    if x > 1:
+                        x -= 1
+            else:
+                if x > 1:
+                    x -= 1
+                    print "oops1"
+            if frequency[x] == "920000" or frequency[x] == "920200" or frequency[x] == "920400":
+                #pass
+                if x > 50:
+                    x += 1
+                    save_to_file(x)
+                    break
+            #x += 1
+            if x > 110:
+                x = 0 # protect buffer
 
 
 
-
-    fo = open("/tmp/AnalyzerData.txt", "w")
-    fo.seek(0,0);
-    buffersize = x-1
-    for i in range(0,buffersize ):
-        fo.write (frequency[i]+","+rssi[i]+"\n")
-
-    fo.close()
-#and quit

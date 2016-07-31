@@ -155,13 +155,13 @@ while 1:
 
         x += 1
         if x >110:
-    	    x=0; # protect buffer
+    	    x=0 # protect buffer
 
 
 
 
     fo = open("/tmp/tmpAnalyzerData.txt", "w")
-    fo.seek(0,0);
+    fo.seek(0,0)
     buffersize = x-1
     x = 0
 
