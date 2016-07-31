@@ -96,35 +96,40 @@ var pagefunction = function() {
 	}
 
 	$("#play-a3").click(function(){
-
-		  myInterval = setInterval(load, 3000);
+			start_spectrum();
+		  myInterval = setInterval(load, 2000);
 			$.smallBox({
           title : "Z-Wave Spectrum Analyzer",
       		content : "<i class='fa fa-clock-o'></i> <i>Start</i>",
-      		color : "#C46A69",
+      		color : "#659265",
       		iconSmall : "fa fa-times fa-2x fadeInRight animated",
       		timeout : 3000
 		    });
-
-			e.preventDefault();
 
 
 	});
 
 	$("#stop-a3").click(function(){
-
+		stop_spectrum();
 		clearInterval(myInterval);
 		$.smallBox({
 				title : "Z-Wave Spectrum Analyzer",
-				content : "<i class='fa fa-clock-o'></i> <i>Stop</i>",
+				content : "<i class='fa fa-clock-o'></i> <i>Stop</i> REMEMBER ABOUT RESET",
 				color : "#C46A69",
 				iconSmall : "fa fa-times fa-2x fadeInRight animated",
 				timeout : 3000
 			});
 	});
 
+	function start_spectrum(){
+    $.get("ajax/start_spectrum.php");
+    return false;
+  }
 
-
+	function stop_spectrum(){
+		$.get("ajax/stop_spectrum.php");
+		return false;
+	}
 
 	/*
 		* SmartAlerts

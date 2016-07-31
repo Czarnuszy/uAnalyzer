@@ -1,27 +1,30 @@
+
 <?php
+function readCSV($csvFile){
+ $file_handle = fopen($csvFile, 'r');
+ while (!feof($file_handle) ) {
+  $line_of_text[] = fgetcsv($file_handle, 1024);
+ }
+ fclose($file_handle);
+ return $line_of_text;
+}
+$csvFile = '../zniffer/data/AnalyzerData.csv';
+$AnalyzerData = readCSV($csvFile);
+$max = count($AnalyzerData)-1;
 
-$base=mysqli_connect("localhost","root","razdwa3","analyzer");
-
-$records = mysqli_query($base,"SELECT * FROM analyzerdata");
-
-$i=0;
-while($row = mysqli_fetch_array($records))
-{
- $AnalyzerData[$i][0] = $row[1]/1000;
- $rssi = $row[2] ;
+for ($i=0; $i < $max; $i++) {
+# c$AnalyzerData.sizeofode..$AnalyzerData.sizeof.
+ $AnalyzerData[$i][0] = (float)$AnalyzerData[$i][0];
+ $AnalyzerData[$i][0] = (int)$AnalyzerData[$i][0]/1000;
+ $rssi = $AnalyzerData[$i][1];
    	$rssi = $rssi * 1.7;
    	$rssi = $rssi - 30;
    	$rssi = (int) $rssi;
- if ($rssi> 100) $rssi = 100;
+   	if ($rssi> 100) $rssi = 100;
    	$AnalyzerData[$i][1] = $rssi;
-
-    $i++;
 }
-
-$max = count($AnalyzerData)-1;
-
+ #echo $AnalyzerData;
 ?>
-
 
 <div class="widget-body">
 
@@ -61,6 +64,7 @@ $max = count($AnalyzerData)-1;
   //        {echo $row[0]/1000 . ","; }
 				    ?>
 				],
+
 			datasets : [
 				{
 					label: "My First dataset",
@@ -84,7 +88,7 @@ $max = count($AnalyzerData)-1;
                         		    ]
 				},
 
-					]
+      ],
 
 		}
 
@@ -105,6 +109,7 @@ $max = count($AnalyzerData)-1;
 			tooltipTemplate: "<%if (label){%><%=value%>%  at <%}%> <%= label %>MHz",
 			//tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",'
 			scaleOverride: true,
+      animation : false,
 
     // ** Required if scaleOverride is true **
     // Number - The number of steps in a hard coded scale
