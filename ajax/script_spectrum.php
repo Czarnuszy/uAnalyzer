@@ -1,27 +1,28 @@
 
 <?php
 function readCSV($csvFile){
- $file_handle = fopen($csvFile, 'r');
- while (!feof($file_handle) ) {
-  $line_of_text[] = fgetcsv($file_handle, 1024);
+   $file_handle = fopen($csvFile, 'r');
+   while (!feof($file_handle) ) {
+      $line_of_text[] = fgetcsv($file_handle, 1024);
  }
  fclose($file_handle);
  return $line_of_text;
 }
+
 $csvFile = '../zniffer/data/AnalyzerData.csv';
 $AnalyzerData = readCSV($csvFile);
 $max = count($AnalyzerData)-1;
 
 for ($i=0; $i < $max; $i++) {
 # c$AnalyzerData.sizeofode..$AnalyzerData.sizeof.
- $AnalyzerData[$i][0] = (float)$AnalyzerData[$i][0];
- $AnalyzerData[$i][0] = (int)$AnalyzerData[$i][0]/1000;
- $rssi = $AnalyzerData[$i][1];
-   	$rssi = $rssi * 1.7;
-   	$rssi = $rssi - 30;
-   	$rssi = (int) $rssi;
-   	if ($rssi> 100) $rssi = 100;
-   	$AnalyzerData[$i][1] = $rssi;
+   $AnalyzerData[$i][0] = (float)$AnalyzerData[$i][0];
+   $AnalyzerData[$i][0] = (int)$AnalyzerData[$i][0]/1000;
+   $rssi = $AnalyzerData[$i][1];
+     	$rssi = $rssi * 1.7;
+     	$rssi = $rssi - 30;
+     	$rssi = (int) $rssi;
+     	if ($rssi> 100) $rssi = 100;
+     	$AnalyzerData[$i][1] = $rssi;
 }
  #echo $AnalyzerData;
 ?>
@@ -68,7 +69,7 @@ for ($i=0; $i < $max; $i++) {
 			datasets : [
 				{
 					label: "My First dataset",
-					fillColor : "rgba(0, 0, 255,1)",
+					fillColor : "rgba(60,96,139,1)",
 					strokeColor : "rgba(220,220,220,1)",
 					pointColor : "rgba(220,220,220,1)",
 					pointStrokeColor : "#fff",
@@ -80,10 +81,6 @@ for ($i=0; $i < $max; $i++) {
 						    echo $AnalyzerData[$i][1].',';
 
 						     }
-              //  while($row = mysqli_fetch_array($wynik))
-
-                //{
-                  //echo (int)$row['2']*1.7-30 . ","; }
     						?>
                         		    ]
 				},
@@ -92,7 +89,7 @@ for ($i=0; $i < $max; $i++) {
 
 		}
 
-        	var pagefunction = function() {
+      var pagefunction = function() {
 			var ctx = document.getElementById("canvas").getContext("2d");
 			window.myLine = new Chart(ctx).Line(lineChartData, {
 

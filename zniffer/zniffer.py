@@ -14,8 +14,8 @@ import os
 from datetime import datetime
 import inspect
 import resource
-import mysql.connector
-from mysql.connector import errorcode
+#import mysql.connector
+#from mysql.connector import errorcode
 from zniffer_parser import ZnifferFrame
 
 
@@ -79,7 +79,7 @@ def open_serial(string):
     ser = serial.Serial(
 	port=string,
         timeout=SERIAL_TIMEOUT, #timeout=SERIAL_TIMEOUT,
-	baudrate=230400,
+	baudrate=115200,
 	parity=serial.PARITY_NONE,
 	stopbits=serial.STOPBITS_ONE,
 	bytesize=serial.EIGHTBITS
@@ -416,7 +416,7 @@ class Zniffer(object):
 
         #23 0e 01 01 #set
         sz=COMMAND_PAYLOAD_ONE
-        baud_rate=COMMAND_BAUD_RATE_230400
+        baud_rate=COMMAND_BAUD_RATE_115200
         cmd=[ ZNIFFER_4X_COMMAND_FRAME_SOF, ZNIFFER_4X_COMMAND_SET_BAUD_RATE, sz, baud_rate]
         self.tx_log_cmd_rx_log(cmd)
     
@@ -429,7 +429,7 @@ class Zniffer(object):
         #23 13 01 00 #get frequency string for code COMMAND_FREQUENCY_CODE_EU
         sz=COMMAND_PAYLOAD_ONE
         freq=COMMAND_FREQUENCY_CODE_EU
-        cmd=[ ZNIFFER_4X_COMMAND_FRAME_SOF, ZNIFFER_4X_COMMAND_GET_FREQUENCIES_STR, sz,COMMAND_FREQUENCY_CODE_EU]
+        cmd=[ ZNIFFER_4X_COMMAND_FRAME_SOF, ZNIFFER_4X_COMMAND_GET_FREQUENCIES_STR, sz,COMMAND_FREQUENCY_CODE_US]
         # fixme: Zniffer doesn't seem to respond to this command!
         self.tx_log_cmd_rx_log(cmd)
 

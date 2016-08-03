@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e30ba95c-7698-4210-9acd-eac37284fb68" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/zniffer/data/zniffer.zlf" afterPath="$PROJECT_DIR$/zniffer/data/zniffer.zlf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ajax/script_spectrum.php" afterPath="$PROJECT_DIR$/ajax/script_spectrum.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ajax/spectrum_analyzer.php" afterPath="$PROJECT_DIR$/ajax/spectrum_analyzer.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/zniffer/analyzer.py" afterPath="$PROJECT_DIR$/zniffer/analyzer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/zniffer/analyzer1.py" afterPath="$PROJECT_DIR$/zniffer/analyzer1.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/zniffer/data/zniffer.csv" afterPath="$PROJECT_DIR$/zniffer/data/zniffer.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/zniffer/data/AnalyzerData.csv" afterPath="$PROJECT_DIR$/zniffer/data/AnalyzerData.csv" />
     </list>
     <ignored path="analyzer.iws" />
     <ignored path=".idea/workspace.xml" />

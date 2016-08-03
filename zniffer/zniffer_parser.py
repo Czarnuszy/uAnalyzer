@@ -1,6 +1,6 @@
 import os, sys, inspect
-import mysql.connector
-from mysql.connector import errorcode
+#import mysql.connector
+#from mysql.connector import errorcode
 import json
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -61,6 +61,7 @@ class ZnifferFrame(object):
         self.hops_nodes=[]
         self.route = INVALID
         self.command = INVALID
+	self.temp_route = INVALID
 
 
 
@@ -110,6 +111,7 @@ class ZnifferFrame(object):
             s+=("%03d"% self.properties_3)+CSV_DELIM
 
             #parsing
+            self.temp_route = "***hop:"+hop+" count:"+count+" header:"+header+"***"
             if hop == "-1":
                 self.route = ">"
                 self.command = " "
@@ -134,16 +136,16 @@ class ZnifferFrame(object):
                 elif count == "015" and header == "021":
                     self.route = "x" + repeater + ">"
                     self.command = route_comunicats_tab[1] + source
-                else:
-                    self.route = " "
-                    self.command = " "
+                #else:
+                    #self.route = " "
+                    #self.command = " "
 
             elif hop == "02":
                 if count == "000" and header == "000":
                     self.route = ">" + repeater + "-"
                     self.command = " "
 
-                elif count == "01" and header == "000":
+                elif count == "001" and header == "000":
                     self.route = "-" + repeater[0:-4] + ">" + repeater[-3:]
                     self.command = " "
 
@@ -174,18 +176,18 @@ class ZnifferFrame(object):
                 elif count == "015" and header == "037":
                     self.route = "x" + repeater[-3:] + "-" + repeater[0:-4] + ">"
                     self.command = route_comunicats_tab[1] + source
-                else:
-                    self.route = " "
-                    self.command = " "
+                #else:
+                    #self.route = " "
+                    #self.command = " "
 
             elif hop == "03":
-                self.route = self.route
+                #self.route = self.route
                 self.command = " "
 
             elif hop == "04":
-                self.route = self.route
+                #self.route = self.route
                 self.command = " "
-
+		
             s += str(self.route) + CSV_DELIM
             s += str(self.command) + CSV_DELIM
             s+="\n"
@@ -427,7 +429,7 @@ class ZnifferSerialDataParser(object):
                 self.current_serial_frame.data_length = b
                 dbglog(self.CRASHDBG, "new data_length!")
             elif b != self.current_serial_frame.data_length: #something wrong! transfer layer length differs from zniffer layer length, they should be equal!
-                dbglog(self.CRASHDBG, "WARNING: transfer layer data length ="+str(b)+" differs from data length previously advertised by zniffer=", str(self.current_serial_frame.data_length))
+                dbglog(self.CRASHDBG, "WARNING: transfer layer data length ="+str(b)+" differs from data length previously advertised by zniffer="+ str(self.current_serial_frame.data_length))
                 
             dbglog(self.CRASHDBG, "data_length: "+str(b))
             return ["DATA", serial_data]

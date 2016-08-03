@@ -9,7 +9,6 @@ function readCSV($csvFile){
 	 fclose($file_handle);
 	 return $line_of_text;
 
-
 }
 $csvFile = '../zniffer/data/zniffer.csv';
 

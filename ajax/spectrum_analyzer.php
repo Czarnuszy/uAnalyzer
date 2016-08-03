@@ -97,7 +97,7 @@ var pagefunction = function() {
 
 	$("#play-a3").click(function(){
 			start_spectrum();
-		  myInterval = setInterval(load, 2000);
+		  myInterval = setInterval(load, 1000);
 			$.smallBox({
           title : "Z-Wave Spectrum Analyzer",
       		content : "<i class='fa fa-clock-o'></i> <i>Start</i>",
