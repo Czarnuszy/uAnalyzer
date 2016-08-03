@@ -18,15 +18,7 @@ function readSomeLines($csvFile){
     $x = 0;
     $file = new SplFileObject($csvFile);
 
-  /*    for($i=$start; $i < $times; $i ++){
-      $file->seek($i);
-      $line_of_text[] = $file->current();
-    }
-*/
-
-
 	 $file_handle = fopen($csvFile, 'r');
- //flock($file_handle, 1);
         while (!feof($file_handle)) {
             $data = fgetcsv($file_handle, 1024);
           if($x >= $start && $x < $times){ //&& $x < $times){
@@ -34,14 +26,13 @@ function readSomeLines($csvFile){
           }
             $x+=1;
     	 }
-    //   flock($file_handle, 3);
 
   	 fclose($file_handle);
   	 return $line_of_text;
 }
 
 $file_name = $_POST['data'];
-$csvFile = '../data/Saves/'.$file_name;
+$csvFile = $file_name;
 
 if($fsize > 1000){
   $AnalyzerData = readSomeLines($csvFile);

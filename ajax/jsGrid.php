@@ -1,20 +1,5 @@
 <?php
 
-
-function readCSV($csvFile){
-	 $file_handle = fopen($csvFile, 'r');
-	 	while (!feof($file_handle) ) {
-	  	$line_of_text[] = fgetcsv($file_handle, 1024);
-	 }
-	 fclose($file_handle);
-	 return $line_of_text;
-
-}
-$csvFile = '../zniffer/data/zniffer.csv';
-
-$AnalyzerData = readCSV($csvFile);
-$max = count($AnalyzerData) -1;
-
 $fileID = fopen("../zniffer/data/id.txt", "r") or die("Unable to open file!");
 $homeid = fgets($fileID);
 fclose($fileID);
@@ -80,91 +65,140 @@ var config = {
 $(function () {
     // initialization
     $().w2grid(config.grid);
-		if(w2ui.grid.records.length > 0)
-			w2ui['grid'].clear();
+		var atr = '../zniffer/data/zniffer.csv';
 
 		var user_home_id= <?php  echo "'".$homeid."'"; ?>;
+		var NumberofLines = 0;
 
-		var rssi = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][1]."',";}   ?>]
-		var data = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][0]."',";}   ?>]
-		var source = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][3]."',";}   ?>]
-		var payload = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][7]."',";}   ?>]
-		var route = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][12]."',";}   ?>]
-		var destination = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][5]."',";}   ?>]
-		var command = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][7]."',";}   ?>]
-		var home_id = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][2]."',";}   ?>]
-		var seq_num = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][8]."',";}   ?>]
+	$.ajax({
+		url: "ajax/files_size.php",
+		type: "POST",
+		data: { DisplayedRecords: atr},
+		success: function(response){
+			NumberofLines= response-1;
 
-		var max = <?php echo $max ; ?>;
-		var x =1;
-		var color = "red";
+      if(NumberofLines > 1000){
+        console.log("over 10000");
 
-		for (var i = 0; i < max; i++) {
-			color = "red";
-			if(home_id[i] != user_home_id){
-					source[i] = '-';
-					destination[i] = '-';
-					route[i] = '-';
-				}else{
-				//	if(seq_num[i] === "00")
-				//		color = "#f0f0f0";
-					if (seq_num[i] == "01")
-						color = "#f0f0f0";
-					else if (seq_num[i]  === "02")
-						color = "#808080";
-					else if (seq_num[i]  == "03")
-						color = "#D0D0D0";
-					else if (seq_num[i]  == "04")
-						color = "#909090";
-					else if (seq_num[i]  == "05")
-						color = "#C0C0C0";
-					else if (seq_num[i]  == "06")
-						color = "#A0A0A0";
-					else if (seq_num[i]  == "07")
-						color = "#B8B8B8";
-					else if (seq_num[i]  == "08")
-						color = "#A8A8A8";
-					else if (seq_num[i]  == "09")
-						color = "#B0B0B0";
-					else if (seq_num[i]  == "10")
-						color = "#989898";
-					else if (seq_num[i]  == "11")
-						color = "#C8C8C8";
-					else if (seq_num[i]  == "12")
-						color = "#888888";
-					else if (seq_num[i]  == "13")
-						color = "#D8D8D8";
-					else if (seq_num[i]  == "14")
-						color = "#E0E0E0";
-					else if (seq_num[i]  == "15")
-						color = "#E8E8E8";
-				}
-				var bg = "background-color: "
-				var sty = bg + color;
-	        w2ui['grid'].records.push({
-	            recid : i+1,
-	          	id: i+1,
-	            rssi: rssi[i],
-	            data: data[i],
-	            source: source[i],
-	            route: route[i],
-	            destination:destination[i],
-		    			command: payload[i] ,
-							h_id: home_id[i],
-							seq_num: seq_num[i],
-							style: "background-color: " + color
-        });
+        if(w2ui.grid.records.length > 0)
+          w2ui.grid.clear();
 
-			//	var recs = w2ui['grid'].find({ h_id: user_home_id });
+        var reclen = w2ui.grid.records.length;
+        var i = NumberofLines / 2000;
+        i = parseInt(i);
 
-		//			for(x=1; x<max; x++){
-			//			if($.inArray(x, recs) == -1 )
-			//				w2ui['grid'].set(x, { source: '-', destination: '-' });
-					//	}
+        var val = [0];
+        for (var x = 1; x < i; x++) {
+          val.push(x * 2000);
+        }
+        val.push(val[val.length-1] + 2000); //NumberofLines-i*1000
+        console.log(val);
+        val.forEach(function(value, i){
+          console.log("val" + value);
 
+          $.ajax({
+            url: 'ajax/open_file_data.php',
+            type: 'POST',
+            async: false,
+            data: { data: atr, fsize: NumberofLines, tim: value+2000 , gridLen: value},
+            dataType: 'json',
+            success: function(data){
+          //    reclen = w2ui.grid.records.length;
+              console.log("gridlen" + w2ui.grid.records.length);
+              var color = "red";
+              console.log("dl" + data.length);
+        			for(x=0; x< data.length	; x++){
+                reclen = w2ui.grid.records.length;
+                color = "red";
+        				if (data[x][2] != home_id){
+        						data[x][3] = '."'-'".';
+        						data[x][5] = '."'-';".';
+                    data[x][12] = '-';
+        					}else {
+        						color = parse_sqnum(x, data);
+        					}
+
+          				w2ui['grid'].records.push({
+          					recid : reclen+1,
+          					id: reclen+1,
+          					rssi: data[x][1],
+          					data: data[x][0],
+          					source: data[x][3],
+          					route: data[x][12],
+          					destination: data[x][5],
+          				 	command: data[x][7],
+          				 	h_id: data[x][2],
+          				 	style: "background-color: " + color
+
+          				 });
+          		}
+          		w2ui.grid.reload();
+
+
+              }
+            });
+          });
+    //       }
+    $.smallBox({
+      title : "Z-Wave Packet Analyzer",
+      content : "<i>File opened.</i>",
+      color : "#659265",
+      iconSmall : "fa fa-check fa-2x fadeInRight animated",
+      timeout : 1000
+    });
+      }  else{
+
+    	$.ajax({
+    		url: 'ajax/open_file_data.php',
+    		type: 'POST',
+    		data: { data: atr, fsize: NumberofLines},
+    		dataType: 'json',
+    		success: function(data){
+    			if(w2ui.grid.records.length > 0)
+    				w2ui.grid.clear();
+
+    			var color = "red";
+    			for(x=0; x<	NumberofLines; x++){
+            color = "red";
+    				if (data[x][2] != home_id){
+    						data[x][3] = '."'-'".';
+    						data[x][5] = '."'-';".';
+                data[x][12] = '-';
+    					}else {
+    						color = parse_sqnum(x, data);
+    					}
+    				w2ui['grid'].records.push({
+    					recid : x+1,
+    					id: x+1,
+    					rssi: data[x][1],
+    					data: data[x][0],
+    					source: data[x][3],
+    					route: data[x][12],
+    					destination: data[x][5],
+    				 	command: data[x][7],
+    				 	h_id: data[x][2],
+    				 	style: "background-color: " + color
+
+    				 });
+    		}
+    		w2ui.grid.reload();
+    		$.smallBox({
+    			title : "Z-Wave Packet Analyzer",
+    			content : "<i>File opened.</i>",
+    			color : "#659265",
+    			iconSmall : "fa fa-check fa-2x fadeInRight animated",
+    			timeout : 1000
+    		});
+    	}
+
+
+    	});
     }
+
+      }
+	});
     w2ui.grid.refresh();
-;
+
     $('#gbod').w2render('grid');
 });
 

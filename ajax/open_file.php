@@ -30,9 +30,8 @@ for($i = 2; $i <= $amount_files; $i+=3){
 // fe 2345/1000 = 2
 // for(0; 2; ++)
 $('.filesButtons').on('click', function(){
-		var atr = $(this).attr('data-fid');
+    var atr = '../data/Saves/' + $(this).attr('data-fid');
 		var atrh = $(this).attr('data-filehid');
-		console.log(atr);
     var NumberofLines = 0;
 
 	$.ajax({
@@ -52,9 +51,6 @@ $('.filesButtons').on('click', function(){
         var i = NumberofLines / 2000;
         i = parseInt(i);
 
-    //    for(y=0; y<2; y++){
-    //      setTimeout(function(){  reclen = w2ui.grid.records.length;}, 200);
-    //      console.log("to ma sie  zmienaic" + reclen);
         var val = [0];
         for (var x = 1; x < i; x++) {
           val.push(x * 2000);

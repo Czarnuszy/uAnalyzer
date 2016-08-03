@@ -219,7 +219,7 @@ function parse_sqnum(x, data){
 											 console.log("more");
 											 grid_rec = w2ui.grid.records.length;
 											 console.log(data.length + " " + NumberofLines)
-												for(x=grid_rec; x<data.length; x++){
+												for(x=grid_rec; x<NumberofLines; x++){
 													color = "red";
 														if (data[x][2] != home_id){
 																data[x][3] = '-';

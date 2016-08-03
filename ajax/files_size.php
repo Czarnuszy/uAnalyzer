@@ -14,7 +14,7 @@
     }
       $file_name = $_POST['DisplayedRecords'];
 
-      $csvFile = '../data/Saves/'.$file_name;
+      $csvFile = $file_name;
       $max = readForLines($csvFile) ;
       echo $max;
 
