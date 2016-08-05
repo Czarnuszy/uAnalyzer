@@ -112,12 +112,30 @@ var pagefunction = function() {
 				data: { fileName: "data" },
 				dataType:"json",
 				success: function(data) {
-					console.log([data[2][1]]);
+					console.log(data[0][1]);
 					 for (var i = 0; i < data.length; i++) {
 						 window.myLine.data.datasets[0].data[i] = data[i][1];
 					 }
 
-					window.myLine.update();
+					 $.ajax({
+								 url: "ajax/spectrum_data.php",
+								 type: 'POST',
+								 data: { fileName: "d" },
+								 dataType:"json",
+								 success: function(data2) {
+									 console.log("max" + data2[0][1]);
+
+										for (var i = 0; i < data2.length; i++) {
+											window.myLine.data.datasets[1].data[i] = data2[i][1];
+										}
+								 //if(radioButton == "check"){
+									 window.myLine.update();
+							 //	}
+
+								 }
+						 });
+
+
 
 
 				}
@@ -137,25 +155,7 @@ var pagefunction = function() {
             });
 
 */
-		$.ajax({
-					url: "ajax/spectrum_data.php",
-					type: 'POST',
-					data: { fileName: "d" },
-					dataType:"json",
-					success: function(data) {
-						console.log("max" + data[2][1]);
-
-						 for (var i = 0; i < data.length; i++) {
-							 window.myLine.data.datasets[1].data[i] = data[i][1];
-						 }
-					//if(radioButton == "check"){
-						window.myLine.update();
-				//	}
-
-					}
-			});
-
-	}
+}
 
 	$("#play-a3").click(function(){
 			start_spectrum();

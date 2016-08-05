@@ -1,5 +1,7 @@
 
 <?php
+$fname = $_POST['fileName'];
+
 function readCSV($csvFile){
    $file_handle = fopen($csvFile, 'r');
    while (!feof($file_handle) ) {
@@ -16,8 +18,13 @@ $csvFile = '../zniffer/data/AnalyzerData.csv';
 $AnalyzerData = readCSV($csvFile);
 $max = count($AnalyzerData)-1;
 
+$csvFileMax = '../zniffer/data/MaxAnalyzerData.csv';
+$MaxAnalyzerData = readCSV($csvFileMax);
+$maxM = count($MaxAnalyzerData)-1;
+
 for ($i=0; $i < $max; $i++) {
 # c$AnalyzerData.sizeofode..$AnalyzerData.sizeof.
+
    $AnalyzerData[$i][0] = (float)$AnalyzerData[$i][0];
    $AnalyzerData[$i][0] = (int)$AnalyzerData[$i][0]/1000;
    $rssi = $AnalyzerData[$i][1];
@@ -28,14 +35,13 @@ for ($i=0; $i < $max; $i++) {
      	$AnalyzerData[$i][1] = $rssi;
 }
 
-$csvFileMax = '../zniffer/data/MaxAnalyzerData.csv';
-$MaxAnalyzerData = readCSV($csvFileMax);
-$maxM = count($MaxAnalyzerData)-1;
 
-for ($i=0; $i < $max; $i++) {
-      if( $AnalyzerData[$i][1] > $MaxAnalyzerData[$i][1])
+
+for ($i=0; $i < $maxM; $i++) {
+  $MaxAnalyzerData[$i][1] = (int)$MaxAnalyzerData[$i][1];
+      if( $AnalyzerData[$i][1] > $MaxAnalyzerData[$i][1]){
         	$MaxAnalyzerData[$i][1] = $AnalyzerData[$i][1];
-
+        }
 }
 
 $file = fopen($csvFileMax, "w") or die("Unable to open file!");
@@ -46,8 +52,8 @@ $file = fopen($csvFileMax, "w") or die("Unable to open file!");
 
 fclose($file);
 
-$fname = $_POST['fileName'];
-  if ($fname == "data") {
+
+if ($fname == "data") {
   echo json_encode($AnalyzerData);
 }
 else if($fname == "d") {
