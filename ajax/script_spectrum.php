@@ -179,82 +179,21 @@ fclose($file);
     }
 
 		}
-    var randomColorFactor = function() {
-          return Math.round(Math.random() * 255);
-      };
 
-    var randomColor = function(opacity) {
-            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
-        };
-        var randomScalingFactor = function() {
-                  return Math.round(Math.random() * 100);
-                  //return 0;
-              };
-    $.each(config.data.datasets, function(i, dataset) {
-    //         dataset.borderColor = randomColor(0.4);
-            // dataset.backgroundColor = "rgba(60,96,139,1)";
-        //     dataset.pointBorderColor = randomColor(0.7);
-        //     dataset.pointBackgroundColor = randomColor(0.5);
-          //   dataset.pointBorderWidth = 1;
-    //      dataset.data = dataset.data.map(function() {
-            //        randomScalingFactor();
-         });
 
-         function c(radioButton) {
-           if(radioButton == "chek"){
-             if(config.data.datasets.length == 1){
-               var maxDataSet = {
-                 label: 'MaxData',
-                 borderColor	: "rgba(650,96,10,1)",
-                 data : [
-                   <?php
-                       for ($i=0; $i < $max; $i++)
-                   echo $MaxAnalyzerData[$i][1].',';
-                    ?>  ],
-                }
-               config.data.datasets.push(maxDataSet);
-              window.myLine.update();
-             }
-           }
-         }
-         var  radioButton= "";
+
+
       var pagefunction = function() {
 
   			var ctx = document.getElementById("canvas").getContext("2d");
   			window.myLine = new Chart(ctx, config);
-        $('input').on('change', function() {
-          radioButton = $('input[name=max_checkbox]:checked').val();
-            console.log(radioButton);
-        //    c(radioButton);
-         });
+    //    $('input').on('change', function() {
+    //      radioButton = $('input[name=max_checkbox]:checked').val();
+    //        console.log(radioButton);
+    //     });
 
 	   }
 
-
-  /*$('#max_checkbox').click(function() {
-  	if(this.checked){
-      if(config.data.datasets.length == 1){
-    		var maxDataSet = {
-          label: 'MaxData',
-          borderColor	: "rgba(650,96,10,1)",
-  				data : [
-            <?php
-            for ($i=0; $i < $max; $i++)
-              echo $MaxAnalyzerData[$i][1].',';
-             ?>  ],
-         }
-        config.data.datasets.push(maxDataSet);
-        window.myLine.update();
-      }
-  	}
-  	else{
-      if(config.data.datasets.length == 2){
-        config.data.datasets.splice(1, 2);
-        window.myLine.update();
-      }
-    }
-    });
-*/
 	</script>
 
 

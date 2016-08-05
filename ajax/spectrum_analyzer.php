@@ -59,11 +59,7 @@
 					        		</label>
 								</div>
 
-								<div class="widget-toolbar">
-								 <label>
-									 <input type="checkbox" id="max_checkbox" name = "max_checkbox" value="check"> <font face="Futura PT 300">Show Max</font>
-								 </label>
-								</div>
+
 
 							</div>
 
@@ -100,9 +96,6 @@ var pagefunction = function() {
 
 
 	});
-	var randomColorFactor = function() {
-				return Math.round(Math.random() * 255);
-		};
 
 	function load(){
 	//	$('#max_checkbox').click();
@@ -141,20 +134,7 @@ var pagefunction = function() {
 				}
 
 		});
-		//var indexToUpdate = Math.round(Math.random() * 10);
 
-	//	window.myLine.data.datasets[0].data[3] = Math.random() * 100;
-	//	window.myLine.update();
-
-		//config.data.datasets[0]=44;
-/*		$.each(config.data.datasets, function(i, dataset) {
-							dataset.data = dataset.data.map(function() {
-									return 11;
-							});
-		            window.myLine.update();
-            });
-
-*/
 }
 
 	$("#play-a3").click(function(){
