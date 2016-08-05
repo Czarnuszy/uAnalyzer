@@ -59,6 +59,12 @@
 					        		</label>
 								</div>
 
+								<div class="widget-toolbar">
+								 <label>
+									 <input type="checkbox" id="max_checkbox" name = "max_checkbox" value="check"> <font face="Futura PT 300">Show Max</font>
+								 </label>
+								</div>
+
 							</div>
 
 
@@ -88,11 +94,67 @@
 var pagefunction = function() {
 
 	$(document).ready(function() {
-		load();
+		$( "#spectrum-body" ).load( "ajax/script_spectrum.php" );
+
+		//load();
+
+
 	});
+	var randomColorFactor = function() {
+				return Math.round(Math.random() * 255);
+		};
 
 	function load(){
-		$( "#spectrum-body" ).load( "ajax/script_spectrum.php" );
+	//	$('#max_checkbox').click();
+	$.ajax({
+				url: "ajax/spectrum_data.php",
+				type: 'POST',
+				data: { fileName: "data" },
+				dataType:"json",
+				success: function(data) {
+					console.log([data[2][1]]);
+					 for (var i = 0; i < data.length; i++) {
+						 window.myLine.data.datasets[0].data[i] = data[i][1];
+					 }
+
+					window.myLine.update();
+
+
+				}
+
+		});
+		//var indexToUpdate = Math.round(Math.random() * 10);
+
+	//	window.myLine.data.datasets[0].data[3] = Math.random() * 100;
+	//	window.myLine.update();
+
+		//config.data.datasets[0]=44;
+/*		$.each(config.data.datasets, function(i, dataset) {
+							dataset.data = dataset.data.map(function() {
+									return 11;
+							});
+		            window.myLine.update();
+            });
+
+*/
+		$.ajax({
+					url: "ajax/spectrum_data.php",
+					type: 'POST',
+					data: { fileName: "d" },
+					dataType:"json",
+					success: function(data) {
+						console.log("max" + data[2][1]);
+
+						 for (var i = 0; i < data.length; i++) {
+							 window.myLine.data.datasets[1].data[i] = data[i][1];
+						 }
+					//if(radioButton == "check"){
+						window.myLine.update();
+				//	}
+
+					}
+			});
+
 	}
 
 	$("#play-a3").click(function(){

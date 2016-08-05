@@ -21,7 +21,7 @@ function readSomeLines($csvFile){
 	 $file_handle = fopen($csvFile, 'r');
         while (!feof($file_handle)) {
             $data = fgetcsv($file_handle, 1024);
-          if($x >= $start && $x < $times){ //&& $x < $times){
+          if($x >= $start && $x < $times){
     	  	  $line_of_text[] = $data;
           }
             $x+=1;

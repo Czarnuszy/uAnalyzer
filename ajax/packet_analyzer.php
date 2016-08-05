@@ -9,9 +9,6 @@
 	}
 ////////////
 
-  $directory = '../data/Saves';
-  $scanned_directory = array_diff(scandir($directory), array('..', '.'));
-  $amount_files = count($scanned_directory);
 
 	$fileID = fopen("../zniffer/data/id.txt", "r") or die("Unable to open file!");
 	$homeid = fgets($fileID);
@@ -364,17 +361,7 @@ function parse_sqnum(x, data){
 			});
 	}
 	else if (ButtonPress=== "Cancel") {
-//		$("#style-a3").prop("checked", false);
-//		$("#style-a1").prop("checked", true);
-//		document.getElementById("style-a3").checked = false;
-
-//		document.getElementById("style-a1").checked = true;
-
-//		var $radios = $('input:radio[name=button]');
-//		$radios.filter('[value=start]').prop('checked', true);
-$('input:radio[name="button"]').filter('[value="stop"]').attr('checked', false);
-
-		$('input:radio[name="button"]').filter('[value="start"]').attr('checked', true);
+	//$('#pause-a1').click();
 			if(radioButton == "start"){
 				$.smallBox({
 						title : "Z-Wave Packet Analyzer",
@@ -634,7 +621,9 @@ function open_file(atr){
           val.push(x * 2000);
         }
         val.push(val[val.length-1] + 2000); //NumberofLines-i*1000
-        console.log(val);
+
+				console.log(val);
+
         val.forEach(function(value, i){
           console.log("val" + value);
 
@@ -650,29 +639,29 @@ function open_file(atr){
               var color = "red";
               console.log("dl" + data.length);
         			for(x=0; x< data.length	; x++){
-                reclen = w2ui.grid.records.length;
-                color = "red";
-        				if (data[x][2] != home_id){
-        						data[x][3] = '."'-'".';
-        						data[x][5] = '."'-';".';
-                    data[x][12] = '-';
-        					}else {
-        						color = parse_sqnum(x, data);
-        					}
+	              reclen = w2ui.grid.records.length;
+	              color = "red";
+	      				if (data[x][2] != home_id){
+	      						data[x][3] = '."'-'".';
+	      						data[x][5] = '."'-';".';
+	                  data[x][12] = '-';
+	      					}else {
+	      						color = parse_sqnum(x, data);
+	      					}
 
-          				w2ui['grid'].records.push({
-          					recid : reclen+1,
-          					id: reclen+1,
-          					rssi: data[x][1],
-          					data: data[x][0],
-          					source: data[x][3],
-          					route: data[x][12],
-          					destination: data[x][5],
-          				 	command: data[x][7],
-          				 	h_id: data[x][2],
-          				 	style: "background-color: " + color
+	        				w2ui['grid'].records.push({
+	        					recid : reclen+1,
+	        					id: reclen+1,
+	        					rssi: data[x][1],
+	        					data: data[x][0],
+	        					source: data[x][3],
+	        					route: data[x][12],
+	        					destination: data[x][5],
+	        				 	command: data[x][7],
+	        				 	h_id: data[x][2],
+	        				 	style: "background-color: " + color
 
-          				 });
+	        				 });
           		}
           		w2ui.grid.reload();
 

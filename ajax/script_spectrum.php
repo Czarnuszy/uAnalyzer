@@ -8,6 +8,12 @@ function readCSV($csvFile){
  fclose($file_handle);
  return $line_of_text;
 }
+//open file//read data to firt grid//opem secend file//read max data to second grid//copy first file to second file
+
+function saveMax($csvFileMax){
+
+
+}
 
 $csvFile = '../zniffer/data/AnalyzerData.csv';
 $AnalyzerData = readCSV($csvFile);
@@ -24,7 +30,27 @@ for ($i=0; $i < $max; $i++) {
      	if ($rssi> 100) $rssi = 100;
      	$AnalyzerData[$i][1] = $rssi;
 }
- #echo $AnalyzerData;
+
+$csvFileMax = '../zniffer/data/MaxAnalyzerData.csv';
+$MaxAnalyzerData = readCSV($csvFileMax);
+$maxM = count($MaxAnalyzerData)-1;
+
+for ($i=0; $i < $max; $i++) {
+      if( $AnalyzerData[$i][1] > $MaxAnalyzerData[$i][1])
+        	$MaxAnalyzerData[$i][1] = $AnalyzerData[$i][1];
+
+}
+
+$file = fopen($csvFileMax, "w") or die("Unable to open file!");
+  for ($i=0; $i < $max; $i++) {
+    $txt =  $AnalyzerData[$i][0].','. $MaxAnalyzerData[$i][1]."\n";
+    fwrite($file, $txt);
+}
+
+fclose($file);
+
+//copy($csvFile, $csvFileMax);
+
 ?>
 
 <div class="widget-body">
@@ -53,59 +79,64 @@ for ($i=0; $i < $max; $i++) {
 
 
 
-		var lineChartData = {
+		var config = {
+      type: 'line',
+      data: {
 			labels : [
 				    <?php
 					for ($i=0; $i < $max; $i++){
 			          echo $AnalyzerData[$i][0].',';
-          //echo (int)$row['1']/1000 . ",";
           }
-//          while($row = mysqli_fetch_array($wynik))
-
-  //        {echo $row[0]/1000 . ","; }
 				    ?>
 				],
 
 			datasets : [
 				{
-					label: "My First dataset",
-					fillColor : "rgba(60,96,139,1)",
-					strokeColor : "rgba(220,220,220,1)",
-					pointColor : "rgba(220,220,220,1)",
-					pointStrokeColor : "#fff",
-					pointHighlightFill : "#fff",
-					pointHighlightStroke : "rgba(220,220,220,1)",
+					  label: "My First dataset",
+		        backgroundColor: "rgba(60,96,139,1)",
+            lineTension: 0.1,
+            spanGaps: true,
+
 					data : [
     						<?php
     						    for ($i=0; $i < $max; $i++){
 						    echo $AnalyzerData[$i][1].',';
-
 						     }
     						?>
-                        		    ]
+              ]
+				},
+        {
+					  label: "My secnd dataset",
+		        borderColor: "rgba(260,5,8,1)",
+            lineTension: 0.1,
+            spanGaps: true,
+
+					data : [
+    						<?php
+    						    for ($i=0; $i < $max; $i++){
+						    echo $MaxAnalyzerData[$i][1].',';
+						     }
+    						?>
+              ]
 				},
 
       ],
+    },
+    options: {
+      backgroundColor: "rgba(60,96,139,1)",
 
-		}
-
-      var pagefunction = function() {
-			var ctx = document.getElementById("canvas").getContext("2d");
-			window.myLine = new Chart(ctx).Line(lineChartData, {
-
-			responsive: true,
-			 //Boolean - Whether to show horizontal lines (except X axis)
-			scaleShowHorizontalLines: false,
-
-			//Boolean - Whether to show vertical lines (except Y axis)
-			scaleShowVerticalLines: false,
-			//Boolean - Whether to show a dot for each point
-			pointDot : false,
-			pointHitDetectionRadius : 1,
-			//tooltipTemplate: "<%if (label){%><%=label%>MHz <%}%><%= value %>",
-			tooltipTemplate: "<%if (label){%><%=value%>%  at <%}%> <%= label %>MHz",
-			//tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",'
-			scaleOverride: true,
+      responsive: true,
+       //Boolean - Whether to show horizontal lines (except X axis)
+      scaleShowHorizontalLines: false,
+      //Boolean - Whether to show vertical lines (except Y axis)
+      scaleShowVerticalLines: false,
+      //Boolean - Whether to show a dot for each point
+      pointDot : false,
+      pointHitDetectionRadius : 1,
+      //tooltipTemplate: "<%if (label){%><%=label%>MHz <%}%><%= value %>",
+      tooltipTemplate: "<%if (label){%><%=value%>%  at <%}%> <%= label %>MHz",
+      //tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",'
+      scaleOverride: true,
       animation : false,
 
     // ** Required if scaleOverride is true **
@@ -121,11 +152,109 @@ for ($i=0; $i < $max; $i++) {
     showXLabels: 10,
 
 
+    hover: {
+                   mode: 'dataset'
+               },
+               scales: {
+                   xAxes: [{
+                       display: true,
+                       scaleLabel: {
+                           display: false,
+                           labelString: 'Something'
+                       }
+                   }],
+                   yAxes: [{
+                       display: true,
+                       scaleLabel: {
+                           display: false,
+                           labelString: 'Value',
+                       },
+                       ticks: {
+                           suggestedMin: 0,
+                           suggestedMax: 100,
+                       }
+                   }]
+               }
 
-		});
-	}
+    }
+
+		}
+    var randomColorFactor = function() {
+          return Math.round(Math.random() * 255);
+      };
+
+    var randomColor = function(opacity) {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+        };
+        var randomScalingFactor = function() {
+                  return Math.round(Math.random() * 100);
+                  //return 0;
+              };
+    $.each(config.data.datasets, function(i, dataset) {
+    //         dataset.borderColor = randomColor(0.4);
+            // dataset.backgroundColor = "rgba(60,96,139,1)";
+        //     dataset.pointBorderColor = randomColor(0.7);
+        //     dataset.pointBackgroundColor = randomColor(0.5);
+          //   dataset.pointBorderWidth = 1;
+    //      dataset.data = dataset.data.map(function() {
+            //        randomScalingFactor();
+         });
+
+         function c(radioButton) {
+           if(radioButton == "chek"){
+             if(config.data.datasets.length == 1){
+               var maxDataSet = {
+                 label: 'MaxData',
+                 borderColor	: "rgba(650,96,10,1)",
+                 data : [
+                   <?php
+                       for ($i=0; $i < $max; $i++)
+                   echo $MaxAnalyzerData[$i][1].',';
+                    ?>  ],
+                }
+               config.data.datasets.push(maxDataSet);
+              window.myLine.update();
+             }
+           }
+         }
+         var  radioButton= "";
+      var pagefunction = function() {
+
+  			var ctx = document.getElementById("canvas").getContext("2d");
+  			window.myLine = new Chart(ctx, config);
+        $('input').on('change', function() {
+          radioButton = $('input[name=max_checkbox]:checked').val();
+            console.log(radioButton);
+        //    c(radioButton);
+         });
+
+	   }
 
 
+  /*$('#max_checkbox').click(function() {
+  	if(this.checked){
+      if(config.data.datasets.length == 1){
+    		var maxDataSet = {
+          label: 'MaxData',
+          borderColor	: "rgba(650,96,10,1)",
+  				data : [
+            <?php
+            for ($i=0; $i < $max; $i++)
+              echo $MaxAnalyzerData[$i][1].',';
+             ?>  ],
+         }
+        config.data.datasets.push(maxDataSet);
+        window.myLine.update();
+      }
+  	}
+  	else{
+      if(config.data.datasets.length == 2){
+        config.data.datasets.splice(1, 2);
+        window.myLine.update();
+      }
+    }
+    });
+*/
 	</script>
 
 
