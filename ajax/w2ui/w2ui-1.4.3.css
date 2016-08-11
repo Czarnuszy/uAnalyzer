@@ -886,7 +886,7 @@ button.btn-red.clicked {
   border-top-color: #81C6FF;
 }
 /*
-*    ARROWS 
+*    ARROWS
 */
 .arrow-up {
   background: none;
@@ -969,7 +969,7 @@ button.btn-red.clicked {
   outline: 1px solid #666;
   border: 1px solid #fff;
 }
-/* 
+/*
 *    DATE overlay
 */
 .w2ui-calendar {
@@ -1447,8 +1447,9 @@ button.btn-red.clicked {
   box-shadow: 0px 1px 2px #dddddd;
 }
 .w2ui-grid .w2ui-toolbar-search {
-  width: 160px;
+  width: 0px;
   margin-right: 3px;
+  visibility: hidden;
 }
 .w2ui-grid .w2ui-toolbar-search .w2ui-search-all {
   outline: none !important;

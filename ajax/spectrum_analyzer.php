@@ -53,7 +53,8 @@
 
 
 							    </div>
-							    <div class="btn-group" data-toggle="buttons2">
+
+							    <div class="widget-toolbar" id="clearBTN">
 					       			<label class="btn btn-default btn-xs " id="trash-a1"> Clear
 					           		<i class="fa fa-trash-o"></i>
 					        		</label>
@@ -110,29 +111,6 @@ $.ajax({
 
 				}
 
-			/*	 $.ajax({
-							 url: "ajax/spectrum_data.php",
-							 type: 'POST',
-							 data: { fileName: "data" },
-							 dataType:"json",
-				//			 async: false,
-							 success: function(data2) {
-								 console.log( data2[0][1]);
-
-									for (var i = 0; i < data2.length; i++) {
-										window.myLine.data.datasets[0].data[i] = data2[i][1];
-									}
-
-								 window.myLine.update();
-
-							 },
-
-							error: function(xhr, status, error) {
-								var err = eval("(" + xhr.responseText + ")");
-								console.log(xhr + " " + status + " " + error);
-							}
-					 });*/
-
 			},
 			error: function(xhr, status, error) {
 				var err = eval("(" + xhr.responseText + ")");
@@ -180,6 +158,29 @@ $("#stop-a3").click(function(){
 			iconSmall : "fa fa-times fa-2x fadeInRight animated",
 			timeout : 3000
 		});
+});
+
+$("#clearBTN").click(function () {
+	$.ajax({
+		type: 'POST',
+		url: 'ajax/spectrum_data.php',
+		dataType:"json",
+		data: { clear: 1 },
+		success: function(response) {
+			console.log(response);
+		//	load();
+		for (var i = 0; i < 98; i++) {
+ 		 window.myLine.data.datasets[0].data[i] = response[0][i][1];
+ 		 window.myLine.data.datasets[1].data[i] = response[1][i][1];
+ 		}
+ 		window.myLine.update();
+
+
+		},
+		error: function () {
+			console.log("error");
+		}
+	});
 });
 
 function start_spectrum(){
