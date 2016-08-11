@@ -87,164 +87,129 @@
 
 
 <script type="text/javascript">
+
+function load(){
+console.log("lload");
+$.ajax({
+			url: "ajax/spectrum_data.php",
+			type: 'POST',
+			data: { fileName: "d" },
+			dataType:"json",
+			//async: false,
+			success: function(data) {
+				console.log(data[0].length);
+				console.log(data[1].length);
+				console.log(data[0][16][1]);
+				console.log("max" + data[1][16][1]);
+				if(data[0].length == 98 && data[1].length == 98){
+					 for (var i = 0; i < 98; i++) {
+						 window.myLine.data.datasets[0].data[i] = data[0][i][1];
+				     window.myLine.data.datasets[1].data[i] = data[1][i][1];
+			 	 		}
+						window.myLine.update();
+
+				}
+
+			/*	 $.ajax({
+							 url: "ajax/spectrum_data.php",
+							 type: 'POST',
+							 data: { fileName: "data" },
+							 dataType:"json",
+				//			 async: false,
+							 success: function(data2) {
+								 console.log( data2[0][1]);
+
+									for (var i = 0; i < data2.length; i++) {
+										window.myLine.data.datasets[0].data[i] = data2[i][1];
+									}
+
+								 window.myLine.update();
+
+							 },
+
+							error: function(xhr, status, error) {
+								var err = eval("(" + xhr.responseText + ")");
+								console.log(xhr + " " + status + " " + error);
+							}
+					 });*/
+
+			},
+			error: function(xhr, status, error) {
+				var err = eval("(" + xhr.responseText + ")");
+				console.log(xhr + " " + status + " " + error);
+		}
+
+	});
+
+}
+
+var myset
+
+function myTimeoutFunction()
+{
+    load();
+    myset = setTimeout(myTimeoutFunction, 2000);
+}
+
+
+$("#play-a3").click(function(){
+		start_spectrum();
+		console.log("ds");
+		myInterval = setInterval(load, 1000);
+//		myTimeoutFunction();
+		$.smallBox({
+				title : "Z-Wave Spectrum Analyzer",
+				content : "<i class='fa fa-clock-o'></i> <i>Start</i>",
+				color : "#659265",
+				iconSmall : "fa fa-times fa-2x fadeInRight animated",
+				timeout : 3000
+			});
+
+
+});
+
+$("#stop-a3").click(function(){
+	console.log("stop");
+	stop_spectrum();
+	clearInterval(myInterval);
+//	 clearTimeout(myset);
+	$.smallBox({
+			title : "Z-Wave Spectrum Analyzer",
+			content : "<i class='fa fa-clock-o'></i> <i>Stop</i> REMEMBER ABOUT RESET",
+			color : "#C46A69",
+			iconSmall : "fa fa-times fa-2x fadeInRight animated",
+			timeout : 3000
+		});
+});
+
+function start_spectrum(){
+	$.get("ajax/start_spectrum.php");
+	return false;
+}
+
+function stop_spectrum(){
+	$.get("ajax/stop_spectrum.php");
+	return false;
+}
+
+
 var pagefunction = function() {
 
 	$(document).ready(function() {
 		$( "#spectrum-body" ).load( "ajax/script_spectrum.php" );
+		load();
 
 		//load();
 
 
 	});
 
-	function load(){
-	//	$('#max_checkbox').click();
-	$.ajax({
-				url: "ajax/spectrum_data.php",
-				type: 'POST',
-				data: { fileName: "data" },
-				dataType:"json",
-				success: function(data) {
-					console.log(data[0][1]);
-					 for (var i = 0; i < data.length; i++) {
-						 window.myLine.data.datasets[0].data[i] = data[i][1];
-					 }
-
-					 $.ajax({
-								 url: "ajax/spectrum_data.php",
-								 type: 'POST',
-								 data: { fileName: "d" },
-								 dataType:"json",
-								 success: function(data2) {
-									 console.log("max" + data2[0][1]);
-
-										for (var i = 0; i < data2.length; i++) {
-											window.myLine.data.datasets[1].data[i] = data2[i][1];
-										}
-								 //if(radioButton == "check"){
-									 window.myLine.update();
-							 //	}
-
-								 }
-						 });
-
-
-
-
-				}
-
-		});
 
 }
 
-	$("#play-a3").click(function(){
-			start_spectrum();
-		  myInterval = setInterval(load, 1000);
-			$.smallBox({
-          title : "Z-Wave Spectrum Analyzer",
-      		content : "<i class='fa fa-clock-o'></i> <i>Start</i>",
-      		color : "#659265",
-      		iconSmall : "fa fa-times fa-2x fadeInRight animated",
-      		timeout : 3000
-		    });
-
-
-	});
-
-	$("#stop-a3").click(function(){
-		stop_spectrum();
-		clearInterval(myInterval);
-		$.smallBox({
-				title : "Z-Wave Spectrum Analyzer",
-				content : "<i class='fa fa-clock-o'></i> <i>Stop</i> REMEMBER ABOUT RESET",
-				color : "#C46A69",
-				iconSmall : "fa fa-times fa-2x fadeInRight animated",
-				timeout : 3000
-			});
-	});
-
-	function start_spectrum(){
-    $.get("ajax/start_spectrum.php");
-    return false;
-  }
-
-	function stop_spectrum(){
-		$.get("ajax/stop_spectrum.php");
-		return false;
-	}
-
-	/*
-		* SmartAlerts
-		*/
-
-		// With Callback
-
-
-
-}
-
-	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
-	 *
-	 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
-	 *
-	 * // activate tooltips
-	 * $("[rel=tooltip]").tooltip();
-	 *
-	 * // activate popovers
-	 * $("[rel=popover]").popover();
-	 *
-	 * // activate popovers with hover states
-	 * $("[rel=popover-hover]").popover({ trigger: "hover" });
-	 *
-	 * // activate inline charts
-	 * runAllCharts();
-	 *
-	 * // setup widgets
-	 * setup_widgets_desktop();
-	 *
-	 * // run form elements
-	 * runAllForms();
-	 *
-	 ********************************
-	 *
-	 * pageSetUp() is needed whenever you load a page.
-	 * It initializes and checks for all basic elements of the page
-	 * and makes rendering easier.
-	 *
-	 */
 
 	pageSetUp();
 
-	/*
-	 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
-	 * eg alert("my home function");
-	 *
-	 * var pagefunction = function() {
-	 *   ...
-	 * }
-	 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
-	 *
-	 * TO LOAD A SCRIPT:
-	 * var pagefunction = function (){
-	 *  loadScript(".../plugin.js", run_after_loaded);
-	 * }
-	 *
-	 * OR you can load chain scripts by doing
-	 *
-	 * loadScript("js/Chart.js", function(){
-	 * 	 loadScript("../plugin.js", function(){
-	 * 	   ...
-	 *   })
-	 * });
-	 */
-
-	// pagefunction
-
-
-
-	// end pagefunction
-
-	// run pagefunction
 	pagefunction();
 
 

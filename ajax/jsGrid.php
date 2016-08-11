@@ -1,5 +1,21 @@
 <?php
 
+
+function readCSV($csvFile){
+	 $file_handle = fopen($csvFile, 'r');
+	 	while (!feof($file_handle) ) {
+	  	$line_of_text[] = fgetcsv($file_handle, 1024);
+	 }
+	 fclose($file_handle);
+	 return $line_of_text;
+
+
+}
+$csvFile = '../zniffer/data/zniffer.csv';
+
+$AnalyzerData = readCSV($csvFile);
+$max = count($AnalyzerData) -1;
+
 $fileID = fopen("../zniffer/data/id.txt", "r") or die("Unable to open file!");
 $homeid = fgets($fileID);
 fclose($fileID);
@@ -65,15 +81,103 @@ var config = {
 $(function () {
     // initialization
     $().w2grid(config.grid);
-		var atr = '../zniffer/data/zniffer.csv';
+		if(w2ui.grid.records.length > 0)
+			w2ui['grid'].clear();
 
 		var user_home_id= <?php  echo "'".$homeid."'"; ?>;
-		var NumberofLines = 0;
 
-		open_file(atr);
+		var rssi = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][1]."',";}   ?>]
+		var data = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][0]."',";}   ?>]
+		var source = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][3]."',";}   ?>]
+		var payload = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][7]."',";}   ?>]
+		var route = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][12]."',";}   ?>]
+		var destination = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][5]."',";}   ?>]
+		var command = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][7]."',";}   ?>]
+		var home_id = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][2]."',";}   ?>]
+		var seq_num = [<?php for ($i=0; $i < $max; $i++){ echo "'".$AnalyzerData[$i][8]."',";}   ?>]
 
+		var max = <?php echo $max ; ?>;
+		var x =1;
+		var color = "red";
+
+		for (var i = 0; i < max; i++) {
+			color = "red";
+			if(home_id[i] != user_home_id){
+					source[i] = '-';
+					destination[i] = '-';
+					route[i] = '-';
+				}else{
+				//	if(seq_num[i] === "00")
+				//		color = "#f0f0f0";
+					if (seq_num[i] == "01")
+						color = "#f0f0f0";
+					else if (seq_num[i]  === "02")
+						color = "#808080";
+					else if (seq_num[i]  == "03")
+						color = "#D0D0D0";
+					else if (seq_num[i]  == "04")
+						color = "#909090";
+					else if (seq_num[i]  == "05")
+						color = "#C0C0C0";
+					else if (seq_num[i]  == "06")
+						color = "#A0A0A0";
+					else if (seq_num[i]  == "07")
+						color = "#B8B8B8";
+					else if (seq_num[i]  == "08")
+						color = "#A8A8A8";
+					else if (seq_num[i]  == "09")
+						color = "#B0B0B0";
+					else if (seq_num[i]  == "10")
+						color = "#989898";
+					else if (seq_num[i]  == "11")
+						color = "#C8C8C8";
+					else if (seq_num[i]  == "12")
+						color = "#888888";
+					else if (seq_num[i]  == "13")
+						color = "#D8D8D8";
+					else if (seq_num[i]  == "14")
+						color = "#E0E0E0";
+					else if (seq_num[i]  == "15")
+						color = "#E8E8E8";
+				}
+				var bg = "background-color: "
+				var sty = bg + color;
+//add here payload decription here
+/*				var ZWCommandClass=payload[i].1;
+				var ZWCommand= payload[i].2;
+				var ZWCommandDescription = "";
+				if ((ZWCommandClass == "20")|| (ZWCommandClass == "25")||(ZWCommandClass == "26"))
+				{
+					//it is Basic CC
+					if (ZW) {};
+				}
+*/
+// end of payload 
+
+	        w2ui['grid'].records.push({
+	            recid : i+1,
+	          	id: i+1,
+	            rssi: rssi[i],
+	            data: data[i],
+	            source: source[i],
+	            route: route[i],
+	            destination:destination[i],
+		    			command: payload[i] ,
+							h_id: home_id[i],
+							seq_num: seq_num[i],
+							style: "background-color: " + color
+        });
+
+			//	var recs = w2ui['grid'].find({ h_id: user_home_id });
+
+		//			for(x=1; x<max; x++){
+			//			if($.inArray(x, recs) == -1 )
+			//				w2ui['grid'].set(x, { source: '-', destination: '-' });
+					//	}
+
+    }
     w2ui.grid.refresh();
-
+;
     $('#gbod').w2render('grid');
 });
 

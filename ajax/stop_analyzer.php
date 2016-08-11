@@ -1,7 +1,7 @@
 <?php
 
 
-exec('sudo  ../../analyzer/zniffer/stop', $output);
+exec('/www/zniffer/stop', $output);
 
 
 

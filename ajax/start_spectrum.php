@@ -1,7 +1,7 @@
 <?php
 
 
-exec('sudo  ../../analyzer/zniffer/start_spectrum', $output);
+exec('/www/zniffer/start_spectrum', $output);
 
 
 

@@ -1,1 +1,22 @@
-python ../../analyzer/zniffer/analyzer.py
+#!/bin/sh
+FILE="/www/zniffer/data/actual_script.txt"
+OUT=$(awk '{ print $1 }' $FILE)
+echo $OUT
+ZNIF="zniffer"
+SPEC="spectrum"
+
+if [ $OUT == $ZNIF ];
+  then
+    rwee -w -z -x -f /www/data/firmware/spectrum
+    echo "spectrum" > /www/zniffer/data/actual_script.txt
+  #  rwee -d
+  #  rwee -n
+    python /www/zniffer/analyzer.py
+else
+  if [ $OUT == $SPEC ];
+    then
+  #    rwee -d
+  #    rwee -n
+      python /www/zniffer/analyzer.py
+  fi
+fi

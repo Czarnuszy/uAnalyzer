@@ -92,10 +92,12 @@ fclose($file);
 
 			datasets : [
 				{
-					  label: "My First dataset",
+					  label: "RSSI",
 		        backgroundColor: "rgba(60,96,139,1)",
-            lineTension: 0.1,
+            lineTension: 0.5,
             spanGaps: true,
+            pointRadius: 0,
+            pointHoverRadius: 5,
 
 					data : [
     						<?php
@@ -106,10 +108,12 @@ fclose($file);
               ]
 				},
         {
-					  label: "My secnd dataset",
+					  label: "Max Hold RSSI",
 		        borderColor: "rgba(260,5,8,1)",
-            lineTension: 0.1,
+            lineTension: 0.5,
             spanGaps: true,
+            pointRadius: 0,
+            pointHoverRadius: 5,
 
 					data : [
     						<?php
@@ -123,6 +127,8 @@ fclose($file);
       ],
     },
     options: {
+
+
       backgroundColor: "rgba(60,96,139,1)",
 
       responsive: true,
@@ -132,10 +138,17 @@ fclose($file);
       scaleShowVerticalLines: false,
       //Boolean - Whether to show a dot for each point
       pointDot : false,
-      pointHitDetectionRadius : 1,
+      pointHitDetectionRadius : 5,
       //tooltipTemplate: "<%if (label){%><%=label%>MHz <%}%><%= value %>",
-      tooltipTemplate: "<%if (label){%><%=value%>%  at <%}%> <%= label %>MHz",
-      //tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",'
+      //tooltipTemplate: "<%if (label){%><%=value%>%  at <%}%> <%= label %>MHz",
+
+      tooltips:{
+                mode: 'single',
+                backgroundColor: 'rgba(60,96,139,0.8)',
+                tooltipTemplate: "<%if (label){%><%=label%>::: <%}%><%= value %>"
+      },
+
+
       scaleOverride: true,
       animation : false,
 
@@ -153,21 +166,23 @@ fclose($file);
 
 
     hover: {
-                   mode: 'dataset'
+                //   mode: 'dataset'
+                mode: 'x-axis'
                },
                scales: {
                    xAxes: [{
                        display: true,
+
                        scaleLabel: {
-                           display: false,
-                           labelString: 'Something'
+                           display: true,
+                           labelString: 'Frequency [MHz]'
                        }
                    }],
                    yAxes: [{
                        display: true,
                        scaleLabel: {
-                           display: false,
-                           labelString: 'Value',
+                           display: true,
+                           labelString: 'RSSI [%]',
                        },
                        ticks: {
                            suggestedMin: 0,
@@ -181,18 +196,37 @@ fclose($file);
 		}
 
 
-
-
       var pagefunction = function() {
 
   			var ctx = document.getElementById("canvas").getContext("2d");
   			window.myLine = new Chart(ctx, config);
-    //    $('input').on('change', function() {
-    //      radioButton = $('input[name=max_checkbox]:checked').val();
-    //        console.log(radioButton);
-    //     });
 
 	   }
+
+
+  $('#max_checkbox').click(function() {
+  	if(this.checked){
+      if(config.data.datasets.length == 1){
+    		var maxDataSet = {
+          label: 'MaxData',
+          borderColor	: "rgba(650,96,10,1)",
+  				data : [
+            <?php
+            for ($i=0; $i < $max; $i++)
+              echo $MaxAnalyzerData[$i][1].',';
+             ?>  ],
+         }
+        config.data.datasets.push(maxDataSet);
+        window.myLine.update();
+      }
+  	}
+  	else{
+      if(config.data.datasets.length == 2){
+        config.data.datasets.splice(1, 2);
+        window.myLine.update();
+      }
+    }
+    });
 
 	</script>
 

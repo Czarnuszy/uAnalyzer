@@ -1,5 +1,5 @@
 <?php
-$process = new Process('sudo ../../analyzer/zniffer/run');
+$process = new Process('/www/zniffer/run');
 
 class Process{
     private $pid;
@@ -12,7 +12,10 @@ class Process{
         }
     }
     private function runCom(){
-        $command = 'nohup '.$this->command.' > /dev/null 2>&1 & echo $!';
+    // openwrt does not have nohup
+    // ((/www/zniffer/run)&)&
+    //    $command = '(('.$this->command.')&)&';
+	$command = '((/www/zniffer/run)&)&';
         exec($command ,$op);
   //      echo (int)$op[0];
         $this->pid = (int)$op[0];
@@ -39,7 +42,7 @@ class Process{
     }
 
     public function stop(){
-        $command = 'kill '.$this->pid;
+        $command = 'kill -9'.$this->pid;
       //  $command = 'pkill -f ../../analyzer/zniffer/zniffer.py'
         exec($command);
         if ($this->status() == false)return true;

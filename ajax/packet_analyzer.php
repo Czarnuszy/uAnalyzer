@@ -9,6 +9,9 @@
 	}
 ////////////
 
+  $directory = '../data/Saves';
+  $scanned_directory = array_diff(scandir($directory), array('..', '.'));
+  $amount_files = count($scanned_directory);
 
 	$fileID = fopen("../zniffer/data/id.txt", "r") or die("Unable to open file!");
 	$homeid = fgets($fileID);
@@ -215,7 +218,6 @@ function parse_sqnum(x, data){
 										 if (NumberofLines -1>grid_rec){
 											 console.log("more");
 											 grid_rec = w2ui.grid.records.length;
-											 console.log(data.length + " " + NumberofLines)
 												for(x=grid_rec; x<NumberofLines; x++){
 													color = "red";
 														if (data[x][2] != home_id){
@@ -284,17 +286,18 @@ function parse_sqnum(x, data){
 
 	$("#play-a1").click(function(){
 			if(radioButton == "stop"){
+				start_analyzer();
 				console.log("start after stop");
 			    w2ui.grid.clear();
 					setTimeout(function(){
-					      myInterval = setInterval(refresh, 200);
-							}, 2000);
-			    start_analyzer();
+					      myInterval = setInterval(refresh, 500);
+							}, 2500);
+
 				}
 				else if (radioButton == "pause") {
 					console.log("start after pause");
 					refresh();
-					myInterval = setInterval(refresh, 200);
+					myInterval = setInterval(refresh, 500);
 				}
 				  $.smallBox({
 			title : "Z-Wave Packet Analyzer",
@@ -332,7 +335,7 @@ function parse_sqnum(x, data){
 		if(radioButton == "start" || radioButton == "pause"){
 		$.SmartMessageBox({
 	title : "Z-Wave Packet Analyzer",
-	content : "Are sure to stop? //add smth here",
+	content : "Are sure to stop? This will clear the trace",
 	buttons : "[STOP][Cancel]",
 			}, function(ButtonPress, Value) {
 
@@ -361,7 +364,17 @@ function parse_sqnum(x, data){
 			});
 	}
 	else if (ButtonPress=== "Cancel") {
-	//$('#pause-a1').click();
+//		$("#style-a3").prop("checked", false);
+//		$("#style-a1").prop("checked", true);
+//		document.getElementById("style-a3").checked = false;
+
+//		document.getElementById("style-a1").checked = true;
+
+//		var $radios = $('input:radio[name=button]');
+//		$radios.filter('[value=start]').prop('checked', true);
+$('input:radio[name="button"]').filter('[value="stop"]').attr('checked', false);
+
+		$('input:radio[name="button"]').filter('[value="start"]').attr('checked', true);
 			if(radioButton == "start"){
 				$.smallBox({
 						title : "Z-Wave Packet Analyzer",
@@ -595,142 +608,6 @@ function get_homeid(){
 						});
 }
 
-
-
-function open_file(atr){
-
-  $.ajax({
-		url: "ajax/files_size.php",
-		type: "POST",
-		data: { DisplayedRecords: atr},
-		success: function(response){
-			NumberofLines= response-1;
-
-      if(NumberofLines > 1000){
-        console.log("over 10000");
-
-        if(w2ui.grid.records.length > 0)
-          w2ui.grid.clear();
-
-        var reclen = w2ui.grid.records.length;
-        var i = NumberofLines / 2000;
-        i = parseInt(i);
-
-        var val = [0];
-        for (var x = 1; x < i; x++) {
-          val.push(x * 2000);
-        }
-        val.push(val[val.length-1] + 2000); //NumberofLines-i*1000
-
-				console.log(val);
-
-        val.forEach(function(value, i){
-          console.log("val" + value);
-
-          $.ajax({
-            url: 'ajax/open_file_data.php',
-            type: 'POST',
-            async: false,
-            data: { data: atr, fsize: NumberofLines, tim: value+2000 , gridLen: value},
-            dataType: 'json',
-            success: function(data){
-          //    reclen = w2ui.grid.records.length;
-              console.log("gridlen" + w2ui.grid.records.length);
-              var color = "red";
-              console.log("dl" + data.length);
-        			for(x=0; x< data.length	; x++){
-	              reclen = w2ui.grid.records.length;
-	              color = "red";
-	      				if (data[x][2] != home_id){
-	      						data[x][3] = '."'-'".';
-	      						data[x][5] = '."'-';".';
-	                  data[x][12] = '-';
-	      					}else {
-	      						color = parse_sqnum(x, data);
-	      					}
-
-	        				w2ui['grid'].records.push({
-	        					recid : reclen+1,
-	        					id: reclen+1,
-	        					rssi: data[x][1],
-	        					data: data[x][0],
-	        					source: data[x][3],
-	        					route: data[x][12],
-	        					destination: data[x][5],
-	        				 	command: data[x][7],
-	        				 	h_id: data[x][2],
-	        				 	style: "background-color: " + color
-
-	        				 });
-          		}
-          		w2ui.grid.reload();
-
-
-              }
-            });
-          });
-    //       }
-    $.smallBox({
-      title : "Z-Wave Packet Analyzer",
-      content : "<i>File opened.</i>",
-      color : "#659265",
-      iconSmall : "fa fa-check fa-2x fadeInRight animated",
-      timeout : 1000
-    });
-      }  else{
-
-    	$.ajax({
-    		url: 'ajax/open_file_data.php',
-    		type: 'POST',
-    		data: { data: atr, fsize: NumberofLines},
-    		dataType: 'json',
-    		success: function(data){
-    			if(w2ui.grid.records.length > 0)
-    				w2ui.grid.clear();
-
-    			var color = "red";
-    			for(x=0; x<	NumberofLines; x++){
-            color = "red";
-    				if (data[x][2] != home_id){
-    						data[x][3] = '."'-'".';
-    						data[x][5] = '."'-';".';
-                data[x][12] = '-';
-    					}else {
-    						color = parse_sqnum(x, data);
-    					}
-    				w2ui['grid'].records.push({
-    					recid : x+1,
-    					id: x+1,
-    					rssi: data[x][1],
-    					data: data[x][0],
-    					source: data[x][3],
-    					route: data[x][12],
-    					destination: data[x][5],
-    				 	command: data[x][7],
-    				 	h_id: data[x][2],
-    				 	style: "background-color: " + color
-
-    				 });
-    		}
-    		w2ui.grid.reload();
-    		$.smallBox({
-    			title : "Z-Wave Packet Analyzer",
-    			content : "<i>File opened.</i>",
-    			color : "#659265",
-    			iconSmall : "fa fa-check fa-2x fadeInRight animated",
-    			timeout : 1000
-    		});
-    	}
-
-
-    	});
-    }
-
-      }
-	});
-
-
-}
 
 	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 	 *

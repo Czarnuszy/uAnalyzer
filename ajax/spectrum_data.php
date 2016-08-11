@@ -37,8 +37,8 @@ for ($i=0; $i < $max; $i++) {
 
 
 
-for ($i=0; $i < $maxM; $i++) {
-  $MaxAnalyzerData[$i][1] = (int)$MaxAnalyzerData[$i][1];
+for ($i=0; $i < $max; $i++) {
+//  $MaxAnalyzerData[$i][1] = (int)$MaxAnalyzerData[$i][1];
       if( $AnalyzerData[$i][1] > $MaxAnalyzerData[$i][1]){
         	$MaxAnalyzerData[$i][1] = $AnalyzerData[$i][1];
         }
@@ -52,13 +52,15 @@ $file = fopen($csvFileMax, "w") or die("Unable to open file!");
 
 fclose($file);
 
+echo json_encode(array($AnalyzerData, $MaxAnalyzerData));
 
+/*
 if ($fname == "data") {
   echo json_encode($AnalyzerData);
 }
 else if($fname == "d") {
   echo json_encode($MaxAnalyzerData);
-}
+}*/
 //copy($csvFile, $csvFileMax);
 
 ?>
