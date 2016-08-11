@@ -115,6 +115,11 @@
 
 					</div>
 
+					<div class="widget-toolbar">
+						<label class="" id="opened_filename">
+								Actual File
+						</label>
+					</div>
 
 				</header>
 
@@ -409,6 +414,8 @@ $('#network_checkbox').click(function() {
 
 	$("#refresh-a1").click(function(){
   w2ui.grid.clear();
+	$("#opened_filename").text("Actual File");
+
 		$.smallBox({
 			title : "Z-Wave Packet Analyzer",
 			content : "<i class='fa fa-clock-o'></i> <i>I am here </i>",

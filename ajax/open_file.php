@@ -88,7 +88,9 @@ $('.filesButtons').on('click', function(){
 			iconSmall : "fa fa-check fa-2x fadeInRight animated",
 			timeout : 1000
 		});
+			$("#opened_filename").text(atr);
 	}
+
 
 
 	});
