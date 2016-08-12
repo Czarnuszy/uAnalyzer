@@ -117,7 +117,7 @@
 
 					<div class="widget-toolbar">
 						<label class="" id="opened_filename">
-								Actual File
+								Current tracking
 						</label>
 					</div>
 
@@ -131,6 +131,8 @@
         		Loading Data...
         		</center>
       		</div>
+					<div id="progresZniffer">	</div>
+
 		   </div>
 
 				</div>
@@ -148,7 +150,7 @@
 
 
 
-var radioButton;
+var radioButton = "stop";
 var home_id= <?php  echo "'".$homeid."'"; ?>;
 
  $('input').on('change', function() {
@@ -156,9 +158,7 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 		console.log(radioButton);
  });
 
-	$(document).ready(function() {
-		load();
-  });
+
 
 function parse_sqnum(x, data){
 	var color = "";
@@ -197,14 +197,13 @@ function parse_sqnum(x, data){
 }
 
 
+
   function refresh(){
 		var grid_rec = w2ui.grid.records.length;
 		var NumberofLines;
 		var form_data;
 
-		if(w2ui.grid.records.length == 0)
-			w2ui.grid.lock('', true);
-		else
+		if(w2ui.grid.records.length > 0)
 			w2ui.grid.unlock();
 
 					$.ajax({
@@ -224,34 +223,48 @@ function parse_sqnum(x, data){
 							     success: function(data) {
 													console.log("File: " + NumberofLines);
 													console.log("Grid: " + grid_rec);
-													var color = "";
+													var color = "red";
+										            var ZWCommandParsed = "";
+										        	var ZWparsedRoute = "";
+										        	var ZWparsedSource = "";
+										        	var ZWparsedDestination = "";
+
 										 if (NumberofLines -1>grid_rec){
-											 console.log("more");
+										 		console.log("more");
 											 grid_rec = w2ui.grid.records.length;
-												for(x=grid_rec; x<NumberofLines; x++){
+											 console.log(data.length + " " + NumberofLines)
+												for(x=grid_rec; x<NumberofLines; x++)
+												{
 													color = "red";
-														if (data[x][2] != home_id){
-																data[x][3] = '-';
-																data[x][5] = '-';
-																data[x][12] = '-';
-															}else{
-															//	if(seq_num[i] === "00")
-															//		color = "#f0f0f0";
-															color = parse_sqnum(x, data);
-															}
-														  w2ui['grid'].add({
+													if (data[x][2] != home_id)
+													{
+														ZWparsedSource = '-';
+														ZWparsedDestination = '-';
+														ZWparsedRoute = '-';
+													}
+													else
+													{
+														color = parse_sqnum(x, data);
+							      						ZWCommandParsed = parseCommand(data[x]);
+						        						ZWparsedRoute = parseRoute(data[x]);
+						        						ZWparsedSource = parseInt(data[x][3],10);
+						        	  					ZWparsedDestination = parseInt(data[x][5],10);
+													}
+													w2ui['grid'].records.push({
 																	recid : grid_rec,
 																	id: grid_rec,
 																	rssi: data[x][1],
-																	data: data[x][0],
-																	source: data[x][3],
-																	route: data[x][12],
-																	destination: data[x][5],
-																  command: data[x][7],
-																	h_id: data[x][2],
-																	style: "background-color: " + color
-												 	 								 });
-																			 grid_rec++;
+																		data: data[x][0],
+																		source: ZWparsedSource,
+																		route: ZWparsedRoute,
+																		destination: ZWparsedDestination,
+																	    command: ZWCommandParsed,
+																		h_id: data[x][2],
+																		style: "background-color: " + color
+												 	 				});
+																	w2ui.grid.reload();
+
+													grid_rec++;
 											 }
 										 }
 
@@ -301,7 +314,7 @@ function parse_sqnum(x, data){
 				start_analyzer();
 				console.log("start after stop");
 			    w2ui.grid.clear();
-					w2ui.grid.lock('', true);
+					w2ui.grid.lock('Getting ready.', true);
 					setTimeout(function(){
 					      myInterval = setInterval(refresh, 500);
 							}, 2500);
@@ -888,6 +901,7 @@ return (ZWCommandDescription);
 
 function open_file(atr){
 
+
   $.ajax({
 		url: "ajax/files_size.php",
 		type: "POST",
@@ -897,6 +911,7 @@ function open_file(atr){
 
       if(NumberofLines > 1000){
         console.log("over 10000");
+				$("body-w").html("wait kurwiu");
 
         if(w2ui.grid.records.length > 0)
           w2ui.grid.clear();
@@ -967,11 +982,12 @@ function open_file(atr){
           		}
           		w2ui.grid.reload();
 
+						//	if ((w2ui.grid.records.length-10) > NumberofLines )
 
               }
             });
           });
-    //       }
+
     $.smallBox({
       title : "Z-Wave Packet Analyzer",
       content : "<i>File opened.</i>",
@@ -979,6 +995,7 @@ function open_file(atr){
       iconSmall : "fa fa-check fa-2x fadeInRight animated",
       timeout : 1000
     });
+
       }  else{
 
     	$.ajax({
@@ -1025,8 +1042,8 @@ function open_file(atr){
 						style: "background-color: " + color
 
     				 });
-    		}
-    		w2ui.grid.reload();
+					 }
+						w2ui.grid.reload();
     		$.smallBox({
     			title : "Z-Wave Packet Analyzer",
     			content : "<i>File opened.</i>",
@@ -1039,11 +1056,13 @@ function open_file(atr){
     	});
     }
 
-      }
-	});
-
 
 }
+	});
+	w2ui.grid.unlock();
+
+}
+
 
 
 
@@ -1106,8 +1125,12 @@ function open_file(atr){
 
 	var pagefunction = function() {
 
+		$("#stop-a1").click();
 
 
+$(document).ready(function() {
+	load();
+});
 	/*
 	* SmartAlerts
 	*/

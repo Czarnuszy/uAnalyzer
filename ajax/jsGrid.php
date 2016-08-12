@@ -37,10 +37,10 @@ var config = {
         name: 'grid',
         show: {
             footer    : true,
-            toolbar    : true
+            toolbar    : true,
+             lineNumbers  : true,
         },
         columns: [
-            { field: 'id', caption: 'ID', size: '5%', sortable: true, searchable: 'int', resizable: true,  attr: "align=center" },
 						{ field: 'data', caption: 'Date', size: '20%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
             { field: 'rssi', caption: 'Rssi', size: '10%', sortable: true, searchable: 'int', resizable: true, attr: "align=center" },
             { field: 'source', caption: 'Source', size: '10%', resizable: true, searchable: 'int', sortable: true, attr: "align=center" },

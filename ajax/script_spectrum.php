@@ -36,18 +36,17 @@ $MaxAnalyzerData = readCSV($csvFileMax);
 $maxM = count($MaxAnalyzerData)-1;
 
 for ($i=0; $i < $max; $i++) {
-      if( $AnalyzerData[$i][1] > $MaxAnalyzerData[$i][1])
-        	$MaxAnalyzerData[$i][1] = $AnalyzerData[$i][1];
-
+  $MaxAnalyzerData[$i][0] = (float)$MaxAnalyzerData[$i][0];
+  $MaxAnalyzerData[$i][0] = (int)$MaxAnalyzerData[$i][0]/1000;
+  $mrssi = $MaxAnalyzerData[$i][1];
+     $mrssi = $mrssi * 1.7;
+     $mrssi = $mrssi - 30;
+     $mrssi = (int) $mrssi;
+     if ($mrssi> 100) $mrssi = 100;
+     $MaxAnalyzerData[$i][1] = $mrssi;
 }
 
-$file = fopen($csvFileMax, "w") or die("Unable to open file!");
-  for ($i=0; $i < $max; $i++) {
-    $txt =  $AnalyzerData[$i][0].','. $MaxAnalyzerData[$i][1]."\n";
-    fwrite($file, $txt);
-}
 
-fclose($file);
 
 //copy($csvFile, $csvFileMax);
 

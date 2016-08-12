@@ -43,12 +43,12 @@
 
 								<div class="btn-group" data-toggle="buttons">
 							        <label class="btn btn-default btn-xs " id="play-a3">
-							          <input type="radio" name="style-a1" id="style-a1"> <i class="fa fa-play"></i> Capture
+							          <input type="radio" name="specBtn" id="style-a1" value="start"> <i class="fa fa-play"></i> Capture
 							        </label>
 
 
 							        <label class="btn btn-default btn-xs active" id="stop-a3">
-							          <input type="radio" name="style-a2" id="style-a3"> <i class="fa fa-stop"></i> Stop
+							          <input type="radio" name="specBtn" id="style-a3" value="stop" checked= true> <i class="fa fa-stop"></i> Stop
 							        </label>
 
 
@@ -89,6 +89,14 @@
 
 <script type="text/javascript">
 
+var sradioButton = "stop";
+
+ $('input').on('change', function() {
+		sradioButton = $('input[name=specBtn]:checked').val();
+		console.log(sradioButton);
+ });
+
+
 function load(){
 console.log("lload");
 $.ajax({
@@ -121,7 +129,9 @@ $.ajax({
 
 }
 
-var myset
+var myset;
+var myInterval; //= true;
+var isSpectrumOn = false;
 
 function myTimeoutFunction()
 {
@@ -129,35 +139,70 @@ function myTimeoutFunction()
     myset = setTimeout(myTimeoutFunction, 2000);
 }
 
+var pd = 0;
+
+function progressbar(x){
+	var progress = 0 ;
+	progress += pd;
+	var pr = progress + "%";
+	var html = "Please Wait	<div class=" + "'progress progress-micro'"+">	<div class="+
+	"'progress-bar progress-bar-primary'"+" role='progressbar'" + "style='width: "+pr+";'"+">" +
+	 "</div></div>"
+
+	$( "#spectrum-body" ).html( html );
+	pd += 10;
+	if (pd >= 100){
+		clearInterval(progrssInt);
+		pd =0;
+		$( "#spectrum-body" ).load( "ajax/script_spectrum.php" );
+	}
+}
+
 
 $("#play-a3").click(function(){
-		start_spectrum();
-		console.log("ds");
-		myInterval = setInterval(load, 1000);
-//		myTimeoutFunction();
-		$.smallBox({
-				title : "Z-Wave Spectrum Analyzer",
-				content : "<i class='fa fa-clock-o'></i> <i>Start</i>",
-				color : "#659265",
-				iconSmall : "fa fa-times fa-2x fadeInRight animated",
-				timeout : 3000
-			});
+	if(sradioButton == "stop"){
+			progrssInt = setInterval(function() {progressbar(pd);}, 800);
+			start_spectrum();
+			console.log("ds");
+			myInterval = setInterval(load, 1000);
+			isSpectrumOn = true;
+		//	progressbar();
 
+	//		myTimeoutFunction();
+			$.smallBox({
+					title : "Z-Wave Spectrum Analyzer",
+					content : "<i class='fa fa-clock-o'></i> <i>Start</i>",
+					color : "#659265",
+					iconSmall : "fa fa-times fa-2x fadeInRight animated",
+					timeout : 3000
+				});
+		}
+		else{
+
+		}
 
 });
 
 $("#stop-a3").click(function(){
-	console.log("stop");
-	stop_spectrum();
-	clearInterval(myInterval);
-//	 clearTimeout(myset);
-	$.smallBox({
-			title : "Z-Wave Spectrum Analyzer",
-			content : "<i class='fa fa-clock-o'></i> <i>Stop</i> REMEMBER ABOUT RESET",
-			color : "#C46A69",
-			iconSmall : "fa fa-times fa-2x fadeInRight animated",
-			timeout : 3000
-		});
+	if(sradioButton == "start"){
+			stop_spectrum();
+			clearInterval(myInterval);
+			myInterval = false;
+		//	 clearTimeout(myset);
+			$.smallBox({
+					title : "Z-Wave Spectrum Analyzer",
+					content : "<i class='fa fa-clock-o'></i> <i>Stop</i> REMEMBER ABOUT RESET",
+					color : "#C46A69",
+					iconSmall : "fa fa-times fa-2x fadeInRight animated",
+					timeout : 3000
+				});
+			}
+			else{
+				stop_spectrum();
+				//if(myInterval)
+					clearInterval(myInterval);
+
+			}
 });
 
 $("#clearBTN").click(function () {
@@ -196,12 +241,15 @@ function stop_spectrum(){
 
 var pagefunction = function() {
 
+	if(isSpectrumOn){
+		stop_spectrum();
+		clearInterval(myInterval);
+		myInterval = false;
+	}
+
 	$(document).ready(function() {
 		$( "#spectrum-body" ).load( "ajax/script_spectrum.php" );
 		load();
-
-		//load();
-
 
 	});
 

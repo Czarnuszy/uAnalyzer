@@ -22,6 +22,7 @@ else
       echo "zniffer" > /www/zniffer/data/actual_script.txt
       rwee -d
       rwee -n
+      sleep 3
       python /www/zniffer/zniffer.py --output_csv --region US -i /dev/ttyS0 -o /www/zniffer/data/zniffer.zlf
   fi
 fi
