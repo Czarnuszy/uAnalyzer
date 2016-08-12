@@ -262,7 +262,6 @@ function parse_sqnum(x, data){
 																		h_id: data[x][2],
 																		style: "background-color: " + color
 												 	 				});
-																	w2ui.grid.reload();
 
 													grid_rec++;
 											 }
