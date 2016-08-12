@@ -250,7 +250,7 @@ function parse_sqnum(x, data){
 						        						ZWparsedSource = parseInt(data[x][3],10);
 						        	  					ZWparsedDestination = parseInt(data[x][5],10);
 													}
-													w2ui['grid'].records.push({
+													w2ui['grid'].add({
 																	recid : grid_rec,
 																	id: grid_rec,
 																	rssi: data[x][1],
