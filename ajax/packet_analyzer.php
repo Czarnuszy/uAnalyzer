@@ -72,7 +72,7 @@
 
 						<div class="widget-toolbar">
 
-								<label class="btn btn-default btn-xs " id="open"></i> <i class="fa fa-search-plus"></i>    Open
+								<label class="btn btn-default btn-xs " id="open"></i> <i class="fa fa-search-plus"></i>   Traces
 
 									</label>
 
