@@ -66,12 +66,18 @@ input#wifi_password{
 input#myTime{
 	text-align: center;;
 	padding: 5px;
-	width: 400px;
+	width: 395px;
 	height: 50px;
 }
 
 select#timeZoneSelect{
 	padding: 5px;
-	width: 400px;
+	width: 395px;
 	height: 50px;
+}
+
+#saveTimeBTN{
+	padding: 5px;
+	width: 395px;
+	height: 40px;
 }

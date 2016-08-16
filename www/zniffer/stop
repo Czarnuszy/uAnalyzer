@@ -1,5 +1,0 @@
-#!/bin/sh
-
-echo "stop"
-killall python /www/zniffer/zniffer.py
-echo ledoff 3 3 3 > /proc/sercomm_gpio
