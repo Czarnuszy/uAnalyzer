@@ -13,26 +13,17 @@
   $scanned_directory = array_diff(scandir($directory), array('..', '.'));
   $amount_files = count($scanned_directory);
 
-	$fileID = fopen("../zniffer/data/id.txt", "r") or die("Unable to open file!");
+	$fileID = fopen("../zniffer/data/zniffer.txt", "r") or die("Unable to open file!");
 	$homeid = fgets($fileID);
 	fclose($fileID);
 
-
+$homeid = substr($homeid, 0, -1);
 
 ?>
 
 
 <html>
 <head>
- <link rel="stylesheet" href="lib/js/themes/ui-lightness/jquery-ui.custom.css"></link>
-    <link rel="stylesheet" href="lib/js/jqgrid/css/ui.jqgrid.css"></link>
-    <script src="lib/js/jqgrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
-    <script src="lib/js/themes/jquery-ui.custom.min.js" type="text/javascript"></script>
-    <script src="lib/js/notification/SmartNotification.min.js"></script>
-  <script src="lib/js/jarvis.widget.min.js" type="text/javascript"></script>
-  <script src="ajax/reloadJsGrid.js" type="text/javascript"></script>
-	<link rel="stylesheet" type="text/css" href="ajax/w2ui/w2ui-1.4.3.css" />
-	<script type="text/javascript" src="ajax/w2ui/w2ui-1.4.3.min.js"></script>
 
 </head>
 <body>
@@ -198,7 +189,11 @@ function parse_sqnum(x, data){
 
 
 
-  function refresh(){
+  function refresh(){													console.log("File: " + NumberofLines);
+
+		var t0 = performance.now();
+		var t1 = 0;
+		var t2 = 0;
 		var grid_rec = w2ui.grid.records.length;
 		var NumberofLines;
 		var form_data;
@@ -206,21 +201,13 @@ function parse_sqnum(x, data){
 		if(w2ui.grid.records.length > 0)
 			w2ui.grid.unlock();
 
-					$.ajax({
-					      type: "POST",
-					      url: "ajax/AnalyzerDataSize.php",
-					      data: { DisplayedRecords: grid_rec },
-					      success: function(response) {
-					      	NumberofLines= response -1;
-									}
-								});
-
 						 $.ajax({
 							     url: "ajax/jsGridData.php",
 							     type: 'POST',
 							     data: form_data,
 							     dataType:"json",
 							     success: function(data) {
+										 NumberofLines = data.length -1;
 													console.log("File: " + NumberofLines);
 													console.log("Grid: " + grid_rec);
 													var color = "red";
@@ -249,6 +236,8 @@ function parse_sqnum(x, data){
 						        						ZWparsedSource = parseInt(data[x][3],10);
 						        	  					ZWparsedDestination = parseInt(data[x][5],10);
 													}
+
+
 													w2ui['grid'].add({
 																	recid : grid_rec,
 																	id: grid_rec,
@@ -266,11 +255,31 @@ function parse_sqnum(x, data){
 
 													grid_rec++;
 											 }
-										 }
+											 var t3 = performance.now();
 
+										 }
+										 var t2 = performance.now();
+
+								 		console.log("Call to all took " + (t2 - t0) + " milliseconds.");
+										console.log("Call to add? took " + (t3 - t2) + " milliseconds.");
+
+										$.ajax({
+													type: "POST",
+													url: "ajax/homeid_save.php",
+													data: { homeid: home_id, gridlen: NumberofLines },
+													success: function(response) {
+														console.log("saved");
+														var t4 = performance.now();
+
+													 console.log("Call to savefile took " + (t4 - t2) + " milliseconds.");
+
+														}
+													});
 							    }
 
 							});
+
+
  }
 
 	function load(){
@@ -310,14 +319,14 @@ function parse_sqnum(x, data){
 			    w2ui.grid.clear();
 					w2ui.grid.lock('Getting ready.', true);
 					setTimeout(function(){
-					      myInterval = setInterval(refresh, 1500);
+					      myInterval = setInterval(refresh, 3500);
 							}, 2500);
 
 				}
 				else if (radioButton == "pause") {
 					console.log("start after pause");
 					refresh();
-					myInterval = setInterval(refresh, 1500);
+					myInterval = setInterval(refresh, 3500);
 				}
 				  $.smallBox({
 			title : "Z-Wave Packet Analyzer",
@@ -893,14 +902,26 @@ return (ZWCommandDescription);
 
 }
 
+
+
+
 function open_file(atr){
 
+	w2ui.grid.lock("Loading. Please wait.", true);
+	var t0 = performance.now();
   $.ajax({
 		url: "ajax/files_size.php",
 		type: "POST",
 		data: { DisplayedRecords: atr},
+		dataType: 'json',
 		success: function(response){
-			NumberofLines= response-1;
+			NumberofLines= response[1]-1;
+			home_id = String(response[0]);
+		  home_id =	home_id.slice(0, -1);
+			console.log(response);
+
+
+			var t1 = performance.now();
 
       if(NumberofLines > 1000){
         console.log("over 10000");
@@ -908,16 +929,16 @@ function open_file(atr){
         if(w2ui.grid.records.length > 0)
           w2ui.grid.clear();
 
-
+				var rec_to_load = 8000;
         var reclen = w2ui.grid.records.length;
-        var i = NumberofLines / 4000;
+        var i = NumberofLines / rec_to_load;
         i = parseInt(i);
 
         var val = [0];
         for (var x = 1; x < i; x++) {
-          val.push(x * 4000);
+          val.push(x * rec_to_load);
         }
-        val.push(val[val.length-1] + 4000); //NumberofLines-i*1000
+        val.push(val[val.length-1] + rec_to_load); //NumberofLines-i*1000
 
 				console.log(val);
 
@@ -927,24 +948,95 @@ function open_file(atr){
           $.ajax({
             url: 'ajax/open_file_data.php',
             type: 'POST',
-            async: false,
-            data: { data: atr, fsize: NumberofLines, tim: value+4000 , gridLen: value},
+          //  async: false,
+            data: { data: atr, fsize: NumberofLines, tim: value+rec_to_load , gridLen: value},
             dataType: 'json',
             success: function(data){
+							var t2 = performance.now();
+
           //    reclen = w2ui.grid.records.length;
               console.log("gridlen" + w2ui.grid.records.length);
               var color = "red";
-              console.log("dl" + data.length);
-            var ZWCommandParsed = "";
-        	var ZWparsedRoute = "";
-        	var ZWparsedSource = "";
-        	var ZWparsedDestination = "";
+              console.log("dl" + data.length)
+							var ZWCommandParsed = "";
+						var ZWparsedRoute = "";
+						var ZWparsedSource = "";
+						var ZWparsedDestination = "";
 
 
-        			for(x=0; x< data.length	; x++){
-	              reclen = w2ui.grid.records.length;
-	              color = "#AD3232";
-	      				if (data[x][2] != home_id)
+								for(x=0; x< data.length	; x++){
+									reclen = w2ui.grid.records.length;
+									color = "#AD3232";
+									if (data[x][2] != home_id)
+								{
+									ZWparsedSource = '-';
+									ZWparsedDestination = '-';
+									ZWparsedRoute = '-';
+								}
+								else
+								{
+									color = parse_sqnum(x, data);
+										ZWCommandParsed = parseCommand(data[x]);
+											ZWparsedRoute = parseRoute(data[x]);
+											ZWparsedSource = parseInt(data[x][3],10);
+											ZWparsedDestination = parseInt(data[x][5],10);
+								}
+
+										w2ui['grid'].records.push({
+											recid : reclen+1,
+											id: reclen+1,
+											rssi: data[x][1],
+											data: data[x][0],
+											source: ZWparsedSource,
+											route: ZWparsedRoute,
+											destination: ZWparsedDestination,
+											command: ZWCommandParsed,
+											h_id: data[x][2],
+											style: "background-color: " + color
+
+										 });
+
+								}
+								w2ui.grid.reload();
+								delete data;
+							//	if ((w2ui.grid.records.length-10) > NumberofLines )
+							console.log("Call to readlines took " + (t1 - t0) + " milliseconds.");
+							console.log("Call to readdata after readlines " + (t2 - t1) + " milliseconds.");
+							console.log("Call to all took " + (t2 - t0) + " milliseconds.");
+w2ui.grid.unlock();
+								}
+
+							});
+						});
+
+			$.smallBox({
+				title : "Z-Wave Packet Analyzer",
+				content : "<i>File opened.</i>",
+				color : "#659265",
+				iconSmall : "fa fa-check fa-2x fadeInRight animated",
+				timeout : 1000
+			});
+
+				}  else{
+
+				$.ajax({
+					url: 'ajax/open_file_data.php',
+					type: 'POST',
+					data: { data: atr, fsize: NumberofLines},
+					dataType: 'json',
+					success: function(data){
+						if(w2ui.grid.records.length > 0)
+							w2ui.grid.clear();
+
+						var color = "#AD3232";
+									var ZWCommandParsed = "";
+								var ZWparsedRoute = "";
+								var ZWparsedSource = "";
+								var ZWparsedDestination = "";
+
+						for(x=0; x<	NumberofLines; x++){
+							color = "#AD3232";
+							if (data[x][2] != home_id)
 							{
 								ZWparsedSource = '-';
 								ZWparsedDestination = '-';
@@ -953,189 +1045,127 @@ function open_file(atr){
 							else
 							{
 								color = parse_sqnum(x, data);
-							   	ZWCommandParsed = parseCommand(data[x]);
-						       	ZWparsedRoute = parseRoute(data[x]);
-						       	ZWparsedSource = parseInt(data[x][3],10);
-						       	ZWparsedDestination = parseInt(data[x][5],10);
+								ZWCommandParsed = parseCommand(data[x]);
+									ZWparsedRoute = parseRoute(data[x]);
+									ZWparsedSource = parseInt(data[x][3],10);
+									ZWparsedDestination = parseInt(data[x][5],10);
 							}
+							w2ui['grid'].records.push({
+								recid : x+1,
+								id: x+1,
+								rssi: data[x][1],
+							data: data[x][0],
+							source: ZWparsedSource,
+							route: ZWparsedRoute,
+							destination: ZWparsedDestination,
+							command: ZWCommandParsed,
+							h_id: data[x][2],
+							style: "background-color: " + color
 
-	        				w2ui['grid'].records.push({
-	        					recid : reclen+1,
-	        					id: reclen+1,
-	        					rssi: data[x][1],
-	        					data: data[x][0],
-	        					source: ZWparsedSource,
-	        					route: ZWparsedRoute,
-	        					destination: ZWparsedDestination,
-	        				 	command: ZWCommandParsed,
-	        				 	h_id: data[x][2],
-	        				 	style: "background-color: " + color
+							 });
+						 }
+							w2ui.grid.reload();
+					$.smallBox({
+						title : "Z-Wave Packet Analyzer",
+						content : "<i>File opened.</i>",
+						color : "#659265",
+						iconSmall : "fa fa-check fa-2x fadeInRight animated",
+						timeout : 1000
+					});
+					w2ui.grid.unlock();
+				}
 
-	        				 });
-
-          		}
-          		w2ui.grid.reload();
-
-						//	if ((w2ui.grid.records.length-10) > NumberofLines )
-
-              }
-            });
-          });
-
-    $.smallBox({
-      title : "Z-Wave Packet Analyzer",
-      content : "<i>File opened.</i>",
-      color : "#659265",
-      iconSmall : "fa fa-check fa-2x fadeInRight animated",
-      timeout : 1000
-    });
-
-      }  else{
-
-    	$.ajax({
-    		url: 'ajax/open_file_data.php',
-    		type: 'POST',
-    		data: { data: atr, fsize: NumberofLines},
-    		dataType: 'json',
-    		success: function(data){
-    			if(w2ui.grid.records.length > 0)
-    				w2ui.grid.clear();
-
-    			var color = "#AD3232";
-              	var ZWCommandParsed = "";
-        	  	var ZWparsedRoute = "";
-        	  	var ZWparsedSource = "";
-        	  	var ZWparsedDestination = "";
-
-    			for(x=0; x<	NumberofLines; x++){
-            color = "#AD3232";
-    				if (data[x][2] != home_id)
-						{
-							ZWparsedSource = '-';
-							ZWparsedDestination = '-';
-							ZWparsedRoute = '-';
-						}
-						else
-						{
-							color = parse_sqnum(x, data);
-							ZWCommandParsed = parseCommand(data[x]);
-						    ZWparsedRoute = parseRoute(data[x]);
-						    ZWparsedSource = parseInt(data[x][3],10);
-						    ZWparsedDestination = parseInt(data[x][5],10);
-						}
-    				w2ui['grid'].records.push({
-    					recid : x+1,
-    					id: x+1,
-    					rssi: data[x][1],
-						data: data[x][0],
-						source: ZWparsedSource,
-						route: ZWparsedRoute,
-						destination: ZWparsedDestination,
-						command: ZWCommandParsed,
-						h_id: data[x][2],
-						style: "background-color: " + color
-
-    				 });
-					 }
-						w2ui.grid.reload();
-    		$.smallBox({
-    			title : "Z-Wave Packet Analyzer",
-    			content : "<i>File opened.</i>",
-    			color : "#659265",
-    			iconSmall : "fa fa-check fa-2x fadeInRight animated",
-    			timeout : 1000
 				});
-    	}
-
-    	});
-    }
+			}
 
 
-}
+	}
+		});
+
+
+
+
+	}
+
+
+
+
+		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
+		 *
+		 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
+		 *
+		 * // activate tooltips
+		 * $("[rel=tooltip]").tooltip();
+		 *
+		 * // activate popovers
+		 * $("[rel=popover]").popover();
+		 *
+		 * // activate popovers with hover states
+		 * $("[rel=popover-hover]").popover({ trigger: "hover" });
+		 *
+		 * // activate inline charts
+		 * runAllCharts();
+		 *
+		 * // setup widgets
+		 * setup_widgets_desktop();
+		 *
+		 * // run form elements
+		 * runAllForms();
+		 *
+		 ********************************
+		 *
+		 * pageSetUp() is needed whenever you load a page.
+		 * It initializes and checks for all basic elements of the page
+		 * and makes rendering easier.
+		 *
+		 */
+
+		pageSetUp();
+
+		/*
+		 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
+		 * eg alert("my home function");
+		 *
+		 * var pagefunction = function() {
+		 *   ...
+		 * }
+		 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
+		 *
+		 * TO LOAD A SCRIPT:
+		 * var pagefunction = function (){
+		 *  loadScript(".../plugin.js", run_after_loaded);
+		 * }
+		 *
+		 * OR you can load chain scripts by doing
+		 *
+		 * loadScript(".../plugin.js", function(){
+		 * 	 loadScript("../plugin.js", function(){
+		 * 	   ...
+		 *   })
+		 * });
+		 */
+
+		// pagefunction
+
+		var pagefunction = function() {
+
+			$("#stop-a1").click();
+
+
+	$(document).ready(function() {
+		load();
 	});
-	w2ui.grid.unlock();
+		/*
+		* SmartAlerts
+		*/
 
-}
+		// With Callback
 
+		};
 
+		// end pagefunction
 
+		// run pagefunction
+		pagefunction();
 
-	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
-	 *
-	 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
-	 *
-	 * // activate tooltips
-	 * $("[rel=tooltip]").tooltip();
-	 *
-	 * // activate popovers
-	 * $("[rel=popover]").popover();
-	 *
-	 * // activate popovers with hover states
-	 * $("[rel=popover-hover]").popover({ trigger: "hover" });
-	 *
-	 * // activate inline charts
-	 * runAllCharts();
-	 *
-	 * // setup widgets
-	 * setup_widgets_desktop();
-	 *
-	 * // run form elements
-	 * runAllForms();
-	 *
-	 ********************************
-	 *
-	 * pageSetUp() is needed whenever you load a page.
-	 * It initializes and checks for all basic elements of the page
-	 * and makes rendering easier.
-	 *
-	 */
-
-	pageSetUp();
-
-	/*
-	 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
-	 * eg alert("my home function");
-	 *
-	 * var pagefunction = function() {
-	 *   ...
-	 * }
-	 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
-	 *
-	 * TO LOAD A SCRIPT:
-	 * var pagefunction = function (){
-	 *  loadScript(".../plugin.js", run_after_loaded);
-	 * }
-	 *
-	 * OR you can load chain scripts by doing
-	 *
-	 * loadScript(".../plugin.js", function(){
-	 * 	 loadScript("../plugin.js", function(){
-	 * 	   ...
-	 *   })
-	 * });
-	 */
-
-	// pagefunction
-
-	var pagefunction = function() {
-
-		$("#stop-a1").click();
-
-
-$(document).ready(function() {
-	load();
-});
-	/*
-	* SmartAlerts
-	*/
-
-	// With Callback
-
-	};
-
-	// end pagefunction
-
-	// run pagefunction
-	pagefunction();
-
-</script>
+	</script>

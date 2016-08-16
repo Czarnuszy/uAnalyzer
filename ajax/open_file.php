@@ -40,11 +40,13 @@ function progressbar(x){
 
 	$( "#progresZniffer" ).html( html );
 	pd += 10;
-	if (pd >= 100){
+  var gridlenght =w2ui.grid.records.length;
+  if (pd >= 100  ){
 		clearInterval(progrssInt);
 		pd =0;
 		$( "#progresZniffer" ).html( " " );
 	}
+
 }
 
 
@@ -56,14 +58,15 @@ $('.filesButtons').on('click', function(){
 
     open_file(atr);
 		$("#opened_filename").text("Opened file: " + atrh.slice(0, -4));
-	$.ajax({
+/*	$.ajax({
 		url: 'ajax/open_homeid.php',
 		type: 'POST',
 		data: { fileName: atrh},
 		success: function(response){
   		home_id = response;
+      console.log("homeId" + response);
 			}
-	});
+	});*/
 
 w2popup.close();
 

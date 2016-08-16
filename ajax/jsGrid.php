@@ -8,13 +8,7 @@ fclose($fileID);
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="ajax/w2ui/w2ui-1.4.3.css" />
-    <script type="text/javascript" src="ajax/w2ui/w2ui-1.4.3.min.js"></script>
-		<link rel="stylesheet" href="lib/js/themes/ui-lightness/jquery-ui.custom.css"></link>
-	     <link rel="stylesheet" href="lib/js/jqgrid/css/ui.jqgrid.css"></link>
-	     <script src="lib/js/jqgrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
-	     <script src="lib/js/jqgrid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
-	     <script src="lib/js/themes/jquery-ui.custom.min.js" type="text/javascript"></script>
+
 </head>
 <body>
 
@@ -41,12 +35,12 @@ var config = {
              lineNumbers  : true,
         },
         columns: [
-						{ field: 'data', caption: 'Date', size: '20%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+      			{ field: 'data', caption: 'Date', size: '17%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
             { field: 'rssi', caption: 'Rssi', size: '10%', sortable: true, searchable: 'int', resizable: true, attr: "align=center" },
             { field: 'source', caption: 'Source', size: '10%', resizable: true, searchable: 'int', sortable: true, attr: "align=center" },
             { field: 'route', caption: 'Route', size: '10%', resizable: true, sortable: true, searchable: 'text', attr: "align=center"},
             { field: 'destination', caption: 'Destination', size: '10%', resizable: true, sortable: true, searchable: 'text', attr: "align=center" },
-	    			{ field: 'command', caption: 'Command', size: '25%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+	    			{ field: 'command', caption: 'Command', size: '22%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
 		//{ field: 'test2', caption: 'test2', size: '100px', type: "text", sortable: true, searchable: 'text',  resizable: true },
 	],
 	searches: [
