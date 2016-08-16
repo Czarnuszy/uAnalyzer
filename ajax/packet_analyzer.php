@@ -261,8 +261,11 @@ function parse_sqnum(x, data){
 																		h_id: data[x][2],
 																		style: "background-color: " + color,
 												 	 				});
+<<<<<<< HEAD
 															//		w2ui.grid.reload();
 
+=======
+>>>>>>> 1a5a860de45b2e5a97b0811c384a887f4fd701d1
 
 													grid_rec++;
 											 }
