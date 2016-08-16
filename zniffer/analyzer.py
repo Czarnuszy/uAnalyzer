@@ -142,21 +142,39 @@ for i in range(0, 120):
 def save_to_file(buffersize):
     fo = open("/www/zniffer/data/AnalyzerData.csv", "w")
     fo.seek(0, 0)
-#    t = []
+
 #    maxfile = open("../zniffer/data/MaxAnalyzerData.csv", "r")
 #    for i in range(0, buffersize):
 #        t.append(maxfile.readline())
-#
-#    test = open("../zniffer/data/test.csv", "w")
-#    for i in range(0, buffersize):
-#        test.write(i)
-#    print t
+#    test = open("/www/zniffer/data/test.csv", "w")
 
 
     for i in range(0, buffersize):
         fo.write(str(frequency[i]) + "," + str(rssi[i]) + "\n")
 
     fo.close()
+
+
+def max_data(buffersize):
+    data = open("/www/zniffer/data/MaxAnalyzerData.csv", "r")
+    d = []
+    for i in range(0, buffersize):
+        d.append(data.readline())
+    data.close()
+
+    for x in range(0, buffersize):
+        stri = d[x]
+        d[x] = stri[-3:-1]
+        if rssi[x] > d[x]:
+            d[x] = rssi[x]
+
+    te = open("/www/zniffer/data/MaxAnalyzerData.csv", "w")
+    te.seek(0, 0)
+
+    for i in range(0, buffersize):
+        te.write(str(frequency[i]) + "," + str(d[i]) + "\n")
+
+    te.close()
 
 while 1:
     x = 0
@@ -199,6 +217,7 @@ while 1:
             if x > 50:
                 x += 1
                 save_to_file(x)
+                max_data(x)
                 time.sleep(0.5)
                 break
         #x += 1

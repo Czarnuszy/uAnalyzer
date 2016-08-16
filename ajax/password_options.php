@@ -1,6 +1,7 @@
 <div id="bodypwd">
           <div id="pwd_panel">
             <h2>Options</h2>
+          <input type="text" name="" class = "pwdchangelabel"></br>
             <li>Old Password</li>
           <input type="password" name="oldPWD" id ="oldPWD" class = "pwdchangelabel" placeholder="Old password" ></br>
           <li>New Password</li>
@@ -41,16 +42,4 @@ $("#savePwdBTN").click(function () {
         console.log(pwdData);
         $('#statuspwd').html('Password changed!');
       }else if (data == 0) {
-          console.log("error");
-          $('#statuspwd').html('Error!');
-        }
-      },
-      error: function(){
-        console.log("Connection error");
-        $('#statuspwd').html('Connection Error!');
-      }
-
-  });
-});
-
-</script>
+          con
