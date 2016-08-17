@@ -1046,7 +1046,6 @@ function open_file(atr){
 					data: { data: atr, fsize: NumberofLines},
 					dataType: 'json',
 					success: function(data){
-						console.log(data);
 						if(w2ui.grid.records.length > 0)
 							w2ui.grid.clear();
 
