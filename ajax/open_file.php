@@ -37,7 +37,7 @@ function progressbar(x, max){
 	var html = "Please Wait "+ pr	+"<div class=" + "'progress progress-micro'"+">	<div class="+
 	"'progress-bar bg-color-blueLight'"+" role='progressbar'" + "style='width: "+pr+";'"+">" +
 	 "</div></div>"
-
+   console.log("progressbar");
 	$( "#progresZniffer" ).html( html );
 
   var gridlenght =w2ui.grid.records.length;

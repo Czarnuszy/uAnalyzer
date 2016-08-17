@@ -137,6 +137,7 @@ $.ajax({
 			url: "ajax/spectrum_data.php",
 			type: 'POST',
 			data: { fileName: "d" },
+				timeout: 5000,
 			dataType:"json",
 			//async: false,
 			success: function(data) {
