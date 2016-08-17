@@ -945,17 +945,17 @@ function open_file(atr){
         //  val2.push(x * rec_to_load);
 
 				//val2.push(val2[val2.length-1] + rec_to_load);
-				val.reverse();
+			//	val.reverse();
 
 
         val.forEach(function(value, i){
 					console.log(val);
-
+					var rec = value+rec_to_load;
           $.ajax({
             url: 'ajax/open_file_data.php',
             type: 'POST',
           //  async: false,
-            data: { data: atr, fsize: NumberofLines, tim: value+rec_to_load , gridLen: value},
+            data: { data: atr, fsize: NumberofLines, tim: rec  , gridLen: value},
             dataType: 'json',
             success: function(data){
 							console.log(rec_to_load);
@@ -1046,6 +1046,7 @@ function open_file(atr){
 					data: { data: atr, fsize: NumberofLines},
 					dataType: 'json',
 					success: function(data){
+						console.log(data);
 						if(w2ui.grid.records.length > 0)
 							w2ui.grid.clear();
 
