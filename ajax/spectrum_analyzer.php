@@ -39,8 +39,16 @@
 
 							<h2> Analyzer </h2>
 
-							<div class="widget-toolbar">
 
+
+
+
+								<div class="widget-toolbar" id="clearBTN">
+										<label class="btn btn-default btn-xs " id="trash-a1"> Clear
+											<i class="fa fa-trash-o"></i>
+										</label>
+							</div>
+			<div class="widget-toolbar">
 								<div class="btn-group" data-toggle="buttons">
 							        <label class="btn btn-default btn-xs " id="play-a3">
 							          <input type="radio" name="specBtn" id="style-a1" value="start"> <i class="fa fa-play"></i> Capture
@@ -53,16 +61,15 @@
 
 
 							    </div>
+		</div>
 
-							    <div class="widget-toolbar" id="clearBTN">
-					       			<label class="btn btn-default btn-xs " id="trash-a1"> Clear
-					           		<i class="fa fa-trash-o"></i>
-					        		</label>
-								</div>
+		<div class="widget-toolbar" >
+			<label id="startTime" >Started: hh:mm:ss</label>
+			||
+			<label id = "refreshTime"> Last: hh:mm:ss</label>
 
+		</div>
 
-
-							</div>
 
 
 					</header>
@@ -89,6 +96,31 @@
 
 <script type="text/javascript">
 
+function save_last_time(){
+	var time = new Date($.now());
+	var time2 = String(time).slice(4, 24);
+	$.ajax({
+		type: 'POST',
+		url: 'ajax/sw_spectrum_time.php',
+		data: {sw: "save", timedata: time2},
+		success: function (rep) {
+			console.log(rep);
+				}
+		});
+}
+
+function read_last_time(){
+	$.ajax({
+		type: 'POST',
+		url: 'ajax/sw_spectrum_time.php',
+		data: {sw: "read"},
+		success: function (time) {
+			$("#refreshTime").html("Last: " + time);
+				console.lod(time);
+				}
+		});
+}
+
 var sradioButton = "stop";
 
  $('input').on('change', function() {
@@ -98,6 +130,8 @@ var sradioButton = "stop";
 
 
 function load(){
+	read_last_time();
+
 console.log("lload");
 $.ajax({
 			url: "ajax/spectrum_data.php",
@@ -118,7 +152,7 @@ $.ajax({
 						window.myLine.update();
 
 				}
-
+				save_last_time();
 			},
 			error: function(xhr, status, error) {
 				var err = eval("(" + xhr.responseText + ")");
@@ -161,6 +195,12 @@ function progressbar(x){
 
 $("#play-a3").click(function(){
 	if(sradioButton == "stop"){
+
+		var time = new Date($.now());
+		var time2 = String(time).slice(4, 24);
+		$("#startTime").html("Started: " + time2);
+
+			clearSpectrum();
 			progrssInt = setInterval(function() {progressbar(pd);}, 800);
 			start_spectrum();
 			console.log("ds");
@@ -182,6 +222,8 @@ $("#play-a3").click(function(){
 		}
 
 });
+
+
 
 $("#stop-a3").click(function(){
 	if(sradioButton == "start"){
@@ -205,7 +247,7 @@ $("#stop-a3").click(function(){
 			}
 });
 
-$("#clearBTN").click(function () {
+function clearSpectrum(){
 	$.ajax({
 		type: 'POST',
 		url: 'ajax/spectrum_data.php',
@@ -215,10 +257,10 @@ $("#clearBTN").click(function () {
 			console.log(response);
 		//	load();
 		for (var i = 0; i < 98; i++) {
- 		 window.myLine.data.datasets[0].data[i] = response[0][i][1];
- 		 window.myLine.data.datasets[1].data[i] = response[1][i][1];
- 		}
- 		window.myLine.update();
+		 window.myLine.data.datasets[0].data[i] = response[0][i][1];
+		 window.myLine.data.datasets[1].data[i] = response[1][i][1];
+		}
+		window.myLine.update();
 
 
 		},
@@ -226,6 +268,12 @@ $("#clearBTN").click(function () {
 			console.log("error");
 		}
 	});
+}
+
+
+
+$("#clearBTN").click(function () {
+	clearSpectrum();
 });
 
 function start_spectrum(){

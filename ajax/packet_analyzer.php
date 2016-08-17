@@ -1003,7 +1003,7 @@ function open_file(atr){
 							console.log("Call to readlines took " + (t1 - t0) + " milliseconds.");
 							console.log("Call to readdata after readlines " + (t2 - t1) + " milliseconds.");
 							console.log("Call to all took " + (t2 - t0) + " milliseconds.");
-w2ui.grid.unlock();
+							w2ui.grid.unlock();
 								}
 
 							});
