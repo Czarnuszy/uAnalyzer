@@ -929,7 +929,7 @@ function open_file(atr){
         if(w2ui.grid.records.length > 0)
           w2ui.grid.clear();
 
-				var rec_to_load = 8000;
+				var rec_to_load = 2000;
         var reclen = w2ui.grid.records.length;
         var i = NumberofLines / rec_to_load;
         i = parseInt(i);
@@ -940,10 +940,16 @@ function open_file(atr){
         }
         val.push(val[val.length-1] + rec_to_load); //NumberofLines-i*1000
 
-				console.log(val);
+		//		var val2 = [0];
+			//	for (var x = 1; x = i; x++)
+        //  val2.push(x * rec_to_load);
+
+				//val2.push(val2[val2.length-1] + rec_to_load);
+				val.reverse();
+
 
         val.forEach(function(value, i){
-          console.log("val" + value);
+					console.log(val);
 
           $.ajax({
             url: 'ajax/open_file_data.php',
@@ -952,8 +958,10 @@ function open_file(atr){
             data: { data: atr, fsize: NumberofLines, tim: value+rec_to_load , gridLen: value},
             dataType: 'json',
             success: function(data){
-							var t2 = performance.now();
+							console.log(rec_to_load);
+							console.log("val" + value);
 
+							var t2 = performance.now();
           //    reclen = w2ui.grid.records.length;
               console.log("gridlen" + w2ui.grid.records.length);
               var color = "red";
@@ -999,14 +1007,27 @@ function open_file(atr){
 								}
 								w2ui.grid.reload();
 								delete data;
+								w2ui.grid.sort('data', 'asc');
 							//	if ((w2ui.grid.records.length-10) > NumberofLines )
+							var t3 = performance.now();
+
 							console.log("Call to readlines took " + (t1 - t0) + " milliseconds.");
 							console.log("Call to readdata after readlines " + (t2 - t1) + " milliseconds.");
 							console.log("Call to all took " + (t2 - t0) + " milliseconds.");
+							console.log("Call to parsing and adding took " + (t3 - t2) + " milliseconds.");
+
 							w2ui.grid.unlock();
+
+							max = NumberofLines;
+							x = w2ui.grid.records.length ;
+							console.log(x);
+							progressbar(x, max);
 								}
 
 							});
+
+
+
 						});
 
 			$.smallBox({

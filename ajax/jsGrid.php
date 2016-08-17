@@ -42,10 +42,13 @@ var config = {
             { field: 'destination', caption: 'Destination', size: '10%', resizable: true, sortable: true, searchable: 'text', attr: "align=center" },
 	    			{ field: 'command', caption: 'Command', size: '22%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
 		//{ field: 'test2', caption: 'test2', size: '100px', type: "text", sortable: true, searchable: 'text',  resizable: true },
-	],
-	searches: [
-				{ field: 'h_id', caption: 'h_id', type: 'int', hidden: true },
-				]
+				],
+				searches: [
+							{ field: 'h_id', caption: 'h_id', type: 'int', hidden: true },
+				],
+				sortData: [
+	         { field: 'data', direction: 'asc' },
+     		],
     }
 }
 var pd = 0;

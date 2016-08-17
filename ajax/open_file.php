@@ -30,20 +30,18 @@ for($i = 2; $i <= $amount_files; $i+=3){
 
 var pd = 0;
 
-function progressbar(x){
+function progressbar(x, max){
 	var progress = 0 ;
-	progress += pd;
+	progress = parseInt(x / max * 100);
 	var pr = progress + "%";
-	var html = "Please Wait	<div class=" + "'progress progress-micro'"+">	<div class="+
+	var html = "Please Wait "+ pr	+"<div class=" + "'progress progress-micro'"+">	<div class="+
 	"'progress-bar bg-color-blueLight'"+" role='progressbar'" + "style='width: "+pr+";'"+">" +
 	 "</div></div>"
 
 	$( "#progresZniffer" ).html( html );
-	pd += 10;
+
   var gridlenght =w2ui.grid.records.length;
-  if (pd >= 100  ){
-		clearInterval(progrssInt);
-		pd =0;
+  if (progress >= 100  ){
 		$( "#progresZniffer" ).html( " " );
 	}
 
@@ -54,7 +52,7 @@ $('.filesButtons').on('click', function(){
     var atr = '../data/Saves/' + $(this).attr('data-fid');
 		var atrh = $(this).attr('data-filehid');
     var NumberofLines = 0;
-		progrssInt = setInterval(function() {progressbar(pd);}, 200);
+	//	progrssInt = setInterval(function() {progressbar(pd);}, 200);
 
     open_file(atr);
 		$("#opened_filename").text("Opened file: " + atrh.slice(0, -4));
