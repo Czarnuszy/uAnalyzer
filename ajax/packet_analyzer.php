@@ -931,8 +931,8 @@ function open_file(atr){
 
 				var rec_to_load = 2000;
 
-		//		if(NumberofLines > 10000)
-			//			rec_to_load = 8000;
+				if(NumberofLines > 7000)
+						rec_to_load = 6000;
 
         var reclen = w2ui.grid.records.length;
         var i = NumberofLines / rec_to_load;
@@ -952,6 +952,9 @@ function open_file(atr){
 
 					if(current < val.length){
 						var rec = val[current] + rec_to_load;
+						if (rec > NumberofLines) {
+							rec = NumberofLines;
+						}
 
 						$.ajax({
 							url: 'ajax/open_file_data.php',
@@ -963,6 +966,7 @@ function open_file(atr){
 							success: function(data){
 								console.log(rec_to_load);
 								console.log("val" + val[current]);
+								console.log("number of lines " + NumberofLines);
 
 								var t2 = performance.now();
 						//    reclen = w2ui.grid.records.length;
@@ -1028,7 +1032,11 @@ function open_file(atr){
 
 								current ++;
 								do_ajax();
-									}
+							},
+							error: function (er) {
+								console.log("ajax request error");
+								console.log (er);
+							}
 
 								});
 

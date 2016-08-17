@@ -1,5 +1,5 @@
 <?php
-$fsize = $_POST['fsize'];
+$fsize = (int)$_POST['fsize'];
 //$times = $_POST['tim'];
 //$times = 10;
 function readCSV($csvFile){
@@ -10,22 +10,29 @@ function readCSV($csvFile){
   	 fclose($file_handle);
   	 return $line_of_text;
 }
+
 function readSomeLines($csvFile){
     $start= $_POST['gridLen'];
-    $times = $_POST['tim'];
-    $x = 0;
+    $amountLines = (int)$_POST['tim'];
     $file = new SplFileObject($csvFile);
-	 $file_handle = fopen($csvFile, 'r');
+    $file->seek($start);
+
+
+    while($file->key() != $amountLines )
+       $line_of_text[] =  $file->fgetcsv();
+
+	/* $file_handle = fopen($csvFile, 'r');
         while (!feof($file_handle)) {
             $data = fgetcsv($file_handle, 1024);
           if($x >= $start && $x < $times){
     	  	  $line_of_text[] = $data;
           }
             $x+=1;
-    	 }
-  	 fclose($file_handle);
+    	 }*/
+  //	 fclose($file_handle);
   	 return $line_of_text;
 }
+
 $file_name = $_POST['data'];
 $csvFile = $file_name;
 if($fsize > 1000){
