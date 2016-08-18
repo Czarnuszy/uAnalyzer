@@ -1,15 +1,25 @@
 <div id="bodypwd">
           <div id="pwd_panel">
             <h2>Options</h2>
-          <input type="text" name="" class = "pwdchangelabel"></br>
-            <li>Old Password</li>
-          <input type="password" name="oldPWD" id ="oldPWD" class = "pwdchangelabel" placeholder="Old password" ></br>
-          <li>New Password</li>
-          <input type="password" name="newPWD" id = "newPWD1" class = "pwdchangelabel" placeholder="New Password" ></br>
-          <li>Repeat new Password</li>
-          <input type="password" name="newPWD" id = "newPWD2" class = "pwdchangelabel" placeholder="New Password"></br>
-          <button id="savePwdBTN"> Save </button>
-          <div id = "statuspwd"></div>
+
+              <li>Old Password</li>
+              <div class="input-group" id ="testinput">
+                <span class="input-group-addon"   id="basic-addon1"></span>
+                <input type="Password" id ="oldPWD" class="form-control" placeholder="Old Password" aria-describedby="basic-addon1">
+              </div>
+              <li>New Password</li>
+              <div class="input-group" id ="testinput">
+                <span class="input-group-addon"   id="basic-addon1"></span>
+                <input type="Password" id ="newPWD1" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+              </div>
+
+              <li>Repeat new Password</li>
+              <div class="input-group" id ="testinput">
+                <span class="input-group-addon"   id="basic-addon1"></span>
+                <input type="Password" id ="newPWD2" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
+              </div>
+              <button id="savePwdBTN"> Save </button>
+            <div id = "statuspwd"></div>
           </div>
 
   </div>
@@ -42,4 +52,16 @@ $("#savePwdBTN").click(function () {
         console.log(pwdData);
         $('#statuspwd').html('Password changed!');
       }else if (data == 0) {
-          con
+        console.log("error");
+        $('#statuspwd').html('Error!');
+      }
+    },
+    error: function(){
+      console.log("Connection error");
+      $('#statuspwd').html('Connection Error!');
+    }
+
+});
+});
+
+</script>
