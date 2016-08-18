@@ -28,7 +28,6 @@ for($i = 2; $i <= $amount_files; $i+=3){
 
 <script type="text/javascript">
 
-var pd = 0;
 
 function progressbar(x, max){
 	var progress = 0 ;
@@ -73,24 +72,26 @@ w2popup.close();
 $('.delFilButtons').on('click', function () {
 	var t = '../data/Saves/' + $(this).attr('data-id');
 
-	$.ajax({
-		url: 'ajax/delete_file.php',
-		type: 'POST',
-		data: { fileName: t},
-		success: function(response){
+        $.SmartMessageBox({
+          title: "Z-Wave Packet Analyzer",
+          content: "Are you sure?",
+          buttons : "[No][Yes]",
+        }, function(ButtonPress, Value){
+          if (ButtonPress == "Yes"){
+            $.ajax({
+          		url: 'ajax/delete_file.php',
+          		type: 'POST',
+          		data: { fileName: t},
+          		success: function(response){
+          			console.log("deleted");
+          			$( "#popupmain" ).load( "ajax/open_file.php" );
+              }
+          });
+        }
+        if (ButtonPress == "No"){
 
-			console.log("deleted");
-			$( "#popupmain" ).load( "ajax/open_file.php" );
-
-			$.smallBox({
-				title : "Z-Wave Packet Analyzer",
-				content : "<i class='fa fa-clock-o'></i> <i>File " + t + " deleted.</i>",
-				color : "#659265",
-				iconSmall : "fa fa-check fa-2x fadeInRight animated",
-				timeout : 1500
-					});
-			}
-	});
+        }
+        })
 
 })
 
@@ -113,13 +114,7 @@ $('.renameFileBtn').on('click', function () {
 			data: { fileName: t, todo: 1, newName: Value},
 			success: function(response){
 				$( "#popupmain" ).load( "ajax/open_file.php" );
-				$.smallBox({
-					title : "Z-Wave Packet Analyzer",
-					content : "<i>Trace saved to file :</i>",
-					color : "#659265",
-					iconSmall : "fa fa-check fa-2x fadeInRight animated",
-					timeout : 2000
-				});
+
 
 
 				}
@@ -127,13 +122,7 @@ $('.renameFileBtn').on('click', function () {
 
 }
 if (ButtonPress=== "Cancel") {
-		$.smallBox({
-			title : "Z-Wave Packet Analyzer",
-			content : "<i class='fa fa-clock-o'></i> <i>Aborted...</i>",
-			color : "#C46A69",
-			iconSmall : "fa fa-times fa-2x fadeInRight animated",
-			timeout : 2000
-		});
+
 }
 
 	});

@@ -45,36 +45,21 @@ var config = {
 				],
 				searches: [
 							{ field: 'h_id', caption: 'h_id', type: 'int', hidden: true },
-				],
+					],
 				sortData: [
-	         { field: 'data', direction: 'asc' },
+	         { field: 'lname', direction: 'asc' },
      		],
     }
 }
-var pd = 0;
 
 function progressbar(x){
-	var progress = 0 ;
-	progress += pd;
-	var pr = progress + "%";
-	var html = "Please Wait	<div class=" + "'progress progress-micro'"+">	<div class="+
-	"'progress-bar bg-color-blueLight'"+" role='progressbar'" + "style='width: "+pr+";'"+">" +
-	 "</div></div>"
 
-	$( "#progresZniffer" ).html( html );
-	pd += 10;
-	if (pd >= 100){
-		clearInterval(progrssInt);
-		pd =0;
-		$( "#progresZniffer" ).html( " " );
-	}
 }
 
 $(function () {
     // initialization
     $().w2grid(config.grid);
 		var atr = '../zniffer/data/zniffer.csv';
-		var user_home_id= <?php  echo "'".$homeid."'"; ?>;
 		var NumberofLines = 0;
     w2ui.grid.lock('Getting ready.', true);
   //  progrssInt = setInterval(function() {progressbar(pd);}, 200);
