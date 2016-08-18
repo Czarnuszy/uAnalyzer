@@ -932,7 +932,7 @@ function open_file(atr){
 				var rec_to_load = 2000;
 
 				if(NumberofLines > 7000)
-						rec_to_load = 6000;
+						rec_to_load = 8000;
 
         var reclen = w2ui.grid.records.length;
         var i = NumberofLines / rec_to_load;

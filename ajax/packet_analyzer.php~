@@ -9,30 +9,21 @@
 	}
 ////////////
 
-  $directory = '../data/Saves';
+  $directory =  '../data/Saves';
   $scanned_directory = array_diff(scandir($directory), array('..', '.'));
   $amount_files = count($scanned_directory);
 
-	$fileID = fopen("../zniffer/data/id.txt", "r") or die("Unable to open file!");
+	$fileID = fopen("../zniffer/data/zniffer.txt", "r") or die("Unable to open file!");
 	$homeid = fgets($fileID);
 	fclose($fileID);
 
-
+$homeid = substr($homeid, 0, -1);
 
 ?>
 
 
 <html>
 <head>
- <link rel="stylesheet" href="lib/js/themes/ui-lightness/jquery-ui.custom.css"></link>
-    <link rel="stylesheet" href="lib/js/jqgrid/css/ui.jqgrid.css"></link>
-    <script src="lib/js/jqgrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
-    <script src="lib/js/themes/jquery-ui.custom.min.js" type="text/javascript"></script>
-    <script src="lib/js/notification/SmartNotification.min.js"></script>
-  <script src="lib/js/jarvis.widget.min.js" type="text/javascript"></script>
-  <script src="ajax/reloadJsGrid.js" type="text/javascript"></script>
-	<link rel="stylesheet" type="text/css" href="ajax/w2ui/w2ui-1.4.3.min.css" />
-	<script type="text/javascript" src="ajax/w2ui/w2ui-1.4.3.min.js"></script>
 
 </head>
 <body>
@@ -72,7 +63,7 @@
 
 						<div class="widget-toolbar">
 
-								<label class="btn btn-default btn-xs " id="open"></i> <i class="fa fa-search-plus"></i>    Open
+								<label class="btn btn-default btn-xs " id="open"></i> <i class="fa fa-search-plus"></i>   Traces
 
 									</label>
 
@@ -117,7 +108,7 @@
 
 					<div class="widget-toolbar">
 						<label class="" id="opened_filename">
-								Actual File
+								Current tracking
 						</label>
 					</div>
 
@@ -131,6 +122,8 @@
         		Loading Data...
         		</center>
       		</div>
+					<div id="progresZniffer">	</div>
+
 		   </div>
 
 				</div>
@@ -148,7 +141,7 @@
 
 
 
-var radioButton;
+var radioButton = "stop";
 var home_id= <?php  echo "'".$homeid."'"; ?>;
 
  $('input').on('change', function() {
@@ -156,9 +149,7 @@ var home_id= <?php  echo "'".$homeid."'"; ?>;
 		console.log(radioButton);
  });
 
-	$(document).ready(function() {
-		load();
-  });
+
 
 function parse_sqnum(x, data){
 	var color = "";
@@ -197,19 +188,18 @@ function parse_sqnum(x, data){
 }
 
 
-  function refresh(){
+
+  function refresh(){													console.log("File: " + NumberofLines);
+
+		var t0 = performance.now();
+		var t1 = 0;
+		var t2 = 0;
 		var grid_rec = w2ui.grid.records.length;
 		var NumberofLines;
 		var form_data;
 
-					$.ajax({
-					      type: "POST",
-					      url: "ajax/AnalyzerDataSize.php",
-					      data: { DisplayedRecords: grid_rec },
-					      success: function(response) {
-					      	NumberofLines= response -1;
-									}
-								});
+		if(w2ui.grid.records.length > 0)
+			w2ui.grid.unlock();
 
 						 $.ajax({
 							     url: "ajax/jsGridData.php",
@@ -217,47 +207,83 @@ function parse_sqnum(x, data){
 							     data: form_data,
 							     dataType:"json",
 							     success: function(data) {
+										 NumberofLines = data.length -1;
 													console.log("File: " + NumberofLines);
 													console.log("Grid: " + grid_rec);
-													var color = "";
+													var color = "red";
+										            var ZWCommandParsed = "";
+										        	var ZWparsedRoute = "";
+										        	var ZWparsedSource = "";
+										        	var ZWparsedDestination = "";
+
 										 if (NumberofLines -1>grid_rec){
-											 console.log("more");
+										 		console.log("more");
 											 grid_rec = w2ui.grid.records.length;
-												for(x=grid_rec; x<NumberofLines; x++){
-													color = "red";
-														if (data[x][2] != home_id){
-																data[x][3] = '-';
-																data[x][5] = '-';
-																data[x][12] = '-';
-															}else{
-															//	if(seq_num[i] === "00")
-															//		color = "#f0f0f0";
-															color = parse_sqnum(x, data);
-															}
-														  w2ui['grid'].add({
+												for(x=grid_rec; x<NumberofLines; x++)
+												{
+													color = "#AD3232";
+													if (data[x][2] != home_id)
+													{
+														ZWparsedSource = '-';
+														ZWparsedDestination = '-';
+														ZWparsedRoute = '-';
+													}
+													else
+													{
+														color = parse_sqnum(x, data);
+							      						ZWCommandParsed = parseCommand(data[x]);
+						        						ZWparsedRoute = parseRoute(data[x]);
+						        						ZWparsedSource = parseInt(data[x][3],10);
+						        	  					ZWparsedDestination = parseInt(data[x][5],10);
+													}
+
+
+													w2ui['grid'].add({
 																	recid : grid_rec,
 																	id: grid_rec,
 																	rssi: data[x][1],
-																	data: data[x][0],
-																	source: data[x][3],
-																	route: data[x][12],
-																	destination: data[x][5],
-																  command: data[x][7],
-																	h_id: data[x][2],
-																	style: "background-color: " + color
-												 	 								 });
-																			 grid_rec++;
-											 }
-										 }
+																		data: data[x][0],
+																		source: ZWparsedSource,
+																		route: ZWparsedRoute,
+																		destination: ZWparsedDestination,
+																	    command: ZWCommandParsed,
+																		h_id: data[x][2],
+																		style: "background-color: " + color,
+												 	 				});
+															//		w2ui.grid.reload();
 
+
+													grid_rec++;
+											 }
+											 var t3 = performance.now();
+
+										 }
+										 var t2 = performance.now();
+
+								 		console.log("Call to all took " + (t2 - t0) + " milliseconds.");
+										console.log("Call to add? took " + (t3 - t2) + " milliseconds.");
+
+										$.ajax({
+													type: "POST",
+													url: "ajax/homeid_save.php",
+													data: { homeid: home_id, gridlen: NumberofLines },
+													success: function(response) {
+														console.log("saved");
+														var t4 = performance.now();
+
+													 console.log("Call to savefile took " + (t4 - t2) + " milliseconds.");
+
+														}
+													});
 							    }
 
 							});
+
+
  }
 
 	function load(){
 		$( "#body-w" ).load( "ajax/jsGrid.php" );
-			console.log(	window.innerHeight);
 	}
 
 	function cleartrace(){
@@ -280,29 +306,27 @@ function parse_sqnum(x, data){
   }
 
 	$("#open").click(function(){
-//		$( "#body-w" ).load( "ajax/open_files.php" );
-	//	$( "#body-w" ).load( "ajax/jsGrid.php" );
-		//	$.get("ajax/open_files.php");
 		openPopup();
 		$( "#popupmain" ).load( "ajax/open_file.php" );
-
-
 	});
 
 	$("#play-a1").click(function(){
+
+
 			if(radioButton == "stop"){
 				start_analyzer();
 				console.log("start after stop");
 			    w2ui.grid.clear();
+					w2ui.grid.lock('Getting ready.', true);
 					setTimeout(function(){
-					      myInterval = setInterval(refresh, 500);
+					      myInterval = setInterval(refresh, 3500);
 							}, 2500);
 
 				}
 				else if (radioButton == "pause") {
 					console.log("start after pause");
 					refresh();
-					myInterval = setInterval(refresh, 500);
+					myInterval = setInterval(refresh, 3500);
 				}
 				  $.smallBox({
 			title : "Z-Wave Packet Analyzer",
@@ -414,6 +438,8 @@ $('#network_checkbox').click(function() {
 
 	$("#refresh-a1").click(function(){
   w2ui.grid.clear();
+	w2ui.grid.lock('Getting ready.', true);
+
 	$("#opened_filename").text("Actual File");
 
 		$.smallBox({
@@ -615,79 +641,565 @@ function get_homeid(){
 						});
 }
 
-
-	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
-	 *
-	 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
-	 *
-	 * // activate tooltips
-	 * $("[rel=tooltip]").tooltip();
-	 *
-	 * // activate popovers
-	 * $("[rel=popover]").popover();
-	 *
-	 * // activate popovers with hover states
-	 * $("[rel=popover-hover]").popover({ trigger: "hover" });
-	 *
-	 * // activate inline charts
-	 * runAllCharts();
-	 *
-	 * // setup widgets
-	 * setup_widgets_desktop();
-	 *
-	 * // run form elements
-	 * runAllForms();
-	 *
-	 ********************************
-	 *
-	 * pageSetUp() is needed whenever you load a page.
-	 * It initializes and checks for all basic elements of the page
-	 * and makes rendering easier.
-	 *
-	 */
-
-	pageSetUp();
-
-	/*
-	 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
-	 * eg alert("my home function");
-	 *
-	 * var pagefunction = function() {
-	 *   ...
-	 * }
-	 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
-	 *
-	 * TO LOAD A SCRIPT:
-	 * var pagefunction = function (){
-	 *  loadScript(".../plugin.js", run_after_loaded);
-	 * }
-	 *
-	 * OR you can load chain scripts by doing
-	 *
-	 * loadScript(".../plugin.js", function(){
-	 * 	 loadScript("../plugin.js", function(){
-	 * 	   ...
-	 *   })
-	 * });
-	 */
-
-	// pagefunction
-
-	var pagefunction = function() {
+function parseRoute(all_data)
+{
+var hop = all_data[9];
+var count = all_data[10];
+var header = all_data[11];
+var route = "";
+var source = parseInt(all_data[3],10);
+var destination = parseInt(all_data[5],10);;
 
 
+var hop1 = all_data[4];
+	hop1  = hop1.slice(0,2);
+	hop1 = parseInt(hop1,16);
+var hop2 = all_data[4];
+	hop2  = hop2.slice(3,5);
+	hop2 = parseInt(hop2,16);
 
-	/*
-	* SmartAlerts
-	*/
+if (hop.includes("-1")) route = source + ">" + destination;
+	else if (hop.includes("01"))
+	{
+  if ((count.includes("000")) && (header.includes("000")))
+  {
+  	route =source + ">"+all_data[4]+"-" + destination;
+  }
+  else if ((count.includes("001")) && (header.includes("000")))
+  {
+    route =source + "-"+ all_data[4]+">" + destination;
+  }
+  else if ((count.includes("001") )&& (header.includes("003")))
+  {
+    route =source + ">"+all_data[4]+"-" + destination;
 
-	// With Callback
+  }
+  else if ((count.includes("015")) && (header.includes("003")))
+  {
+  	route =source + "-"+all_data[4]+">" + destination;
+  }
+  else if ((count.includes("015")) && (header.includes("021")))
+  {
+    route =source + "X"+all_data[4]+">" + destination;
+  }
+ }
+ else if (hop.includes("02"))
+ {
+ 	if ((count.includes("000")) && (header.includes("000")))
+	{
+		route =source + ">"+ hop1+ "-"+hop2+"-" + destination;
+	}
 
-	};
+	if ((count.includes("001")) && (header.includes("000")))
+	{
+		route =source + "-"+ hop1+ ">"+hop2+"-" + destination;
+	}
 
-	// end pagefunction
+	else if ((count.includes("002")) && (header.includes("000")))
+	{
+		route =source + "-"+ hop1+ "-"+hop2+">" + destination;
+	}
+	else if ((count.includes("001")) && (header.includes("003")))
+	{
+		route =source + ">"+ hop1+ "-"+hop2+"-" + destination;
+	}
+	else if ((count.includes("000")) && (header.includes("003")))
+	{
+		route =source + "-"+ hop1+ ">"+hop2+"-" + destination;
+	}
+	else if ((count.includes("015")) && (header.includes("003")))
+	{
+		route =source + "-"+ hop1+ "-"+hop2+">" + destination;
+	}
+	else if ((count.includes("015")) && (header.includes("021")))
+	{
+		route =source + "-"+ hop1+ "-"+hop2+"X" + destination;
+	}
+	else if ((count.includes("000")) && (header.includes("037")))
+	{
+		route =source + "X"+ hop2+ ">"+hop1+"-" + destination;
+	}
+	else if ((count.includes("015")) && (header.includes("037")))
+	{
+		route =source + "X"+ hop1+ "-"+hop2+">" + destination;
+	}
 
-	// run pagefunction
-	pagefunction();
+ }
 
-</script>
+//route = "cool";
+return(route);
+
+
+}
+
+
+
+
+
+function parseCommand(all_data)
+{
+
+				var RawCommand = all_data[7];
+				var ZWCommandClass=RawCommand.slice(3,5) ;
+				var ZWCommand= RawCommand.slice(6,8) ;
+				var ZWCommandPayload1 = RawCommand.slice(9,11)
+				var ZWCommandDescription = "";
+				var ZWpayload =all_data[7];
+				var ZWpackettype =all_data[6];
+				var ssource = all_data[3];
+				var ZWack = all_data[13];
+
+
+				ZWCommandDescription= "Unrecognized Command: "+RawCommand;
+
+					// other network
+					if (ZWack.includes("Ack") || ZWpackettype.includes("Ack"))
+					{
+						//if(ZWack.includes("")) ZWCommandDescription = "Ack";
+						//else ZWCommandDescription = ZWack;
+						ZWCommandDescription = ZWack;
+					}
+					else if ((ZWCommandClass.includes("20"))|| (ZWCommandClass.includes("25"))||(ZWCommandClass.includes("27")))
+					{
+						ZWCommandDescription = "Basic Command Class("+ ZWCommandClass+","+ZWCommand+","+ZWCommandPayload1+")";
+						//it is Basic CC
+						if (ZWCommand.includes("01"))
+							{
+								if (ZWCommandPayload1 == "00")
+									ZWCommandDescription = "Turn OFF";
+								else if (ZWCommandPayload1 == "FF")
+									ZWCommandDescription = "Turn ON";
+								else if (ZWCommandPayload1 < 64)
+								{
+									ZWCommandDescription=  "Dimm to:"+ ZWCommandPayload1;
+								}
+							}
+						else if (ZWCommand.includes("02"))
+							{
+								ZWCommandDescription = "is Device On? Off?";
+							}
+						else if (ZWCommand.includes("03"))
+							{
+								ZWCommandDescription = "Basic Report";
+								if (ZWCommandPayload1 == "00")
+									ZWCommandDescription = "Device is OFF";
+								else if (ZWCommandPayload1 == "FF")
+									ZWCommandDescription = "Device is ON";
+								else if (ZWCommandPayload1 < 64)
+								{
+									ZWCommandDescription=  "Dimm level = "+ ZWCommandPayload1;
+								}
+							}
+
+					}
+
+					else if (ZWCommandClass.includes("98"))
+					{
+						// Security CC
+						ZWCommandDescription=  "Encrypted Command";
+					}
+					else if (ZWCommandClass.includes("71"))
+					{
+						// Security CC
+						ZWCommandDescription=  "Notification/Alarm  Command";
+					}
+					else if (ZWCommandClass.includes("22"))
+					{
+						// Security CC
+						ZWCommandDescription=  "Application Status";
+					}
+					else if (ZWCommandClass.includes("9B"))
+					{
+						// Security CC
+						ZWCommandDescription=  "Configuration Association Command";
+					}
+					else if (ZWCommandClass.includes("85"))
+					{
+						// Security CC
+						ZWCommandDescription=  "Association Command";
+					}
+					else if (ZWCommandClass.includes("95")||ZWCommandClass.includes("96")||ZWCommandClass.includes("97"))
+					{
+						// Security CC
+						ZWCommandDescription=  "A/V Command";
+					}
+					else if (ZWCommandClass.includes("36"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Basic Tariff info Command";
+						}
+					else if (ZWCommandClass.includes("50"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Window Covering Comand";
+						}
+					else if (ZWCommandClass.includes("80"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Battery Command";
+						}
+					else if (ZWCommandClass.includes("2A"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Chimney Fan Command";
+						}
+					else if (ZWCommandClass.includes("46"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Climate Control Schedule Command";
+						}
+
+					else if (ZWCommandClass.includes("81"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Clock Command";
+						}
+					else if (ZWCommandClass.includes("70"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Configuration Command";
+						}
+					else if (ZWCommandClass.includes("21"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Controller Replication Command";
+						}
+					else if (ZWCommandClass.includes("56"))
+						{
+							// Security CC
+							ZWCommandDescription=  "CRC16 Command";
+						}
+					else if (ZWCommandClass.includes("3A")||ZWCommandClass.includes("3B"))
+						{
+							// Security CC
+							ZWCommandDescription=  "DCP command";
+						}
+					else if (ZWCommandClass.includes("4C"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Door Lock Logging Command";
+						}
+					else if (ZWCommandClass.includes("32"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Meter Command";
+						}
+					else if (ZWCommandClass.includes("60"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Multichanel Command";
+						}
+					else if (ZWCommandClass.includes("2B"))
+						{
+							// Security CC
+							ZWCommandDescription=  "Scene Activation Command";
+						}
+
+			//ZWCommandDescription= ZWCommandDescription + " P:"+RawCommand;
+
+// end of payload
+return (ZWCommandDescription);
+
+}
+
+
+
+function open_file(atr){
+	progressbar(0, 100);
+
+	w2ui.grid.lock("Loading. Please wait.", true);
+	var t0 = performance.now();
+  $.ajax({
+		url: "ajax/files_size.php",
+		type: "POST",
+		data: { DisplayedRecords: atr},
+		dataType: 'json',
+		success: function(response){
+			NumberofLines= response[1]-1;
+			home_id = String(response[0]);
+		  home_id =	home_id.slice(0, -1);
+			console.log(response);
+
+
+			var t1 = performance.now();
+
+      if(NumberofLines > 1000){
+        console.log("over 10000");
+
+        if(w2ui.grid.records.length > 0)
+          w2ui.grid.clear();
+
+				var rec_to_load = 2000;
+
+				if(NumberofLines > 7000)
+						rec_to_load = 3000;
+
+        var reclen = w2ui.grid.records.length;
+        var i = NumberofLines / rec_to_load;
+        i = parseInt(i);
+
+        var val = [0];
+        for (var x = 1; x < i; x++) {
+          val.push(x * rec_to_load);
+        }
+        val.push(val[val.length-1] + rec_to_load); //NumberofLines-i*1000
+
+
+				var current = 0;
+
+				do_ajax();
+				function do_ajax(){
+
+					if(current < val.length){
+						var rec = val[current] + rec_to_load;
+						if (rec > NumberofLines) {
+							rec = NumberofLines;
+						}
+
+						$.ajax({
+							url: 'ajax/open_file_data.php',
+							type: 'POST',
+
+						//  async: false,
+							data: { data: atr, fsize: NumberofLines, tim: rec  , gridLen: val[current]},
+							dataType: 'json',
+							success: function(data){
+								console.log(rec_to_load);
+								console.log("val" + val[current]);
+								console.log("number of lines " + NumberofLines);
+
+								var t2 = performance.now();
+						//    reclen = w2ui.grid.records.length;
+								console.log("gridlen" + w2ui.grid.records.length);
+								var color = "red";
+								console.log("dl" + data.length)
+								var ZWCommandParsed = "";
+							var ZWparsedRoute = "";
+							var ZWparsedSource = "";
+							var ZWparsedDestination = "";
+
+
+									for(x=0; x< data.length	; x++){
+										reclen = w2ui.grid.records.length;
+										color = "#AD3232";
+										if (data[x][2] != home_id)
+									{
+										ZWparsedSource = '-';
+										ZWparsedDestination = '-';
+										ZWparsedRoute = '-';
+									}
+									else
+									{
+										color = parse_sqnum(x, data);
+											ZWCommandParsed = parseCommand(data[x]);
+												ZWparsedRoute = parseRoute(data[x]);
+												ZWparsedSource = parseInt(data[x][3],10);
+												ZWparsedDestination = parseInt(data[x][5],10);
+									}
+
+											w2ui['grid'].records.push({
+												recid : reclen+1,
+												id: reclen+1,
+												rssi: data[x][1],
+												data: data[x][0],
+												source: ZWparsedSource,
+												route: ZWparsedRoute,
+												destination: ZWparsedDestination,
+												command: ZWCommandParsed,
+												h_id: data[x][2],
+												style: "background-color: " + color
+
+											 });
+
+									}
+									w2ui.grid.reload();
+									delete data;
+									w2ui.grid.sort('data', 'asc');
+								//	if ((w2ui.grid.records.length-10) > NumberofLines )
+								var t3 = performance.now();
+
+								console.log("Call to readlines took " + (t1 - t0) + " milliseconds.");
+								console.log("Call to readdata after readlines " + (t2 - t1) + " milliseconds.");
+								console.log("Call to all took " + (t2 - t0) + " milliseconds.");
+								console.log("Call to parsing and adding took " + (t3 - t2) + " milliseconds.");
+
+								w2ui.grid.unlock();
+
+								max = NumberofLines;
+								x = w2ui.grid.records.length ;
+								console.log(x);
+								progressbar(x, max);
+
+								current ++;
+								do_ajax();
+							},
+							error: function (er) {
+								console.log("ajax request error");
+								console.log (er);
+							}
+
+								});
+
+
+
+					}
+
+				}
+      //  val.forEach(function(value, i){
+				//	console.log(val);
+					//var rec = value+rec_to_load;
+      //						});
+
+
+				}  else{
+
+				$.ajax({
+					url: 'ajax/open_file_data.php',
+					type: 'POST',
+					data: { data: atr, fsize: NumberofLines},
+					dataType: 'json',
+					success: function(data){
+						if(w2ui.grid.records.length > 0)
+							w2ui.grid.clear();
+
+						var color = "#AD3232";
+									var ZWCommandParsed = "";
+								var ZWparsedRoute = "";
+								var ZWparsedSource = "";
+								var ZWparsedDestination = "";
+
+						for(x=0; x<	NumberofLines; x++){
+							color = "#AD3232";
+							if (data[x][2] != home_id)
+							{
+								ZWparsedSource = '-';
+								ZWparsedDestination = '-';
+								ZWparsedRoute = '-';
+							}
+							else
+							{
+								color = parse_sqnum(x, data);
+								ZWCommandParsed = parseCommand(data[x]);
+									ZWparsedRoute = parseRoute(data[x]);
+									ZWparsedSource = parseInt(data[x][3],10);
+									ZWparsedDestination = parseInt(data[x][5],10);
+							}
+							w2ui['grid'].records.push({
+								recid : x+1,
+								id: x+1,
+								rssi: data[x][1],
+							data: data[x][0],
+							source: ZWparsedSource,
+							route: ZWparsedRoute,
+							destination: ZWparsedDestination,
+							command: ZWCommandParsed,
+							h_id: data[x][2],
+							style: "background-color: " + color
+
+							 });
+						 }
+							w2ui.grid.reload();
+					$.smallBox({
+						title : "Z-Wave Packet Analyzer",
+						content : "<i>File opened.</i>",
+						color : "#659265",
+						iconSmall : "fa fa-check fa-2x fadeInRight animated",
+						timeout : 1000
+					});
+					w2ui.grid.unlock();
+				}
+
+				});
+			}
+
+
+	}
+		});
+
+
+
+
+	}
+
+
+
+
+		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
+		 *
+		 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
+		 *
+		 * // activate tooltips
+		 * $("[rel=tooltip]").tooltip();
+		 *
+		 * // activate popovers
+		 * $("[rel=popover]").popover();
+		 *
+		 * // activate popovers with hover states
+		 * $("[rel=popover-hover]").popover({ trigger: "hover" });
+		 *
+		 * // activate inline charts
+		 * runAllCharts();
+		 *
+		 * // setup widgets
+		 * setup_widgets_desktop();
+		 *
+		 * // run form elements
+		 * runAllForms();
+		 *
+		 ********************************
+		 *
+		 * pageSetUp() is needed whenever you load a page.
+		 * It initializes and checks for all basic elements of the page
+		 * and makes rendering easier.
+		 *
+		 */
+
+		pageSetUp();
+
+		/*
+		 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
+		 * eg alert("my home function");
+		 *
+		 * var pagefunction = function() {
+		 *   ...
+		 * }
+		 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
+		 *
+		 * TO LOAD A SCRIPT:
+		 * var pagefunction = function (){
+		 *  loadScript(".../plugin.js", run_after_loaded);
+		 * }
+		 *
+		 * OR you can load chain scripts by doing
+		 *
+		 * loadScript(".../plugin.js", function(){
+		 * 	 loadScript("../plugin.js", function(){
+		 * 	   ...
+		 *   })
+		 * });
+		 */
+
+		// pagefunction
+
+		var pagefunction = function() {
+
+			$("#stop-a1").click();
+
+
+	$(document).ready(function() {
+		load();
+	});
+		/*
+		* SmartAlerts
+		*/
+
+		// With Callback
+
+		};
+
+		// end pagefunction
+
+		// run pagefunction
+		pagefunction();
+
+	</script>
