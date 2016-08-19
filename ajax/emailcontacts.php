@@ -1,6 +1,6 @@
 <?php
 //include ('www/ajax/phpmailer/PHPMailerAutoload.php');
-require 'PHPMailerAutoload.php';
+require '/www/ajax/phpmailer/PHPMailerAutoload.php';
 $task = $_POST['request'];
 
 if($task == "send2zwave"){
@@ -21,14 +21,27 @@ $fname = $_POST['fileName'];
 $csvFile = $fname. ".csv";
 $txtFile = $fname. ".txt";
 $zlfFile = $fname. ".zlf";
+$email = new PHPMailer();
 
-		$email = new PHPMailer();
-		$email -> setFrom('zwaveOrSMt@gmail.com', $nm);
-		$email -> addAddress('michalmagni@gmail.com', 'Me');
+$email->isSMTP();
+$email->SMTPDebug = 2;
+$email->Debugoutput = 'html';
+//$email->Host = 'smtp.gmail.com';
+$email->Host = gethostbyname('smtp.gmail.com');
+$email->Port = 547;
+$email->SMTPSecure = 'tls';
+$email->SMTPAuth = true;
+$email->Username = "zw@gmail.com";
+$email->Password = "";
 
-		$email -> addAttachment('/www/data/Saves/'.$csvFile);
-		$email -> addAttachment('/www/data/Saves/'.$txtFile);
-		$email -> addAttachment('/www/data/Saves/'.$zlfFile);
+
+
+		$email -> setFrom('zw@gmail.com', "mee");
+		$email -> addAddress('zw@gmail.com', 'Me');
+
+		//$email -> addAttachment($csvFile);
+		$email -> addAttachment($txtFile);
+//		$email -> addAttachment($zlfFile);
 		$email->isHTML(true);
 
 		$body = "Help me with my zwave!";
