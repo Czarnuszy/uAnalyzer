@@ -888,8 +888,8 @@ function open_file(atr){
 
 			var t1 = performance.now();
 
-      if(NumberofLines > 1000){
-        console.log("over 10000");
+      if(NumberofLines > 2000){
+        console.log("over 1000");
 
         if(w2ui.grid.records.length > 0)
           w2ui.grid.clear();
@@ -998,10 +998,11 @@ function open_file(atr){
 								current ++;
 								do_ajax();
 							},
-							error: function (er) {
-								console.log("ajax request error");
-								console.log (er);
-							}
+							error: function(xhr, status, error) {
+								var err = eval("(" + xhr.responseText + ")");
+								console.log(xhr + " " + status + " " + error);
+								alert(xhr + " " + status + " " + error);
+						}
 
 								});
 

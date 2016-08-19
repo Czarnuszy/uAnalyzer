@@ -35,7 +35,7 @@ function readSomeLines($csvFile){
 
 $file_name = $_POST['data'];
 $csvFile = $file_name;
-if($fsize > 1000){
+if($fsize > 2000){
   $AnalyzerData = readSomeLines($csvFile);
 }
 else {
