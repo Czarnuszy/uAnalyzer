@@ -2,21 +2,22 @@
           <div id="pwd_panel">
             <h2>Options</h2>
 
-              <li>Old Password</li>
+              <li class="list-group-item">Old Password</li>
+
               <div class="input-group" id ="testinput">
                 <span class="input-group-addon"   id="basic-addon1"></span>
-                <input type="Password" id ="oldPWD" class="form-control" placeholder="Old Password" aria-describedby="basic-addon1">
+                <input type="Password" id ="oldPWD" class="form-control" placeholder="Password " aria-describedby="basic-addon1">
               </div>
-              <li>New Password</li>
+              <li class="list-group-item">New Password</li>
               <div class="input-group" id ="testinput">
                 <span class="input-group-addon"   id="basic-addon1"></span>
-                <input type="Password" id ="newPWD1" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+                <input type="Password" id ="newPWD1" class="form-control" placeholder="New Password" aria-describedby="basic-addon1">
               </div>
 
-              <li>Repeat new Password</li>
+              <li class="list-group-item" >Repeat new Password</li>
               <div class="input-group" id ="testinput">
                 <span class="input-group-addon"   id="basic-addon1"></span>
-                <input type="Password" id ="newPWD2" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
+                <input type="Password" id ="newPWD2" class="form-control" placeholder="New Password" aria-describedby="basic-addon1">
               </div>
               <button id="savePwdBTN"> Save </button>
             <div id = "statuspwd"></div>

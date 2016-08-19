@@ -1,6 +1,4 @@
 
-<?php require_once("inc/init.php"); ?>
-
 
 <?php
 
@@ -11,7 +9,7 @@
 		header('Location: login.php');
 		exit();
 	}
-	
+
 ?>
 
 <section id="widget-grid" class="">
@@ -44,7 +42,7 @@
 					<!-- widget content -->
 					<div class="widget-body no-padding">
 
-						<form action="<?php echo APP_URL; ?>/ajax/emailcontacts.php" method="post" id="contact-form" class="smart-form">
+						<form method="post" id="contact-form" class="smart-form">
 
 							<header>
 									<h1>
@@ -113,7 +111,7 @@
 							</fieldset>
 
 							<footer>
-								<button type="submit" class="btn btn-left btn-default">Submit</button>
+								<button  id ='sendBtn'class="btn btn-left btn-default">Submit</button>
 							</footer>
 
 							<div class="message">
@@ -143,6 +141,91 @@
 
 
 <script type="text/javascript">
+
+	var $fName = $('#fname');
+	var $lName = $('#lname');
+	var $msg = $('#message');
+	var $email= $('#email');
+
+
+
+	$('#sendBtn').on('click', function(){
+
+		var emailData = {
+			fname: $fName.val(),
+			lname: $lName.val(),
+			message: $msg.val(),
+			email: $email.val(),
+		};
+
+		$.ajax({
+			type: 'POST',
+			url: 'ajax/emailcontacts.php',
+			data: emailData,
+			success: function(response){
+				console.log(response);
+			},
+			error: function(er){
+				console.log(er);
+			}
+		});
+	})
+
+
+/*	var $contactForm = $("#contact-form").validate({
+			// Rules for form validation
+			rules : {
+				fname : {
+					required : true
+				},
+				lname : {
+					required : true
+				},
+				email : {
+					required : true,
+					email : true
+				},
+				message : {
+					required : true,
+					minlength : 10
+				}
+			},
+
+			// Messages for form validation
+			messages : {
+				fname : {
+					required : 'Please enter your name',
+				},
+				lname : {
+					required : true
+				},
+				email : {
+					required : 'Please enter your email address',
+					email : 'Please enter a VALID email address'
+				},
+				message : {
+					required : 'Please enter your message'
+				}
+			},
+
+			// Ajax form submition
+			submitHandler : function(form) {
+				$(form).ajaxSubmit({
+					success : function() {
+						$("#contact-form").addClass('submited');
+					}
+				});
+			},
+
+			// Do not change code below
+			errorPlacement : function(error, element) {
+				error.insertAfter(element.parent());
+			}
+		});
+*.
+
+
+
 
 
 
@@ -207,64 +290,12 @@
 	var pagefunction = function() {
 
 
-	var $contactForm = $("#contact-form").validate({
-			// Rules for form validation
-			rules : {
-				fname : {
-					required : true
-				},
-				lname : {
-					required : true
-				},
-				email : {
-					required : true,
-					email : true
-				},
-				message : {
-					required : true,
-					minlength : 10
-				}
-			},
-
-			// Messages for form validation
-			messages : {
-				fname : {
-					required : 'Please enter your name',
-				},
-				lname : {
-					required : true
-				},
-				email : {
-					required : 'Please enter your email address',
-					email : 'Please enter a VALID email address'
-				},
-				message : {
-					required : 'Please enter your message'
-				}
-			},
-
-			// Ajax form submition
-			submitHandler : function(form) {
-				$(form).ajaxSubmit({
-					success : function() {
-						$("#contact-form").addClass('submited');
-					}
-				});
-			},
-
-			// Do not change code below
-			errorPlacement : function(error, element) {
-				error.insertAfter(element.parent());
-			}
-		});
-
-
 
 
 	};
 
 	// end pagefunction
-	loadScript("js/jquery-form/jquery-form.min.js", pagefunction);
+	//loadScript("js/jquery-form/jquery-form.min.js", pagefunction);
 	// run pagefunction
 
 

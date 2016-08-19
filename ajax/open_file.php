@@ -21,6 +21,7 @@ for($i = 2; $i <= $amount_files; $i+=3){
     echo  '<button class='."filesButtons".' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.'<br>'.$t.'</p>'.
 		'</button>'.'<button class='.'"delFilButtons" data-id ='."$fn".'> <p><i class="fa fa-trash-o"></i><br> Delete'.'</button>'.
 		'</button>'.'<button class='.'"renameFileBtn" data-id ='."$fn".'> <p><i class="fa fa-file-text-o"></i><br> Rename'.'</button>'.
+    '</button>'.'<button class='.'"sendFileBtn" data-id ='."$fn".'> <p><i class="fa fa-paper-plane"></i><br> Send'.'</button>'.
 		'</br></div>';
 	}
   ?>
@@ -51,19 +52,10 @@ $('.filesButtons').on('click', function(){
     var atr = '../data/Saves/' + $(this).attr('data-fid');
 		var atrh = $(this).attr('data-filehid');
     var NumberofLines = 0;
-	//	progrssInt = setInterval(function() {progressbar(pd);}, 200);
 
     open_file(atr);
 		$("#opened_filename").text("Opened file: " + atrh.slice(0, -4));
-/*	$.ajax({
-		url: 'ajax/open_homeid.php',
-		type: 'POST',
-		data: { fileName: atrh},
-		success: function(response){
-  		home_id = response;
-      console.log("homeId" + response);
-			}
-	});*/
+
 
 w2popup.close();
 
@@ -114,9 +106,6 @@ $('.renameFileBtn').on('click', function () {
 			data: { fileName: t, todo: 1, newName: Value},
 			success: function(response){
 				$( "#popupmain" ).load( "ajax/open_file.php" );
-
-
-
 				}
 		});
 
@@ -129,6 +118,38 @@ if (ButtonPress=== "Cancel") {
 
 })
 
+$('.sendFileBtn').on('click', function () {
+  var atr = '../data/Saves/' + $(this).attr('data-id');
+
+  var send_files_window_html = '<textarea rows="5" placeholder="Put your message here." name="message" id="send_files_msg"></textarea>' +
+  '<button id="sendFileBtn2"> Send </button>';
+
+	$( "#popupmain" ).html(send_files_window_html);
+
+    $('#sendFileBtn2').on('click', function(){
+      $.ajax({
+        url: 'ajax/emailcontacts.php',
+        type: 'POST',
+        data: { fileName: atr, request: "send2zwave"},
+        success: function(response){
+          console.log("send");
+          console.log(response);
+          $( "#popupmain" ).html("Done!");
+        },
+        error: function () {
+          $( "#popupmain" ).html("Error!");
+
+        }
+
+      });
+    });
+
+});
+
+
+/////////////////////////////////////////////
+
+
 	pageSetUp();
 	var pagefunction = function() {
 		// clears the variable if left blank
@@ -137,24 +158,3 @@ if (ButtonPress=== "Cancel") {
 	// run pagefunction
 	pagefunction();
 </script>
-
-<style>
-.filesButtons{
-	width: 70%;
-	height: 50px;
-	line-height: 20px;
-	padding: 1px;
-}
-.delFilButtons{
-	width: 15%;
-	height: 50px;
-	line-height: 20px;
-	padding: 1px;
-}
-.renameFileBtn{
-	width: 15%;
-	height: 50px;
-	line-height: 20px;
-	padding: 1px;
-}
-</style>

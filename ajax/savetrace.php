@@ -1,7 +1,7 @@
 <?php
 
 $csvFile = '../zniffer/data/zniffer.csv';
-$zlfFile = '../zniffer/data/zniffer.csv';
+$zlfFile = '../zniffer/data/zniffer.zlf';
 $idFile = '../zniffer/data/zniffer.txt';
 $SaveFile = '../data/Saves/'.$_GET['filename'].".csv";
 $SaveFilezlf = '../data/Saves/'.$_GET['filename'].".zlf";

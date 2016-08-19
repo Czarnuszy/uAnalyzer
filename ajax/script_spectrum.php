@@ -123,7 +123,7 @@ for ($i=0; $i < $max; $i++) {
               ]
 				},
         {
-          label: "TODO",
+          label: "Z-Wave Channels",
           borderColor: "rgba(198,157,39,51)",
       //    spanGaps: true,
           pointRadius: 0,

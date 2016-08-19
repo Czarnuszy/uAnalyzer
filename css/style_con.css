@@ -97,3 +97,49 @@ select#timeZoneSelect{
 	width: 395px;
 	height: 40px;
 }
+
+/* open_file.php */
+
+.filesButtons{
+	width: 55%;
+	height: 50px;
+	line-height: 20px;
+	padding: 1px;
+}
+.delFilButtons{
+	width: 15%;
+	height: 50px;
+	line-height: 20px;
+	padding: 1px;
+}
+.renameFileBtn{
+	width: 15%;
+	height: 50px;
+	line-height: 20px;
+	padding: 1px;
+}
+.sendFileBtn{
+	width: 15%;
+	height: 50px;
+	line-height: 20px;
+	padding: 1px;
+}
+textarea#send_files_msg{
+	resize: none;
+	width: 90%;
+	height: 320px;
+	padding: 5px;
+	margin-top: 7px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#sendFileBtn2{
+	width: 90%;
+	height: 30px;
+	display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* end */
