@@ -98,7 +98,7 @@ $homeid = substr($homeid, 0, -1);
 					          	<input type="radio" name="button" id="style-a2" value="pause" > <i class="fa fa-pause"></i> Pause
 					        </label>
 
-					        <label class="btn btn-default btn-xs active " id="stop-a1">
+					        <label class="btn btn-default btn-xs  " id="stop-a1">
 					          	<input type="radio" name="button" id="style-a3" value="stop" checked= true > <i class="fa fa-stop"></i> Stop
 					        </label>
 
@@ -883,7 +883,6 @@ function open_file(atr){
 			NumberofLines= response[1]-1;
 			home_id = String(response[0]);
 		  home_id =	home_id.slice(0, -1);
-			console.log(response);
 
 
 			var t1 = performance.now();
@@ -1149,23 +1148,35 @@ function open_file(atr){
 
 		var pagefunction = function() {
 
-			$("#stop-a1").click();
-
 
 	$(document).ready(function() {
-		load();
-	});
-		/*
-		* SmartAlerts
-		*/
+		$.ajax({
+			url: 'ajax/zniffer_status.php',
+			success: function(response){
+				console.log(response);
+				if (response == 1) {
+					$("#play-a1").attr('class', 'btn btn-default btn-xs active');
+					radioButton = "start";
+					load();
+					is_zniffer_on = true;
+					setTimeout(refresh, 1000);
+				}else if (response == 0) {
+					$("#stop-a1").attr('class', 'btn btn-default btn-xs active');
+					radioButton = "stop";
+					load();
+					if (is_zniffer_on) {
+						is_zniffer_on = false;
+					}
+				}else {
+					console.log("zniffer status error");
 
-		// With Callback
+				}
+			}
+		})
+	});
 
 		};
 
-		// end pagefunction
-
-		// run pagefunction
 		pagefunction();
 
 	</script>

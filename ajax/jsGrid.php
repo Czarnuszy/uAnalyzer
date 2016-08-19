@@ -52,8 +52,20 @@ var config = {
     }
 }
 
-function progressbar(x){
+function progressbar(x, max){
+	var progress = 0 ;
+	progress = parseInt(x / max * 100);
+	var pr = progress + "%";
+	var html = "Please Wait "+ pr	+"<div class=" + "'progress progress-micro'"+">	<div class="+
+	"'progress-bar bg-color-blueLight'"+" role='progressbar'" + "style='width: "+pr+";'"+">" +
+	 "</div></div>"
+   console.log("progressbar");
+	$( "#progresZniffer" ).html( html );
 
+  var gridlenght =w2ui.grid.records.length;
+  if (progress >= 100  ){
+		$( "#progresZniffer" ).html( " " );
+	}
 }
 
 $(function () {

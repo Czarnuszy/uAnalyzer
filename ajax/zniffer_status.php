@@ -2,11 +2,13 @@
 <?php
 
 include ('/www/ajax/zniffer_controller.php');
+$y = 1;
+$n = 0;
 
 if ($process -> status()){
-        echo "The process is currently running";
+        echo $y;
     }else{
-        echo "The process is not running.";
+        echo $n;
     }
   //  $process -> showpid();
 

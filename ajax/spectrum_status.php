@@ -1,11 +1,12 @@
 <?php
 
 include ('/www/ajax/spectrum_controller.php');
-
+$y = 1;
+$n = 0;
 if ($processSpectrum -> status()){
-        echo "The process is currently running";
+        echo $y;
     }else{
-        echo "The process is not running.";
+        echo $n;
     }
 
 //   $d = $processSpectrum -> showpid();

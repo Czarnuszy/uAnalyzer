@@ -55,7 +55,7 @@
 							        </label>
 
 
-							        <label class="btn btn-default btn-xs active" id="stop-a3">
+							        <label class="btn btn-default btn-xs " id="stop-a3">
 							          <input type="radio" name="specBtn" id="style-a3" value="stop" checked= true> <i class="fa fa-stop"></i> Stop
 							        </label>
 
@@ -206,7 +206,7 @@ $("#play-a3").click(function(){
 			start_spectrum();
 			console.log("ds");
 			myInterval = setInterval(load, 1000);
-			isSpectrumOn = true;
+
 		//	progressbar();
 
 	//		myTimeoutFunction();
@@ -290,15 +290,27 @@ function stop_spectrum(){
 
 var pagefunction = function() {
 
-	if(isSpectrumOn){
-		stop_spectrum();
-		clearInterval(myInterval);
-		myInterval = false;
-	}
-
 	$(document).ready(function() {
 		$( "#spectrum-body" ).load( "ajax/script_spectrum.php" );
-		load();
+		$.ajax({
+			url: 'ajax/spectrum_status.php',
+			success: function(response){
+				console.log(response);
+				if (response == 1) {
+					$("#play-a3").attr('class', 'btn btn-default btn-xs active');
+					sradioButton = "start";
+					load();
+					myInterval = setInterval(load, 1000);
+				}else if (response == 0) {
+					$("#stop-a3").attr('class', 'btn btn-default btn-xs active');
+					sradioButton = "stop";
+					load();
+				}else {
+					console.log("zniffer status error");
+
+				}
+			}
+		})
 
 	});
 
@@ -307,6 +319,7 @@ var pagefunction = function() {
 
 
 	pageSetUp();
+
 
 	pagefunction();
 
