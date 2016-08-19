@@ -1,4 +1,6 @@
 #!/bin/sh
+echo ledblink 3 2 2 > /proc/sercomm_gpio
+
 FILE="/www/zniffer/data/actual_script.txt"
 OUT=$(awk '{ print $1 }' $FILE)
 echo $OUT
@@ -9,14 +11,15 @@ if [ $OUT == $ZNIF ];
   then
     rwee -w -z -x -f /www/data/firmware/spectrum
     echo "spectrum" > /www/zniffer/data/actual_script.txt
-  #  rwee -d
-  #  rwee -n
+    rwee -d
+    rwee -n
     python /www/zniffer/analyzer.py
 else
   if [ $OUT == $SPEC ];
     then
-  #    rwee -d
-  #    rwee -n
+      rwee -d
+      rwee -n
+      sleep 1
       python /www/zniffer/analyzer.py
   fi
 fi

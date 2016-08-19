@@ -116,7 +116,7 @@ function read_last_time(){
 		data: {sw: "read"},
 		success: function (time) {
 			$("#refreshTime").html("Last: " + time);
-				console.lod(time);
+				console.log(time);
 				}
 		});
 }

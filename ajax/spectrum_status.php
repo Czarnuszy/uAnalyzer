@@ -1,16 +1,14 @@
-
 <?php
 
-include ('/www/ajax/zniffer_controller.php');
+include ('/www/ajax/spectrum_controller.php');
 
-if ($process -> status()){
+if ($processSpectrum -> status()){
         echo "The process is currently running";
     }else{
         echo "The process is not running.";
     }
-  //  $process -> showpid();
 
-//   $d = $process -> showpid();
+//   $d = $processSpectrum -> showpid();
   // echo $d[2];
 
 ?>

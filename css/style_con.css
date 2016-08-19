@@ -78,12 +78,13 @@ select#timeZoneSelect{
 
 #saveTimeBTN{
 	padding: 5px;
-	width: 395px;
+	width: 395;
 	height: 40px;
 }
 #savePwdBTN{
 	padding: 5px;
-	width: 390px;
+	width: 395px;
+	padding-left: 5px;
 	height: 40px;
 }
 .pwdchangelabel{

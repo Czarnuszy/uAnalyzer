@@ -1,5 +1,5 @@
 <?php
-$process = new Process('/www/zniffer/run');
+$processSpectrum = new Process('/www/zniffer/start_spectrum');
 
 class Process{
     private $pid;
@@ -15,7 +15,7 @@ class Process{
     // openwrt does not have nohup
     // ((/www/zniffer/run)&)&
     //    $command = '(('.$this->command.')&)&';
-	$command = '((/www/zniffer/run)&)&';
+	$command = '((/www/zniffer/start_spectrum)&)&';
         exec($command ,$op);
   //      echo (int)$op[0];
         $this->pid = 32088;
@@ -30,14 +30,14 @@ class Process{
     }
 
     public function status(){
-        $command = 'ps | grep /www/zniffer/zniffer.py';
+        $command = 'ps | grep /www/zniffer/analyzer.py';
         exec($command,$op);
         if (!isset($op[2]))return false;
         else return true;
     }
 
     public function showpid(){
-      $command = 'ps | grep /www/zniffer/zniffer.py';
+      $command = 'ps | grep /www/zniffer/analyzer.py';
  //'ps | grep '.$this->pid;
       exec($command,$op);
       return $op;
@@ -49,7 +49,7 @@ class Process{
     }
 
     public function stop(){
-        $command = '/www/zniffer/stop';
+        $command = '/www/zniffer/stop_spectrum';
       //  $command = 'pkill -f ../../analyzer/zniffer/zniffer.py'
         exec($command);
         if ($this->status() == false)return true;
