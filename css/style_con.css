@@ -81,7 +81,8 @@ select#timeZoneSelect{
 	width: 395;
 	height: 40px;
 }
-#savePwdBTN{
+
+.savepwd{
 	padding: 5px;
 	width: 395px;
 	padding-left: 5px;
@@ -142,4 +143,36 @@ textarea#send_files_msg{
   margin-left: auto;
   margin-right: auto;
 }
+/* end//// user_options.php */
+
+
+.panel-body{
+  width: 395px;
+}
+
+.table-user-information > tbody > tr {
+    border-top: 1px solid rgb(221, 221, 221);
+    width: 395px;
+
+}
+
+.table-user-information > tbody > tr:first-child {
+    border-top: 0;
+}
+
+
+.table-user-information > tbody > tr > td {
+    border-top: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
 /* end */

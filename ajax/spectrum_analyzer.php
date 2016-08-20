@@ -96,7 +96,7 @@
 
 <script type="text/javascript">
 
-function save_last_time(){
+function save_start_time(){
 	var time = new Date($.now());
 	var time2 = String(time).slice(4, 24);
 	$.ajax({
@@ -107,16 +107,22 @@ function save_last_time(){
 			console.log(rep);
 				}
 		});
+		return time2;
 }
 
-function read_last_time(){
+function read_time(req){
 	$.ajax({
 		type: 'POST',
 		url: 'ajax/sw_spectrum_time.php',
-		data: {sw: "read"},
+		data: {sw: req},
 		success: function (time) {
-			$("#refreshTime").html("Last: " + time);
-				console.log(time);
+		//	$("#refreshTime").html("Last: " + time);
+			if (req == "read")
+					$("#refreshTime").html("Last: " + time);
+			else if (req == "readStartTime")
+					$("#startTime").html("Started: " + time);
+
+
 				}
 		});
 }
@@ -130,9 +136,9 @@ var sradioButton = "stop";
 
 
 function load(){
-	read_last_time();
 
-console.log("lload");
+
+
 $.ajax({
 			url: "ajax/spectrum_data.php",
 			type: 'POST',
@@ -153,7 +159,10 @@ $.ajax({
 						window.myLine.update();
 
 				}
-				save_last_time();
+
+				read_time("read");
+				read_time("readStartTime");
+				
 			},
 			error: function(xhr, status, error) {
 				var err = eval("(" + xhr.responseText + ")");
@@ -196,10 +205,9 @@ function progressbar(x){
 
 $("#play-a3").click(function(){
 	if(sradioButton == "stop"){
-
-		var time = new Date($.now());
-		var time2 = String(time).slice(4, 24);
-		$("#startTime").html("Started: " + time2);
+		save_start_time();
+		var time = save_start_time();
+		$("#startTime").html("Started: " + time);
 
 			clearSpectrum();
 			progrssInt = setInterval(function() {progressbar(pd);}, 800);
@@ -249,6 +257,10 @@ $("#stop-a3").click(function(){
 });
 
 function clearSpectrum(){
+	save_start_time();
+	var time = save_start_time();
+	$("#startTime").html("Started: " + time);
+
 	$.ajax({
 		type: 'POST',
 		url: 'ajax/spectrum_data.php',

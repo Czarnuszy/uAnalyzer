@@ -173,10 +173,10 @@
 						</li>
 
 						<li>
-							<a href="javascript:void(0);" id="pwdOptions" class="jarvismetro-tile big-cubes bg-color-greenLight"><span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>Change password </span> </span> </a>
+							<a href="javascript:void(0);" id="pwdOptions" class="jarvismetro-tile big-cubes bg-color-greenLight"><span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>User Profile </span> </span> </a>
 						</li>
 						<li>
-							<a href="javascript:void(0);" id="setTimeOption" class="jarvismetro-tile big-cubes bg-color-greenLight"><span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>Set time </span> </span> </a>
+							<a href="javascript:void(0);" id="setTimeOption" class="jarvismetro-tile big-cubes bg-color-greenLight"><span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>Time Options </span> </span> </a>
 						</li>
 
 

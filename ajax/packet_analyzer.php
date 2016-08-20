@@ -1200,7 +1200,7 @@ function zniffer_status() {
 					console.log("zniffer status error");
 
 				}
-				setInterval(zniffer_status, 5000);
+				setInterval(zniffer_status, 8000);
 			}
 		})
 

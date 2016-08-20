@@ -31,7 +31,7 @@
        		 <script src="<?php echo ASSETS_URL; ?>/js/Chart.Line.js"></script>
 	  	<script src="<?php echo ASSETS_URL; ?>/js/smartwidgets/jarvis.widget.min.js"></script>
 	    <script src="<?php echo ASSETS_URL; ?>/js/jquery-form/jquery-form.min.js"></script>
-	    <script src="<?php echo ASSETS_URL; ?>/js/myscript.js"></script>
+	    <script src="<?php echo ASSETS_URL; ?>/js/optionMenuScripts.js"></script>
 			<script src="<?php echo ASSETS_URL; ?>/js/w2ui-1.4.3.min.js"></script>
 
 !-- CUSTOM NOTIFICATION -->

@@ -17,7 +17,7 @@ for($i = 2; $i <= $amount_files; $i+=3){
 		$fn =  substr($f, 0, -4);
 		$d = $scanned_directory[$i+1];
 		$fi = "../data/Saves/".$scanned_directory[$i];
-    $t = date("F d Y H:i:s.", filectime($fi));
+//    $t = date("F d Y H:i:s.", filectime($fi));
     echo  '<button class='."filesButtons".' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.'<br>'.$t.'</p>'.
 		'</button>'.'<button class='.'"delFilButtons" data-id ='."$fn".'> <p><i class="fa fa-trash-o"></i><br> Delete'.'</button>'.
 		'</button>'.'<button class='.'"renameFileBtn" data-id ='."$fn".'> <p><i class="fa fa-file-text-o"></i><br> Rename'.'</button>'.
