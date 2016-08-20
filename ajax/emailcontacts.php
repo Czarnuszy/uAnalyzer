@@ -1,14 +1,24 @@
 <?php
 //include ('www/ajax/phpmailer/PHPMailerAutoload.php');
-require '/www/ajax/phpmailer/PHPMailerAutoload.php';
-$task = $_POST['request'];
 
-if($task == "send2zwave"){
-	send2zwave();
-}	else{
-	contact();
-	}
+$c = '/www/zniffer/check_internet_connection';
+exec($c, $o);
+$e =$o[0];
+$t = substr($e, 6 , 5);
 
+if ($t == "up") {
+
+	require '/www/ajax/phpmailer/PHPMailerAutoload.php';
+	$task = $_POST['request'];
+
+	if($task == "send2zwave")
+		send2zwave();
+	else
+		contact();
+
+}else{
+	echo "NOINTERNET";
+}
 
 
 

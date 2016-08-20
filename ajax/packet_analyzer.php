@@ -99,7 +99,7 @@ $homeid = substr($homeid, 0, -1);
 					        </label>
 
 					        <label class="btn btn-default btn-xs  " id="stop-a1">
-					          	<input type="radio" name="button" id="style-a3" value="stop" checked= true > <i class="fa fa-stop"></i> Stop
+					          	<input type="radio" name="button" id="style-a3" value="stop" > <i class="fa fa-stop"></i> Stop
 					        </label>
 
 						</div>
@@ -138,11 +138,11 @@ $homeid = substr($homeid, 0, -1);
 
 
 <script type="text/javascript">
+var radioButton = "";
 
 var is_zniffer_on = false;
 
 
-var radioButton = "stop";
 var home_id= <?php  echo "'".$homeid."'"; ?>;
 
  $('input').on('change', function() {
@@ -195,7 +195,6 @@ function parse_sqnum(x, data){
 		if(is_zniffer_on){
 			var grid_rec = w2ui.grid.records.length;
 			var NumberofLines;
-
 			if(w2ui.grid.records.length > 0)
 				w2ui.grid.unlock();
 
@@ -339,7 +338,9 @@ function parse_sqnum(x, data){
 
 					setTimeout(refresh, 600);
 			//		myInterval = setInterval(refresh, 3500);
-				}
+		}else{
+
+		}
 				  $.smallBox({
 			title : "Z-Wave Packet Analyzer",
 			content : "<i class='fa fa-clock-o'></i> <i>trace started</i>",
@@ -375,7 +376,7 @@ function parse_sqnum(x, data){
 
 
 	$("#stop-a1").click(function(){
-		if(radioButton == "start" || radioButton == "pause"){
+	//	if(radioButton == "start" || radioButton == "pause"){
 		$.SmartMessageBox({
 	title : "Z-Wave Packet Analyzer",
 	content : "Are sure to stop? This will clear the trace",
@@ -410,10 +411,14 @@ function parse_sqnum(x, data){
 	}
 	else if (ButtonPress=== "Cancel") {
 
-$('input:radio[name="button"]').filter('[value="stop"]').attr('checked', false);
-
-		$('input:radio[name="button"]').filter('[value="start"]').attr('checked', true);
-			if(radioButton == "start"){
+	//		if(radioButton == "start"){
+				$("#stop-a1").attr('class', 'btn btn-default btn-xs');
+				$("#play-a1").attr('class', 'btn btn-default btn-xs active');
+				radioButton = "start";
+				if (!is_zniffer_on) {
+					is_zniffer_on = true;
+					setTimeout(refresh, 200);
+				}
 				$.smallBox({
 						title : "Z-Wave Packet Analyzer",
 						content : "<i class='fa fa-clock-o'></i> <i>trace in progres</i>",
@@ -421,12 +426,14 @@ $('input:radio[name="button"]').filter('[value="stop"]').attr('checked', false);
 						iconSmall : "fa fa-times fa-2x fadeInRight animated",
 						timeout : 3000
 					});
-				}else if(radioButton == "pause") {
-
-				}
+			/*	}else if(radioButton == "pause") {
+					$("#stop-a1").attr('class', 'btn btn-default btn-xs');
+					$("#pause-a1").attr('class', 'btn btn-default btn-xs active');
+					radioButton = "pause";
+				}*/
 					}
 		});
-}
+//}
 	});
 
 
@@ -1086,6 +1093,24 @@ function open_file(atr){
 
 	}
 
+function zniffer_status() {
+	$.ajax({
+		url: 'ajax/zniffer_status.php',
+		success: function(response){
+			if (response == 1)
+				radioButton = "start";
+			else if (response == 0)
+				radioButton = "stop";
+
+				console.log("status checkin");
+				console.log(radioButton);
+		},
+		error: function () {
+			console.log("zniffer status error");
+		}
+
+});
+}
 
 
 
@@ -1148,8 +1173,10 @@ function open_file(atr){
 
 		var pagefunction = function() {
 
+	zniffer_status();
 
 	$(document).ready(function() {
+
 		$.ajax({
 			url: 'ajax/zniffer_status.php',
 			success: function(response){
@@ -1160,6 +1187,8 @@ function open_file(atr){
 					load();
 					is_zniffer_on = true;
 					setTimeout(refresh, 1000);
+					console.log("rb " + radioButton);
+
 				}else if (response == 0) {
 					$("#stop-a1").attr('class', 'btn btn-default btn-xs active');
 					radioButton = "stop";
@@ -1171,8 +1200,10 @@ function open_file(atr){
 					console.log("zniffer status error");
 
 				}
+				setInterval(zniffer_status, 5000);
 			}
 		})
+
 	});
 
 		};

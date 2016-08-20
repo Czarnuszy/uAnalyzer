@@ -9,6 +9,7 @@ if ($processSpectrum -> status()){
         echo $n;
     }
 
+
 //   $d = $processSpectrum -> showpid();
   // echo $d[2];
 

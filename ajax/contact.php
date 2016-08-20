@@ -150,7 +150,6 @@
 
 
 	$('#sendBtn').on('click', function(){
-
 		var emailData = {
 			fname: $fName.val(),
 			lname: $lName.val(),
@@ -164,11 +163,14 @@
 			data: emailData,
 			success: function(response){
 				console.log(response);
+				console.log('meh');
 			},
 			error: function(er){
 				console.log(er);
+				console.log("merr");
 			}
 		});
+		
 	})
 
 

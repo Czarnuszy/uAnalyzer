@@ -132,9 +132,11 @@ $('.sendFileBtn').on('click', function () {
         type: 'POST',
         data: { fileName: atr, request: "send2zwave"},
         success: function(response){
-          console.log("send");
           console.log(response);
-          $( "#popupmain" ).html("Done!");
+          if (response == "NOINTERNET")
+            $( "#popupmain" ).html("Error! Check your internet connection!");
+          else
+            $( "#popupmain" ).html("Done!");
         },
         error: function () {
           $( "#popupmain" ).html("Error!");
