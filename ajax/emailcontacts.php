@@ -1,20 +1,31 @@
 <?php
 //include ('www/ajax/phpmailer/PHPMailerAutoload.php');
 
+$mailFile = '/www/data/userconfig.json';
+
+$data = file_get_contents ($mailFile);
+      $json = json_decode($data, true);
+
+$userMail = "mail@mail.com";
+$userMail = $json[email];
+
 $c = '/www/zniffer/check_internet_connection';
 exec($c, $o);
 $e =$o[0];
 $t = substr($e, 6 , 5);
 
 if ($t == "up") {
-
 	require '/www/ajax/phpmailer/PHPMailerAutoload.php';
 	$task = $_POST['request'];
+	if ($userMail != "mail@mail.com") {
+		if($task == "send2zwave")
+			send2zwave();
+		else
+			contact();
+	}else{
+		echo "NOEMAIL";
+	}
 
-	if($task == "send2zwave")
-		send2zwave();
-	else
-		contact();
 
 }else{
 	echo "NOINTERNET";
@@ -70,7 +81,7 @@ $email->Password = "";
 function contact(){
 if(isset($_POST['fname']) )
 {
-
+	//TODO change to PHPmailer system.
 	$to = 'michalmagni@gmail.com';
 
 	$subject = "Z-Wave Toolbox".'.'.$_POST['fname'];

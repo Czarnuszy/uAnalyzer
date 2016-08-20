@@ -135,8 +135,11 @@ $('.sendFileBtn').on('click', function () {
           console.log(response);
           if (response == "NOINTERNET")
             $( "#popupmain" ).html("Error! Check your internet connection!");
-          else
+          else if (response == "NOEMAIL") {
+            $( "#popupmain" ).html("Error! Set your email in settings!");
+          }else {                    
             $( "#popupmain" ).html("Done!");
+          }
         },
         error: function () {
           $( "#popupmain" ).html("Error!");

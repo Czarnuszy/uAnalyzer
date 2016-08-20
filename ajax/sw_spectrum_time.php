@@ -17,10 +17,7 @@ if ($todo == "save") {
 
   $myFile = "/www/zniffer/data/AnalyzerData.csv";
   if (file_exists($myFile)){
-  //  $fh = fopen($myFile, 'r') or die("can't open file");
     $t = date("F d Y H:i:s.", filectime($myFile));
-  //  $time = fgets($fh);
-  //  fclose($fh);
     echo $t;
   }
 }elseif ($todo == "readStartTime") {
