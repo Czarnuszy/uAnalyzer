@@ -1,15 +1,14 @@
 <?php
 
-	session_start();
+    session_start();
 
-	if (!isset($_SESSION['logged']))
-	{
-		header('Location: login.php');
-		exit();
-	}
+    if (!isset($_SESSION['logged'])) {
+        header('Location: login.php');
+        exit();
+    }
 
 ?>
-<?php require_once("inc/init.php"); ?>
+<?php require_once 'inc/init.php'; ?>
 
 
 <!--
@@ -149,8 +148,6 @@ $.ajax({
 			success: function(data) {
 				console.log(data[0].length);
 				console.log(data[1].length);
-				console.log(data[0][16][1]);
-				console.log("max" + data[1][16][1]);
 				if(data[0].length == 98 && data[1].length == 98){
 					 for (var i = 0; i < 98; i++) {
 						 window.myLine.data.datasets[0].data[i] = data[0][i][1];
@@ -162,7 +159,7 @@ $.ajax({
 
 				read_time("read");
 				read_time("readStartTime");
-				
+
 			},
 			error: function(xhr, status, error) {
 				var err = eval("(" + xhr.responseText + ")");

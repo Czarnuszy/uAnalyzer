@@ -1,5 +1,5 @@
 <?php
-$fileID = fopen("../zniffer/data/id.txt", "r") or die("Unable to open file!");
+$fileID = fopen('../zniffer/data/id.txt', 'r') or die('Unable to open file!');
 $homeid = fgets($fileID);
 fclose($fileID);
 ?>

@@ -1,27 +1,31 @@
 <?php
-$fsize = (int)$_POST['fsize'];
+
+$fsize = (int) $_POST['fsize'];
 //$times = $_POST['tim'];
 //$times = 10;
-function readCSV($csvFile){
-  	 $file_handle = fopen($csvFile, 'r');
-    	 	while (!feof($file_handle)) {
-    	  	  $line_of_text[] = fgetcsv($file_handle, 512);
-    	 }
-  	 fclose($file_handle);
-  	 return $line_of_text;
+function readCSV($csvFile)
+{
+    $file_handle = fopen($csvFile, 'r');
+    while (!feof($file_handle)) {
+        $line_of_text[] = fgetcsv($file_handle, 512);
+    }
+    fclose($file_handle);
+
+    return $line_of_text;
 }
 
-function readSomeLines($csvFile){
-    $start= $_POST['gridLen'];
-    $amountLines = (int)$_POST['tim'];
+function readSomeLines($csvFile)
+{
+    $start = $_POST['gridLen'];
+    $amountLines = (int) $_POST['tim'];
     $file = new SplFileObject($csvFile);
     $file->seek($start);
 
+    while ($file->key() != $amountLines) {
+        $line_of_text[] = $file->fgetcsv();
+    }
 
-    while($file->key() != $amountLines )
-       $line_of_text[] =  $file->fgetcsv();
-
-	/* $file_handle = fopen($csvFile, 'r');
+    /* $file_handle = fopen($csvFile, 'r');
         while (!feof($file_handle)) {
             $data = fgetcsv($file_handle, 1024);
           if($x >= $start && $x < $times){
@@ -30,16 +34,14 @@ function readSomeLines($csvFile){
             $x+=1;
     	 }*/
   //	 fclose($file_handle);
-  	 return $line_of_text;
+     return $line_of_text;
 }
 
 $file_name = $_POST['data'];
 $csvFile = $file_name;
-if($fsize > 2000){
-  $AnalyzerData = readSomeLines($csvFile);
-}
-else {
-  $AnalyzerData = readCSV($csvFile);
+if ($fsize > 2000) {
+    $AnalyzerData = readSomeLines($csvFile);
+} else {
+    $AnalyzerData = readCSV($csvFile);
 }
 echo json_encode($AnalyzerData);
-?>

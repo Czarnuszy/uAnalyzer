@@ -1,21 +1,20 @@
 <?php
 
-	session_start();
+    session_start();
 
-	if (!isset($_SESSION['logged']))
-	{
-		header('Location: login.php');
-		exit();
-	}
+    if (!isset($_SESSION['logged'])) {
+        header('Location: login.php');
+        exit();
+    }
 ////////////
 
-  $directory =  '../data/Saves';
+  $directory = '../data/Saves';
   $scanned_directory = array_diff(scandir($directory), array('..', '.'));
   $amount_files = count($scanned_directory);
 
-	$fileID = fopen("../zniffer/data/zniffer.txt", "r") or die("Unable to open file!");
-	$homeid = fgets($fileID);
-	fclose($fileID);
+    $fileID = fopen('../zniffer/data/zniffer.txt', 'r') or die('Unable to open file!');
+    $homeid = fgets($fileID);
+    fclose($fileID);
 
 $homeid = substr($homeid, 0, -1);
 
@@ -138,7 +137,7 @@ $homeid = substr($homeid, 0, -1);
 
 
 <script type="text/javascript">
-var radioButton = "";
+var radioButton = "stop";
 
 var is_zniffer_on = false;
 
@@ -268,7 +267,8 @@ function parse_sqnum(x, data){
 													 }
 														});
 												}
-												refresh();
+												setTimeout(refresh, 500);
+												//refresh();
 								    },
 										error: function (err) {
 											console.log(err);
@@ -331,16 +331,26 @@ function parse_sqnum(x, data){
 							//  myInterval = setInterval(refresh, 500);
 							}, 2500);
 				}
-				else if (radioButton == "pause") {
+			else if (radioButton == "pause") {
 					console.log("start after pause");
 					load();
 					is_zniffer_on = true;
 
 					setTimeout(refresh, 600);
 			//		myInterval = setInterval(refresh, 3500);
-		}else{
+			}else if (!zniffer_status && !is_zniffer_on){
+				start_analyzer();
+				is_zniffer_on = true;
+				refresh();
+			}else if (!zniffer_status && is_zniffer_on) {
+				start_analyzer();
+				refresh();
+			}else if (!is_zniffer_on && zniffer_status) {
+				is_zniffer_on = true;
+				refresh();
 
-		}
+			}
+
 				  $.smallBox({
 			title : "Z-Wave Packet Analyzer",
 			content : "<i class='fa fa-clock-o'></i> <i>trace started</i>",
@@ -945,9 +955,9 @@ function open_file(atr){
 								var color = "red";
 								console.log("dl" + data.length)
 								var ZWCommandParsed = "";
-							var ZWparsedRoute = "";
-							var ZWparsedSource = "";
-							var ZWparsedDestination = "";
+								var ZWparsedRoute = "";
+								var ZWparsedSource = "";
+								var ZWparsedDestination = "";
 
 
 									for(x=0; x< data.length	; x++){
@@ -1094,14 +1104,18 @@ function open_file(atr){
 	}
 
 function zniffer_status() {
+	var status;
 	$.ajax({
 		url: 'ajax/zniffer_status.php',
 		success: function(response){
-			if (response == 1)
+			if (response == 1){
 				radioButton = "start";
-			else if (response == 0)
+				status = true;
+			}
+			else if (response == 0){
 				radioButton = "stop";
-
+				status = false;
+			}
 				console.log("status checkin");
 				console.log(radioButton);
 		},
@@ -1110,6 +1124,7 @@ function zniffer_status() {
 		}
 
 });
+return status;
 }
 
 

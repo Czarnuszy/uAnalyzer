@@ -2,13 +2,12 @@
 
 <?php
 
-	session_start();
+    session_start();
 
-	if (!isset($_SESSION['logged']))
-	{
-		header('Location: login.php');
-		exit();
-	}
+    if (!isset($_SESSION['logged'])) {
+        header('Location: login.php');
+        exit();
+    }
 
 ?>
 
@@ -170,7 +169,7 @@
 				console.log("merr");
 			}
 		});
-		
+
 	})
 
 

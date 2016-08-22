@@ -1,52 +1,55 @@
 
 <?php
-function readCSV($csvFile){
-   $file_handle = fopen($csvFile, 'r');
-   while (!feof($file_handle) ) {
-      $line_of_text[] = fgetcsv($file_handle, 1024);
- }
- fclose($file_handle);
- return $line_of_text;
+function readCSV($csvFile)
+{
+    $file_handle = fopen($csvFile, 'r');
+    while (!feof($file_handle)) {
+        $line_of_text[] = fgetcsv($file_handle, 1024);
+    }
+    fclose($file_handle);
+
+    return $line_of_text;
 }
 //open file//read data to firt grid//opem secend file//read max data to second grid//copy first file to second file
 
-function saveMax($csvFileMax){
-
-
+function saveMax($csvFileMax)
+{
 }
 
 $csvFile = '../zniffer/data/AnalyzerData.csv';
 $AnalyzerData = readCSV($csvFile);
-$max = count($AnalyzerData)-1;
+$max = count($AnalyzerData) - 1;
 
-for ($i=0; $i < $max; $i++) {
-# c$AnalyzerData.sizeofode..$AnalyzerData.sizeof.
-   $AnalyzerData[$i][0] = (float)$AnalyzerData[$i][0];
-   $AnalyzerData[$i][0] = (int)$AnalyzerData[$i][0]/1000;
-   $rssi = $AnalyzerData[$i][1];
-     	$rssi = $rssi * 1.7;
-     	$rssi = $rssi - 30;
-     	$rssi = (int) $rssi;
-     	if ($rssi> 100) $rssi = 100;
-     	$AnalyzerData[$i][1] = $rssi;
+for ($i = 0; $i < $max; ++$i) {
+    // c$AnalyzerData.sizeofode..$AnalyzerData.sizeof.
+   $AnalyzerData[$i][0] = (float) $AnalyzerData[$i][0];
+    $AnalyzerData[$i][0] = (int) $AnalyzerData[$i][0] / 1000;
+    $rssi = $AnalyzerData[$i][1];
+    $rssi = $rssi * 1.7;
+    $rssi = $rssi - 30;
+    $rssi = (int) $rssi;
+    if ($rssi > 100) {
+        $rssi = 100;
+    }
+    $AnalyzerData[$i][1] = $rssi;
 }
 
 $csvFileMax = '../zniffer/data/MaxAnalyzerData.csv';
 $MaxAnalyzerData = readCSV($csvFileMax);
-$maxM = count($MaxAnalyzerData)-1;
+$maxM = count($MaxAnalyzerData) - 1;
 
-for ($i=0; $i < $max; $i++) {
-  $MaxAnalyzerData[$i][0] = (float)$MaxAnalyzerData[$i][0];
-  $MaxAnalyzerData[$i][0] = (int)$MaxAnalyzerData[$i][0]/1000;
-  $mrssi = $MaxAnalyzerData[$i][1];
-     $mrssi = $mrssi * 1.7;
-     $mrssi = $mrssi - 30;
-     $mrssi = (int) $mrssi;
-     if ($mrssi> 100) $mrssi = 100;
-     $MaxAnalyzerData[$i][1] = $mrssi;
+for ($i = 0; $i < $max; ++$i) {
+    $MaxAnalyzerData[$i][0] = (float) $MaxAnalyzerData[$i][0];
+    $MaxAnalyzerData[$i][0] = (int) $MaxAnalyzerData[$i][0] / 1000;
+    $mrssi = $MaxAnalyzerData[$i][1];
+    $mrssi = $mrssi * 1.7;
+    $mrssi = $mrssi - 30;
+    $mrssi = (int) $mrssi;
+    if ($mrssi > 100) {
+        $mrssi = 100;
+    }
+    $MaxAnalyzerData[$i][1] = $mrssi;
 }
-
-
 
 //copy($csvFile, $csvFileMax);
 
@@ -83,10 +86,10 @@ for ($i=0; $i < $max; $i++) {
       data: {
 			labels : [
 				    <?php
-					for ($i=0; $i < $max; $i++){
-			          echo $AnalyzerData[$i][0].',';
-          }
-				    ?>
+                    for ($i = 0; $i < $max; ++$i) {
+                        echo $AnalyzerData[$i][0].',';
+                    }
+                    ?>
 				],
 
 			datasets : [
@@ -100,10 +103,10 @@ for ($i=0; $i < $max; $i++) {
 
 					data : [
     						<?php
-    						    for ($i=0; $i < $max; $i++){
-						    echo $AnalyzerData[$i][1].',';
-						     }
-    						?>
+                                for ($i = 0; $i < $max; ++$i) {
+                                    echo $AnalyzerData[$i][1].',';
+                                }
+                            ?>
               ]
 				},
         {
@@ -116,10 +119,10 @@ for ($i=0; $i < $max; $i++) {
 
 					data : [
     						<?php
-    						    for ($i=0; $i < $max; $i++){
-						    echo $MaxAnalyzerData[$i][1].',';
-						     }
-    						?>
+                                for ($i = 0; $i < $max; ++$i) {
+                                    echo $MaxAnalyzerData[$i][1].',';
+                                }
+                            ?>
               ]
 				},
         {
@@ -130,14 +133,18 @@ for ($i=0; $i < $max; $i++) {
     //      pointHoverRadius: 5,
           data:[
             <?php
-                for ($i=0; $i < 36; $i++)
-                  echo ' '.',';
-                for ($i=36; $i < 42; $i++)
-                  echo '100'.',';
-                for ($i=42; $i < 74; $i++)
-                  echo ' '.',';
-                for ($i=74; $i < 80 ; $i++)
-                  echo '100'.',';
+                for ($i = 0; $i < 36; ++$i) {
+                    echo ' '.',';
+                }
+                for ($i = 36; $i < 42; ++$i) {
+                    echo '100'.',';
+                }
+                for ($i = 42; $i < 74; ++$i) {
+                    echo ' '.',';
+                }
+                for ($i = 74; $i < 80; ++$i) {
+                    echo '100'.',';
+                }
             ?>
           ]
 
@@ -235,8 +242,9 @@ for ($i=0; $i < $max; $i++) {
           borderColor	: "rgba(650,96,10,1)",
   				data : [
             <?php
-            for ($i=0; $i < $max; $i++)
-              echo $MaxAnalyzerData[$i][1].',';
+            for ($i = 0; $i < $max; ++$i) {
+                echo $MaxAnalyzerData[$i][1].',';
+            }
              ?>  ],
          }
         config.data.datasets.push(maxDataSet);

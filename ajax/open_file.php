@@ -2,28 +2,29 @@
 $directory = '../data/Saves';
 $scanned_directory = array_diff(scandir($directory), array('..', '.'));
 $amount_files = count($scanned_directory);
-$fi = "../data/Saves/".$scanned_directory[2];
+$fi = '../data/Saves/'.$scanned_directory[2];
 
 date_default_timezone_set('America/New_York');
 
-if (file_exists($fi))
-    $t = date("F d Y H:i:s.", filectime($fi));
+if (file_exists($fi)) {
+    $t = date('F d Y H:i:s.', filectime($fi));
+}
 ?>
 
 <html>
 <?php
-for($i = 2; $i <= $amount_files; $i+=3){
-		$f = $scanned_directory[$i];
-		$fn =  substr($f, 0, -4);
-		$d = $scanned_directory[$i+1];
-		$fi = "../data/Saves/".$scanned_directory[$i];
+for ($i = 2; $i <= $amount_files; $i += 3) {
+    $f = $scanned_directory[$i];
+    $fn = substr($f, 0, -4);
+    $d = $scanned_directory[$i + 1];
+    $fi = '../data/Saves/'.$scanned_directory[$i];
 //    $t = date("F d Y H:i:s.", filectime($fi));
-    echo  '<button class='."filesButtons".' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.'<br>'.$t.'</p>'.
-		'</button>'.'<button class='.'"delFilButtons" data-id ='."$fn".'> <p><i class="fa fa-trash-o"></i><br> Delete'.'</button>'.
-		'</button>'.'<button class='.'"renameFileBtn" data-id ='."$fn".'> <p><i class="fa fa-file-text-o"></i><br> Rename'.'</button>'.
+    echo  '<button class='.'filesButtons'.' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.'<br>'.$t.'</p>'.
+        '</button>'.'<button class='.'"delFilButtons" data-id ='."$fn".'> <p><i class="fa fa-trash-o"></i><br> Delete'.'</button>'.
+        '</button>'.'<button class='.'"renameFileBtn" data-id ='."$fn".'> <p><i class="fa fa-file-text-o"></i><br> Rename'.'</button>'.
     '</button>'.'<button class='.'"sendFileBtn" data-id ='."$fn".'> <p><i class="fa fa-paper-plane"></i><br> Send'.'</button>'.
-		'</br></div>';
-	}
+        '</br></div>';
+}
   ?>
 </html>
 
@@ -137,7 +138,7 @@ $('.sendFileBtn').on('click', function () {
             $( "#popupmain" ).html("Error! Check your internet connection!");
           else if (response == "NOEMAIL") {
             $( "#popupmain" ).html("Error! Set your email in settings!");
-          }else {                    
+          }else {
             $( "#popupmain" ).html("Done!");
           }
         },
