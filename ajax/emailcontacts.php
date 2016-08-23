@@ -53,10 +53,10 @@ $email->Host = gethostbyname('smtp.gmail.com');
     $email->setFrom('zw@gmail.com', 'mee');
     $email->addAddress('zw@gmail.com', 'Me');
 
-        //$email -> addAttachment($csvFile);
-        $email->addAttachment($txtFile);
-//		$email -> addAttachment($zlfFile);
-        $email->isHTML(true);
+    $email->addAttachment($csvFile);
+    $email->addAttachment($txtFile);
+    $email->addAttachment($zlfFile);
+    $email->isHTML(true);
 
     $body = 'Help me with my zwave!';
     $email->Subject = 'Zwave ';

@@ -6,8 +6,9 @@ OUT=$(awk '{ print $1 }' $FILE)
 echo $OUT
 ZNIF="zniffer"
 SPEC="spectrum"
+IMA="ima"
 
-if [ $OUT == $ZNIF ];
+if [ $OUT == $ZNIF ] || [$OUT == $IMA];
   then
     rwee -w -z -x -f /www/data/firmware/spectrum
     echo "spectrum" > /www/zniffer/data/actual_script.txt

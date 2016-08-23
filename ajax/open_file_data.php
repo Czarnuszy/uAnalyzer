@@ -44,4 +44,6 @@ if ($fsize > 2000) {
 } else {
     $AnalyzerData = readCSV($csvFile);
 }
+header('Content-Type: application/json');
+
 echo json_encode($AnalyzerData);

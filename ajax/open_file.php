@@ -13,13 +13,31 @@ if (file_exists($fi)) {
 
 <html>
 <?php
+
+function getSymbolByQuantity($bytes) {
+    $symbols = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB');
+    $exp = floor(log($bytes)/log(1024));
+
+    return sprintf('%.2f '.$symbol[$exp], ($bytes/pow(1024, floor($exp))));
+}
+//$disk_space = disk_free_space("/") ;
+$total_disk_space = disk_total_space("/");
+$bytes = disk_free_space("/");
+  $si_prefix = array( 'B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB' );
+  $base = 1024;
+  $class = min((int)log($bytes , $base) , count($si_prefix) - 1);
+  $total = min((int)log($total_disk_space , $base) , count($si_prefix) - 1);
+
+  echo sprintf('<div id="freespace"><li class="list-group-item">Free space: '.'%1.2f' , $bytes / pow($base,$class)) . ' / ' .
+   getSymbolByQuantity($total_disk_space). '  '.  $si_prefix[$class].'</li></div>';
 for ($i = 2; $i <= $amount_files; $i += 3) {
     $f = $scanned_directory[$i];
     $fn = substr($f, 0, -4);
     $d = $scanned_directory[$i + 1];
     $fi = '../data/Saves/'.$scanned_directory[$i];
+
 //    $t = date("F d Y H:i:s.", filectime($fi));
-    echo  '<button class='.'filesButtons'.' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.'<br>'.$t.'</p>'.
+    echo     '<button class='.'filesButtons'.' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.'<br>'.$t.'</p>'.
         '</button>'.'<button class='.'"delFilButtons" data-id ='."$fn".'> <p><i class="fa fa-trash-o"></i><br> Delete'.'</button>'.
         '</button>'.'<button class='.'"renameFileBtn" data-id ='."$fn".'> <p><i class="fa fa-file-text-o"></i><br> Rename'.'</button>'.
     '</button>'.'<button class='.'"sendFileBtn" data-id ='."$fn".'> <p><i class="fa fa-paper-plane"></i><br> Send'.'</button>'.

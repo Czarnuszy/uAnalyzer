@@ -136,10 +136,18 @@ for i in range(0, 120):
     frequency.append(0)
     rssi.append(0)
 
-
+#while 1:
+#    rcv = readlineCR(port)
+#    print rcv
 def save_to_file(buffersize):
     fo = open("/www/zniffer/data/AnalyzerData.csv", "w")
     fo.seek(0, 0)
+
+#    maxfile = open("../zniffer/data/MaxAnalyzerData.csv", "r")
+#    for i in range(0, buffersize):
+#        t.append(maxfile.readline())
+#    test = open("/www/zniffer/data/test.csv", "w")
+
 
     for i in range(0, buffersize):
         fo.write(str(frequency[i]) + "," + str(rssi[i]) + "\n")
@@ -175,10 +183,16 @@ while 1:
         print rcv
 
         buffersize = len(rcv)
-
+        #print rcv
+        #temprssi = str(rcv.rfind("*", 0, len(rcv)))
         temprssi = rcv[-3:-1]
+       # tfrequency = ""
 
+        #   if rcv[1:7] == "900000":
+        #      x = 0
+        # testing for errors
         print str(x)+":" + rcv[1:7] + "--|"+temprssi
+     #   print int(temprssi)
         x += 1
         if buffersize > 10:
             if rcv[1] == "9" and temprssi > 0:

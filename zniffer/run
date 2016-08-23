@@ -7,6 +7,7 @@ OUT=$(awk '{ print $1 }' $FILE)
 echo $OUT
 ZNIF="zniffer"
 SPEC="spectrum"
+IMA="ima"
 
 echo "" > /www/zniffer/data/zniffer.csv
 
@@ -16,7 +17,7 @@ if [ $OUT == $ZNIF ];
     rwee -n
     python /www/zniffer/zniffer.py --output_csv --region US -i /dev/ttyS0 -o /www/zniffer/data/zniffer.zlf
 else
-  if [ $OUT == $SPEC ];
+  if [ $OUT == $SPEC ] || [$OUT == $IMA];
     then
       rwee -w -z -x -f /www/data/firmware/zniffer
       echo "zniffer" > /www/zniffer/data/actual_script.txt
