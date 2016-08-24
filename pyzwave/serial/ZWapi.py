@@ -701,6 +701,27 @@ class ZWapi(threading.Thread):
     def SetApplicationCommandHandlerBridge(self, fun):
         self.RegisterHandler(FUNC_ID_APPLICATION_COMMAND_HANDLER_BRIDGE, "4B", fun)
 
+    def get_node_len(self):
+        InitData = self.SerialAPI_GetInitData()
+        print InitData
+        return len(InitData['nodelist']) + 1
+
+    def nodeInfo_to_dic(self, nodeInfo):
+        nodeByts = []
+        for x in range(0,12, 2):
+            nodeByts.append(nodeInfo[x:x+2])
+        return nodeByts
+
+    def get_all_node_info(self, length):
+        nodeInfo = []
+        for x in range(1, length):
+            ni = self.ZW_GetNodeProtocolInfo(x)
+            ni = binascii.hexlify(ni)
+            ni = self.nodeInfo_to_dic(ni)
+            nodeInfo.append(ni)
+        return nodeInfo
+
+
 
 '''
 
@@ -808,34 +829,30 @@ def setDefaultDone(data):
 def print_version(zw):
     print zw.SerialAPI_GetInitData()
 
-def read_xml():
-    xml_file = '/www/pyzwave/ZWave_custom_cmd_classes.xml'
-#    tree = xml.etree.ElementTree.parse(xml_file).getroot()
-#    parser = xml.sax.make_parser()
+def save_node_info_csv(data):
+    filepath = open("/www/data/ima/node_info.csv", "w")
+    for i in range(len(data)):
+        for x in range(len(data[i])):
+            filepath.write(str(data[i][x])+',')
+        filepath.write("\n")
 
-    #Handler = MyHandler()
-    #parser.setContentHandler( Handler )
-    #parser.parse(xml_file) #a list of all jobs
-
-
+    filepath.close()
 
 if __name__ == '__main__':
     zw = ZWapi("/dev/ttyS0")
-    InitData = zw.SerialAPI_GetInitData()
-#    print zw.SendFrameWithResponse(pack("B", FUNC_ID_ZW_GET_VERSION))
-    print InitData
     nodeByts = []
-#    print zw.SerialAPI_GetCapabilities()
-#    zw.ZW_AddNodeToNetwork(02, None)
-#    print zw.SerialAPI_GetRandom(10,RandomCB)
-#    print zw.ZW_SetDefault(setDefaultDone)
-    nodeInfo = zw.ZW_GetNodeProtocolInfo(2 )
-    nodeInfo = binascii.hexlify(nodeInfo)
-    for x in range(0,len(nodeInfo), 2):
-        nodeByts.append(nodeInfo[x:x+2])
+    size = zw.get_node_len()
 
-    print nodeInfo
-    print nodeByts
-    read_xml()
+    ni = zw.get_all_node_info(size)
+
+    print ni
+    save_node_info_csv(ni)
+
+
     zw.stop()
     print "Exit"
+    #    print zw.SendFrameWithResponse(pack("B", FUNC_ID_ZW_GET_VERSION))
+    #    print zw.SerialAPI_GetCapabilities()
+    #    zw.ZW_AddNodeToNetwork(02, None)
+    #    print zw.SerialAPI_GetRandom(10,RandomCB)
+    #    print zw.ZW_SetDefault(setDefaultDone)

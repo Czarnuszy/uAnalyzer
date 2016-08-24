@@ -20,7 +20,7 @@
 
 	var max = <?php echo $max ?>;
 	var div = "";
-	//dynamic div 
+	//dynamic div
 		for(i = 0; i < max*max; i++){
 					var element = "sq" + i;
 					div = div + '<div class ="sq" id="'+element+'"></div>';

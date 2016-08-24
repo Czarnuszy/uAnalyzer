@@ -424,11 +424,14 @@ function parse_sqnum(x, data){
 	//		if(radioButton == "start"){
 				$("#stop-a1").attr('class', 'btn btn-default btn-xs');
 				$("#play-a1").attr('class', 'btn btn-default btn-xs active');
-				radioButton = "start";
-				if (!is_zniffer_on) {
-					is_zniffer_on = true;
+				if (is_zniffer_on) {
+          radioButton = "start";
+					//is_zniffer_on = true;
 					setTimeout(refresh, 200);
-				}
+				}else{
+          radioButton = "stop";
+
+        }
 				$.smallBox({
 						title : "Z-Wave Packet Analyzer",
 						content : "<i class='fa fa-clock-o'></i> <i>trace in progres</i>",
@@ -1126,6 +1129,7 @@ function zniffer_status() {
 });
 return status;
 }
+
 
 
 

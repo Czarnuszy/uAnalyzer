@@ -74,5 +74,9 @@ function openPasswordPopup() {
         }
 
     });
-
 }
+
+$('.button-icon.jarviswidget-fullscreen-btn').click(function(){
+
+		console.log('o kurwa dziala');
+});
