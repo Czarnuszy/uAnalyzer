@@ -21,8 +21,10 @@
                  lineNumbers  : true,
             },
             columns: [
-          			{ field: 'basic', caption: 'basic', size: '50%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
-                { field: 'specific', caption: 'specific', size: '50%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+          			{ field: 'basic', caption: 'basic', size: '33%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+                { field: 'generic', caption: 'generic', size: '33%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+
+                { field: 'specific', caption: 'specific', size: '33%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
         //        { field: 'source', caption: 'Source', size: '10%', resizable: true, searchable: 'int', sortable: true, attr: "align=center" },
 
     		//{ field: 'test2', caption: 'test2', size: '100px', type: "text", sortable: true, searchable: 'text',  resizable: true },
@@ -30,18 +32,35 @@
 
         }
     }
+
+
+
+
     $(function () {
         // initialization
         $().w2grid(config.NodeInfoGrid);
 
-        w2ui['NodeInfoGrid'].records.push({
-          basic: 'gfd',
-          specific: 'fdfd',
-
-         });
-
          w2ui['NodeInfoGrid'].refresh();
          $('#NodeInfoGridBody').w2render('NodeInfoGrid');
+
+
+         $.ajax({
+           url: 'ajax/read_xml.php',
+           type: 'GET',
+           dataType: 'json',
+           success: function(data){
+             $.each(data, function (i, record) {
+               w2ui['NodeInfoGrid'].records.push({
+                 basic: record.basic,
+                 generic: record.generic,
+                 specific: record.specific,
+                });
+             })
+             w2ui['NodeInfoGrid'].refresh();
+
+           }
+
+         })
 
     });
     </script>
