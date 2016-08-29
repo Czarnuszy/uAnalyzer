@@ -21,6 +21,8 @@ class NodeInfo
             $this->readCSVdata();
             $this->readBasDev();
             $this->readGenDev();
+    //      echo json_encode($this->amountDev);
+
         }
     }
 
@@ -30,7 +32,7 @@ class NodeInfo
             $this->xml = simplexml_load_file($file);
          //print_r($xml);
         } else {
-            exit('Failed to open file.');
+            echo json_encode('Failed to open file.');
         }
     }
 
@@ -149,15 +151,24 @@ class NodeInfo
         $tmp = array(
           "basic" => (string)$this->byte4[$i],
           "generic" => (string)$this->byte5[$i],
-          "specific" => (string)$this->byte6[$i],
+          "specific" => (string)$this->byte6[$i]
 
         );
         $tab[] = $tmp;
 
       }
 
+      $tmp = array(
+
+        "basic" => 'ds',//(string)$this->byte4[$i],
+        "generic" => 'ds',//(string)$this->byte5[$i],
+        "specific" => 'ds',//(string)$this->byte6[$i]
+
+      );
+
 
       echo json_encode($tab);
+
     }
 
 }
@@ -167,8 +178,8 @@ $xmlp = '../pyzwave/ZWave_custom_cmd_classes.xml';
 
 $obj = new NodeInfo($xmlp);
 
-
-
+//echo phpinfo();
 $obj->return_data();
 
-;
+
+?>

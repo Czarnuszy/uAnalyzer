@@ -18,9 +18,10 @@
       $max = readForLines($csvFile) ;
       echo $max;
 *////////////////////////////////
-      $fileName = $_POST['DisplayedRecords'];
-      $fileNametxt = substr($fileName, 0, -4);
-      $fileNametxt = $fileNametxt.".txt";
+      $fileNametxt = $_POST['DisplayedRecords'];
+    //  $fileNametxt = substr($fileName, 0, -4);
+  //  $fileNametxt = '../data/SaveData/'.$fileNametxt.'.txt';
+    //  $fileNametxt = '../data/SaveData/'.$fileNametxt.".txt";
       $fileID = fopen($fileNametxt, "r") or die("Unable to open file!");
       $homeid = fgets($fileID);
       $amount_lines = fgets($fileID);

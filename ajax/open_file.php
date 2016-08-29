@@ -1,9 +1,10 @@
 <?php
 $directory = '../data/Saves';
 $scanned_directory = array_diff(scandir($directory), array('..', '.'));
+//$scanned_directory = array_diff($scanned_directory, array('zlfFiles', 'txtFiles'));
 $amount_files = count($scanned_directory);
 $fi = '../data/Saves/'.$scanned_directory[2];
-
+echo json_encode($scanned_directory);
 date_default_timezone_set('America/New_York');
 
 if (file_exists($fi)) {
@@ -14,35 +15,40 @@ if (file_exists($fi)) {
 <html>
 <?php
 
-function getSymbolByQuantity($bytes) {
+function getSymbolByQuantity($bytes)
+{
     $symbols = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB');
-    $exp = floor(log($bytes)/log(1024));
+    $exp = floor(log($bytes) / log(1024));
 
-    return sprintf('%.2f '.$symbol[$exp], ($bytes/pow(1024, floor($exp))));
+    return sprintf('%.2f '.$symbol[$exp], ($bytes / pow(1024, floor($exp))));
 }
 //$disk_space = disk_free_space("/") ;
-$total_disk_space = disk_total_space("/");
-$bytes = disk_free_space("/");
-  $si_prefix = array( 'B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB' );
+
+  $total_disk_space = disk_total_space('/');
+  $bytes = disk_free_space('/');
+  $si_prefix = array('B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB');
   $base = 1024;
-  $class = min((int)log($bytes , $base) , count($si_prefix) - 1);
-  $total = min((int)log($total_disk_space , $base) , count($si_prefix) - 1);
+  $class = min((int) log($bytes, $base), count($si_prefix) - 1);
+  $total = min((int) log($total_disk_space, $base), count($si_prefix) - 1);
 
-  echo sprintf('<div id="freespace"><li class="list-group-item">Free space: '.'%1.2f' , $bytes / pow($base,$class)) . ' / ' .
-   getSymbolByQuantity($total_disk_space). '  '.  $si_prefix[$class].'</li></div>';
-for ($i = 2; $i <= $amount_files; $i += 3) {
-    $f = $scanned_directory[$i];
-    $fn = substr($f, 0, -4);
-    $d = $scanned_directory[$i + 1];
-    $fi = '../data/Saves/'.$scanned_directory[$i];
+  echo sprintf('<div id="freespace"><li class="list-group-item">Free space: '.'%1.2f', $bytes / pow($base, $class)).' / '.
+  getSymbolByQuantity($total_disk_space).'  '.$si_prefix[$class].'</li></div>';
 
-//    $t = date("F d Y H:i:s.", filectime($fi));
-    echo     '<button class='.'filesButtons'.' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.'<br>'.$t.'</p>'.
-        '</button>'.'<button class='.'"delFilButtons" data-id ='."$fn".'> <p><i class="fa fa-trash-o"></i><br> Delete'.'</button>'.
-        '</button>'.'<button class='.'"renameFileBtn" data-id ='."$fn".'> <p><i class="fa fa-file-text-o"></i><br> Rename'.'</button>'.
-    '</button>'.'<button class='.'"sendFileBtn" data-id ='."$fn".'> <p><i class="fa fa-paper-plane"></i><br> Send'.'</button>'.
-        '</br></div>';
-}
+  for ($i = 2; $i <= $amount_files+1;  ++$i) {
+      $filesize = filesize('../data/Saves/'.$scanned_directory[$i]);
+      $filesize = getSymbolByQuantity($filesize);
+      $f = $scanned_directory[$i];
+      $fn = substr($f, 0, -4);
+      $d = $scanned_directory[$i];
+      $fi = '../data/Saves/'.$scanned_directory[$i];
+
+  //    $t = date("F d Y H:i:s.", filectime($fi));
+      echo     '<button class='.'filesButtons'.' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.' '.$filesize.'<br>'.$t.'</p>'.
+          '</button>'.'<button class='.'"delFilButtons" data-id ='."$fn".'> <p><i class="fa fa-trash-o"></i><br> Delete'.'</button>'.
+          '</button>'.'<button class='.'"renameFileBtn" data-id ='."$fn".'> <p><i class="fa fa-file-text-o"></i><br> Rename'.'</button>'.
+      '</button>'.'<button class='.'"sendFileBtn" data-id ='."$fn".'> <p><i class="fa fa-paper-plane"></i><br> Send'.'</button>'.
+          '</br></div>';
+  }
   ?>
 </html>
 
@@ -71,8 +77,9 @@ $('.filesButtons').on('click', function(){
     var atr = '../data/Saves/' + $(this).attr('data-fid');
 		var atrh = $(this).attr('data-filehid');
     var NumberofLines = 0;
-
-    open_file(atr);
+    atrh = atrh.slice(0, -4);
+    var atr2 = '../data/SaveData/' + atrh + '.txt';
+    open_file(atr,atr2 );
 		$("#opened_filename").text("Opened file: " + atrh.slice(0, -4));
 
 
@@ -81,7 +88,7 @@ w2popup.close();
 });
 
 $('.delFilButtons').on('click', function () {
-	var t = '../data/Saves/' + $(this).attr('data-id');
+	var t = $(this).attr('data-id');
 
         $.SmartMessageBox({
           title: "Z-Wave Packet Analyzer",
@@ -107,7 +114,7 @@ $('.delFilButtons').on('click', function () {
 })
 
 $('.renameFileBtn').on('click', function () {
-	var t = '../data/Saves/' + $(this).attr('data-id');
+	var t =  $(this).attr('data-id');
 
 	$.SmartMessageBox({
     title : "Z-Wave Packet Analyzer",
@@ -118,7 +125,6 @@ $('.renameFileBtn').on('click', function () {
 	}, function(ButtonPress, Value) {
 
 	if (ButtonPress === "Save") {
-		Value = '../data/Saves/' + Value;
 		$.ajax({
 			url: 'ajax/delete_file.php',
 			type: 'POST',

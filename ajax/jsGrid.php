@@ -72,10 +72,11 @@ $(function () {
     // initialization
     $().w2grid(config.grid);
 		var atr = '../zniffer/data/zniffer.csv';
+		var atr2 = '../zniffer/data/zniffer.txt';
 		var NumberofLines = 0;
     w2ui.grid.lock('Getting ready.', true);
   //  progrssInt = setInterval(function() {progressbar(pd);}, 200);
-		open_file(atr);
+		open_file(atr, atr2);
     w2ui.grid.refresh();
     $('#gbod').w2render('grid');
 });

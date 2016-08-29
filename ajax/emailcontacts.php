@@ -31,6 +31,9 @@ if ($t == 'up') {
 }
 
 //send2zwave();
+
+
+
 function send2zwave()
 {
     $fname = $_POST['fileName'];
@@ -42,20 +45,20 @@ function send2zwave()
     $email->isSMTP();
     $email->SMTPDebug = 2;
     $email->Debugoutput = 'html';
-//$email->Host = 'smtp.gmail.com';
-$email->Host = gethostbyname('smtp.gmail.com');
+    //$email->Host = 'smtp.gmail.com';
+    $email->Host = gethostbyname('smtp.gmail.com');
     $email->Port = 547;
     $email->SMTPSecure = 'tls';
     $email->SMTPAuth = true;
     $email->Username = 'zw@gmail.com';
     $email->Password = '';
 
-    $email->setFrom('zw@gmail.com', 'mee');
+  //  $email->setFrom($userMail);
     $email->addAddress('zw@gmail.com', 'Me');
 
-    $email->addAttachment($csvFile);
+    //$email->addAttachment($csvFile);
     $email->addAttachment($txtFile);
-    $email->addAttachment($zlfFile);
+  //  $email->addAttachment($zlfFile);
     $email->isHTML(true);
 
     $body = 'Help me with my zwave!';
@@ -71,17 +74,48 @@ $email->Host = gethostbyname('smtp.gmail.com');
 
 function contact()
 {
-    if (isset($_POST['fname'])) {
-        //TODO change to PHPmailer system.
-    $to = 'michalmagni@gmail.com';
+  $email = new PHPMailer();
+
+  $userfName = $_POST['fname'];
+  $userlName = $_POST['lname'];
+  $usereMail = $_POST['email'];
+  $message = $_POST['message'];
+
+  $email->isSMTP();
+  $email->SMTPDebug = 2;
+  $email->Debugoutput = 'html';
+  //$email->Host = 'smtp.gmail.com';
+  $email->Host = gethostbyname('smtp.gmail.com');
+  $email->Port = 547;
+  $email->SMTPSecure = 'tls';
+  $email->SMTPAuth = true;
+  $email->Username = 'zw@gmail.com';
+  $email->Password = '';
+
+  //  $email->setFrom($userMail);
+  $email->addAddress('zw@gmail.com', 'Me');
+
+  $email->isHTML(true);
+
+  $body = 'fdf'; //$message;
+  $email->Subject = 'Zwave ';
+  $email->msgHTML($body);
+
+  if (!$email -> send()) {
+      echo 'Mailer Error: '.$email->ErrorInfo;
+  } else {
+    echo "DOne";
+  }
+
+  /*  $to = 'michalmagni@gmail.com';
 
         $subject = 'Z-Wave Toolbox'.'.'.$_POST['fname'];
         $message = $_POST['message']."\n\n".'Regards, '.$_POST['fname'].' '.$_POST['lname'].'.';
         $headers = 'From: '.$_POST['fname']."\r\n".'Reply-To: '.$_POST['email']."\r\n".'X-Mailer: PHP/'.phpversion();
 
         mail($to, $subject, $message, $headers);
-        echo 'Done';
-    } else {
-        echo 'error';
-    }
+        echo 1;*/
+
 }
+
+?>

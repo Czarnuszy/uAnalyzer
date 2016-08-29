@@ -1,15 +1,16 @@
 <?php
 $rename = $_POST['todo'];
 $fname = $_POST['fileName'];
-$csvname = $fname. ".csv";
-$txtname = $fname. ".txt";
-$zlfname = $fname. ".zlf";
+
+$csvname = '../data/Saves/'. $fname. ".csv";
+$txtname = '../data/SaveData/' .$fname. ".txt";
+$zlfname = '../data/SaveData/' .$fname. ".zlf";
 
 if ($rename == 1){
   $newName = $_POST['newName'];
-  $newCSVname = $newName. ".csv";
-  $newTXTname = $newName. ".txt";
-  $newZLFname = $newName. ".zlf";
+  $newCSVname ='../data/Saves/'. $newName. ".csv";
+  $newTXTname = '../data/SaveData/'.$newName. ".txt";
+  $newZLFname =  '../data/SaveData/'. $newName. ".zlf";
 
   rename($csvname, $newCSVname);
   rename($txtname, $newTXTname);

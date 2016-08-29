@@ -7,7 +7,7 @@
 
 		<center>
 
-            <div id="NodeInfoGridBody" style="width: 100%; height: 600px;"></div>
+            <div id="NodeInfoGridBody" style="width: 100%; height: 400px;"></div>
 
 
 		</center>
@@ -16,8 +16,8 @@
         NodeInfoGrid: {
             name: 'NodeInfoGrid',
             show: {
-                footer    : true,
-                toolbar    : true,
+            //    footer    : true,
+              //  toolbar    : true,
                  lineNumbers  : true,
             },
             columns: [

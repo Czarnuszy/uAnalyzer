@@ -38,6 +38,7 @@ function readSomeLines($csvFile)
 }
 
 $file_name = $_POST['data'];
+//$file_name = '../data/Saves/'.$file_name.'.csv';
 $csvFile = $file_name;
 if ($fsize > 2000) {
     $AnalyzerData = readSomeLines($csvFile);

@@ -35,7 +35,7 @@
                         <td>Email</td>
                         <td>
                           <div class="input-group input-group-sm">
-                            <input type="email" id="emailInput" class="form-control" placeholder="E-Mail" aria-describedby="sizing-addon3">
+                            <input type="email" id="emailInput" class="form-control" placeholder="E-Mail" aria-describedby="sizing-addon3" required>
                           </div>
                         </td>
                       </tr>

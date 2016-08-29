@@ -1,16 +1,4 @@
 
-
-<?php
-
-    session_start();
-
-    if (!isset($_SESSION['logged'])) {
-        header('Location: login.php');
-        exit();
-    }
-
-?>
-
 <section id="widget-grid" class="">
 	<div class="row">
 		<article class="col-sm-12">
@@ -41,7 +29,7 @@
 					<!-- widget content -->
 					<div class="widget-body no-padding">
 
-						<form method="post" id="contact-form" class="smart-form">
+						<form  id="contact-form" class="smart-form">
 
 							<header>
 									<h1>
@@ -59,13 +47,13 @@
 									<section class="col col-6">
 										<label class="label">Name</label>
 										<label class="input"> <i class="icon-prepend fa fa-user"></i>
-											<input type="text" name="fname" id="fname" placeholder="First name">
+											<input type="text" name="fname" id="fname" placeholder="First name" required>
 										</label>
 									</section>
 									<section class="col col-6">
 										<label class="label">Last Name</label>
 										<label class="input"> <i class="icon-prepend fa fa-user"></i>
-											<input type="text" name="lname" id="lname" placeholder="Last name">
+											<input type="text" name="lname" id="lname" placeholder="Last name" required>
 										</label>
 									</section>
 								</div>
@@ -88,7 +76,7 @@
 									<section class="col col-4">
 										<label class="label">E-mail</label>
 										<label class="input"> <i class="icon-prepend fa fa-envelope-o"></i>
-											<input type="email" id="email "name="email" placeholder="E-mail">
+											<input type="email" id="emailIN   "name="emailIN" placeholder="E-mail" required>
 										</label>
 									</section>
 
@@ -100,7 +88,7 @@
 									<label class="label">Comments/Enquiries</label>
 									<label class="textarea">
 										<i class="icon-append fa fa-comment"></i>
-										<textarea rows="4" name="message" id="message"></textarea>
+										<textarea rows="4" name="message" id="message" required></textarea>
 									</label>
 								</section>
 								<section>
@@ -144,11 +132,26 @@
 	var $fName = $('#fname');
 	var $lName = $('#lname');
 	var $msg = $('#message');
-	var $email= $('#email');
+	var $email= $('#emailIN');
+  var $phone = $('#cellphone');
+  $.ajax({
+    url: 'data/userconfig.json',
+    dataType: 'json',
+    success: function (data) {
+        $fName.val(data.fName);
+        $lName.val(data.lName);
+        $email.val(data.email);
+        $phone.val(data.phoneNumber);
+    },
+    error: function () {
 
-
+    }
+  })
 
 	$('#sendBtn').on('click', function(){
+    console.log($email.val());
+    console.log($fName.val());
+
 		var emailData = {
 			fname: $fName.val(),
 			lname: $lName.val(),
@@ -156,74 +159,81 @@
 			email: $email.val(),
 		};
 
-		$.ajax({
-			type: 'POST',
-			url: 'ajax/emailcontacts.php',
-			data: emailData,
-			success: function(response){
-				console.log(response);
-				console.log('meh');
-			},
-			error: function(er){
-				console.log(er);
-				console.log("merr");
-			}
-		});
+    var $contactForm = $("#contact-form").validate({
+    			// Rules for form validation
+    			rules : {
+    				fname : {
+    					required : true
+    				},
+    				lname : {
+    					required : true
+    				},
+    				email : {
+    					required : true,
+    					email : true
+    				},
+    				message : {
+    					required : true,
+    					minlength : 10
+    				}
+    			},
 
+    			// Messages for form validation
+    			messages : {
+    				fname : {
+    					required : 'Please enter your name',
+    				},
+    				lname : {
+    					required : 'Please enter your last name',
+    				},
+    				email : {
+    					required : 'Please enter your email address',
+    					email : 'Please enter a VALID email address'
+    				},
+    				message : {
+    					required : 'Please enter your message'
+    				}
+    			},
+
+    			// Ajax form submition
+    			submitHandler : function(form) {
+    				$(form).ajaxSubmit({
+    					success : function() {
+
+                send();
+    					}
+    				});
+    			},
+
+    			// Do not change code below
+    			errorPlacement : function(error, element) {
+    				error.insertAfter(element.parent());
+    			}
+    		});
+
+    function send(){
+  		$.ajax({
+  			type: 'POST',
+  			url: 'ajax/emailcontacts.php',
+  			data: emailData,
+  			success: function(response){
+  				console.log(response);
+  				console.log('ok');
+          $("#contact-form").addClass('submited');
+
+  			},
+  			error: function(er){
+          alert(er);
+  				console.log(er);
+  				console.log("merr");
+  			}
+  		});
+    }
 	})
 
 
-/*	var $contactForm = $("#contact-form").validate({
-			// Rules for form validation
-			rules : {
-				fname : {
-					required : true
-				},
-				lname : {
-					required : true
-				},
-				email : {
-					required : true,
-					email : true
-				},
-				message : {
-					required : true,
-					minlength : 10
-				}
-			},
 
-			// Messages for form validation
-			messages : {
-				fname : {
-					required : 'Please enter your name',
-				},
-				lname : {
-					required : true
-				},
-				email : {
-					required : 'Please enter your email address',
-					email : 'Please enter a VALID email address'
-				},
-				message : {
-					required : 'Please enter your message'
-				}
-			},
 
-			// Ajax form submition
-			submitHandler : function(form) {
-				$(form).ajaxSubmit({
-					success : function() {
-						$("#contact-form").addClass('submited');
-					}
-				});
-			},
-
-			// Do not change code below
-			errorPlacement : function(error, element) {
-				error.insertAfter(element.parent());
-			}
-		});
-*.
 
 
 

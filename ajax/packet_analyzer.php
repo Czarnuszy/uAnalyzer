@@ -889,21 +889,22 @@ return (ZWCommandDescription);
 
 
 
-function open_file(atr){
+function open_file(atr, atr2){
 	progressbar(0, 100);
 
 	w2ui.grid.lock("Loading. Please wait.", true);
 	var t0 = performance.now();
+
   $.ajax({
 		url: "ajax/files_size.php",
 		type: "POST",
-		data: { DisplayedRecords: atr},
+		data: { DisplayedRecords: atr2},
 		dataType: 'json',
 		success: function(response){
 			NumberofLines= response[1]-1;
 			home_id = String(response[0]);
 		  home_id =	home_id.slice(0, -1);
-
+      console.log(NumberofLines);
 
 			var t1 = performance.now();
 
@@ -930,7 +931,7 @@ function open_file(atr){
 
 
 				var current = 0;
-
+  
 				do_ajax();
 				function do_ajax(){
 
@@ -1098,7 +1099,12 @@ function open_file(atr){
 			}
 
 
-	}
+	},
+  error: function(xhr, status, error) {
+    var err = eval("(" + xhr.responseText + ")");
+    console.log(xhr + " " + status + " " + error);
+    alert(xhr + " " + status + " " + error);
+}
 		});
 
 
@@ -1119,7 +1125,7 @@ function zniffer_status() {
 				radioButton = "stop";
 				status = false;
 			}
-				console.log("status checkin");
+				console.log(" zniffer status checkin");
 				console.log(radioButton);
 		},
 		error: function () {
@@ -1192,36 +1198,31 @@ return status;
 
 		var pagefunction = function() {
 
-	zniffer_status();
+
 
 	$(document).ready(function() {
 
-		$.ajax({
-			url: 'ajax/zniffer_status.php',
-			success: function(response){
-				console.log(response);
-				if (response == 1) {
+				if (zniffer_status()) {
 					$("#play-a1").attr('class', 'btn btn-default btn-xs active');
 					radioButton = "start";
 					load();
 					is_zniffer_on = true;
 					setTimeout(refresh, 1000);
-					console.log("rb " + radioButton);
 
-				}else if (response == 0) {
+				}else if (!zniffer_status()) {
 					$("#stop-a1").attr('class', 'btn btn-default btn-xs active');
 					radioButton = "stop";
 					load();
 					if (is_zniffer_on) {
 						is_zniffer_on = false;
 					}
+
 				}else {
 					console.log("zniffer status error");
 
 				}
 				setInterval(zniffer_status, 8000);
-			}
-		})
+
 
 	});
 

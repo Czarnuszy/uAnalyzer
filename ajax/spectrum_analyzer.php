@@ -297,20 +297,43 @@ function stop_spectrum(){
 }
 
 
-var pagefunction = function() {
+function spectrum_status() {
+	var status;
+	$.ajax({
+		url: 'ajax/spectrum_status.php',
+		success: function(response){
+			if (response == 1){
+				sradioButton = "start";
+				status = true;
+			}
+			else if (response == 0){
+				sradioButton = "stop";
+				status = false;
+			}
+				console.log("spectrum status checkin");
+				console.log(sradioButton);
+		},
+		error: function () {
+			console.log("spectrum status error");
+		}
 
+});
+return status;
+}
+
+
+var pagefunction = function() {
+  read_time("read");
+  read_time("readStartTime");
 	$(document).ready(function() {
 		$( "#spectrum-body" ).load( "ajax/script_spectrum.php" );
-		$.ajax({
-			url: 'ajax/spectrum_status.php',
-			success: function(response){
-				console.log(response);
-				if (response == 1) {
+
+				if (spectrum_status()) {
 					$("#play-a3").attr('class', 'btn btn-default btn-xs active');
 					sradioButton = "start";
 					load();
 					myInterval = setInterval(load, 1000);
-				}else if (response == 0) {
+				}else if (!spectrum_status()) {
 					$("#stop-a3").attr('class', 'btn btn-default btn-xs active');
 					sradioButton = "stop";
 					load();
@@ -318,8 +341,9 @@ var pagefunction = function() {
 					console.log("zniffer status error");
 
 				}
-			}
-		})
+        setInterval(spectrum_status, 8000);
+
+
 
 	});
 
