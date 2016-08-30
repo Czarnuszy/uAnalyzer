@@ -4,7 +4,7 @@
       <section class="col col-6">
           <div id="">
             <form id="timeInput">
-              Time: <input type="time" id="myTime" value="11:00:00">
+               <input type="time" id="myTime" value="11:00:00">
             </form>
 
 

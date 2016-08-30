@@ -137,13 +137,12 @@ $homeid = substr($homeid, 0, -1);
 
 
 <script type="text/javascript">
-var radioButton = "stop";
+var radioButton = "";
 
 var is_zniffer_on = false;
 
 
 var home_id= <?php  echo "'".$homeid."'"; ?>;
-
  $('input').on('change', function() {
 		radioButton = $('input[name=button]:checked').val();
 		console.log(radioButton);
@@ -187,9 +186,96 @@ function parse_sqnum(x, data){
 	return color;
 }
 
+function refresh(){
 
+  if(is_zniffer_on){
+    var grid_rec = w2ui.grid.records.length;
+    var NumberofLines;
+    if(w2ui.grid.records.length > 0)
+      w2ui.grid.unlock();
 
-  function refresh(){
+             $.ajax({
+                   url: "ajax/jsGridData.php",
+                   type: 'POST',
+                   data: {startline: grid_rec},
+                   dataType:"json",
+                   success: function(data) {
+                     if (data == null){
+                       console.log("null");
+                     }else{
+
+                    NumberofLines =  data.length;
+                    console.log("records: " + NumberofLines);
+                    var color = "";
+                    var ZWCommandParsed = "";
+                    var ZWparsedRoute = "";
+                    var ZWparsedSource = "";
+                    var ZWparsedDestination = "";
+
+                    console.log("more");
+                    grid_rec = w2ui.grid.records.length;
+                    for(x=0; x < NumberofLines; x++)
+                    {
+                      color = "#AD3232";
+                      if (data[x][2] != home_id)
+                      {
+                        ZWparsedSource = '-';
+                        ZWparsedDestination = '-';
+                        ZWparsedRoute = '-';
+                      }
+                      else
+                      {
+                        color = parse_sqnum(x, data);
+                        ZWCommandParsed = parseCommand(data[x]);
+                        ZWparsedRoute = parseRoute(data[x]);
+                        ZWparsedSource = parseInt(data[x][3],10);
+                        ZWparsedDestination = parseInt(data[x][5],10);
+                      }
+
+                      function add_rec(){
+                        w2ui['grid'].add({
+                          recid : grid_rec,
+                          id: grid_rec,
+                          rssi: data[x][1],
+                          data: data[x][0],
+                          source: ZWparsedSource,
+                          route: ZWparsedRoute,
+                          destination: ZWparsedDestination,
+                          command: ZWCommandParsed,
+                          h_id: data[x][2],
+                          style: "background-color: " + color,
+                          });
+                        }
+                      //	setTimeout(add_rec, 100);
+                        add_rec();
+                        grid_rec++;
+                   }
+
+                    var datalen = w2ui.grid.records.length;
+                    $.ajax({
+                          type: "POST",
+                          url: "ajax/homeid_save.php",
+                          data: { homeid: home_id, gridlen: datalen },
+                          success: function(response) {
+
+                         },
+                         error: function(er){
+                           console.log("save error" + er);
+                         }
+                          });
+                      }
+                      setTimeout(refresh, 500);
+                      //refresh();
+                  },
+                  error: function (err) {
+                    console.log(err);
+                  }
+
+              });
+        }
+}
+
+  /*function refresh(){
 
 		if(is_zniffer_on){
 			var grid_rec = w2ui.grid.records.length;
@@ -198,16 +284,25 @@ function parse_sqnum(x, data){
 				w2ui.grid.unlock();
 
 							 $.ajax({
-								     url: "ajax/jsGridData.php",
-								     type: 'POST',
-								     data: {startline: grid_rec},
-								     dataType:"json",
-								     success: function(data) {
-											 if (data == null){
-												 console.log("null");
-											 }else{
+								     url: "../zniffer/data/zniffer.csv",
+								     type: 'GET',
 
+								     success: function(response) {
+											//  if (data == null){
+											// 	 console.log("null");
+											//  }else{
+                      var data = CSVToArray( response );
+                      console.log(home_id);
+                      console.log(data[0][2]);
+
+                  //    console.log(data);
+                      console.log(data.length);
 									 		NumberofLines =  data.length;
+                      grid_rec = w2ui.grid.records.length;
+
+                      if (NumberofLines > grid_rec) {
+
+
 											console.log("records: " + NumberofLines);
 											var color = "";
 					            var ZWCommandParsed = "";
@@ -215,9 +310,15 @@ function parse_sqnum(x, data){
 						        	var ZWparsedSource = "";
 						        	var ZWparsedDestination = "";
 
+                      var rec2load = NumberofLines - grid_rec -1;
+                      console.log(rec2load);;
+                      console.log(NumberofLines);
+                      if (rec2load >= 5) {
+                        rec2load = 5;
+                      }
+
 									 		console.log("more");
-										 	grid_rec = w2ui.grid.records.length;
-											for(x=0; x < NumberofLines; x++)
+											for(x=grid_rec; x <NumberofLines; x++)
 											{
 												color = "#AD3232";
 												if (data[x][2] != home_id)
@@ -253,20 +354,20 @@ function parse_sqnum(x, data){
 													add_rec();
 													grid_rec++;
 										 }
-
+                   }
 											var datalen = w2ui.grid.records.length;
-											$.ajax({
-														type: "POST",
-														url: "ajax/homeid_save.php",
-														data: { homeid: home_id, gridlen: datalen },
-														success: function(response) {
-
-													 },
-													 error: function(er){
-														 console.log("save error" + er);
-													 }
-														});
-												}
+											// $.ajax({
+											// 			type: "POST",
+											// 			url: "ajax/homeid_save.php",
+											// 			data: { homeid: home_id, gridlen: datalen },
+											// 			success: function(response) {
+                      //
+											// 		 },
+											// 		 error: function(er){
+											// 			 console.log("save error" + er);
+											// 		 }
+											// 			});
+											//	}
 												setTimeout(refresh, 500);
 												//refresh();
 								    },
@@ -277,9 +378,9 @@ function parse_sqnum(x, data){
 								});
 					}
  }
-
+*/
 	function load(){
-		$.ajax({
+	/*	$.ajax({
 			url: 'ajax/read_real_file_size.php',
 			type: 'GET',
 			success: function(realsize){
@@ -289,12 +390,12 @@ function parse_sqnum(x, data){
 					data: { homeid: home_id,  gridlen: realsize},
 					success: function(){
 						console.log("load full ok");
-						$( "#body-w" ).load( "ajax/jsGrid.php" );
 					}
 				});
 			}
 
-		});
+		});*/
+    $( "#body-w" ).load( "ajax/jsGrid.php" );
 
 	}
 
@@ -325,11 +426,11 @@ function parse_sqnum(x, data){
 				console.log("start after stop");
 			    w2ui.grid.clear();
 					w2ui.grid.lock('Getting ready.', true);
-					setTimeout(function(){
-						is_zniffer_on = true;
-						refresh();
-							//  myInterval = setInterval(refresh, 500);
-							}, 2500);
+          load();
+          is_zniffer_on = true;
+
+          setTimeout(refresh, 2600);
+
 				}
 			else if (radioButton == "pause") {
 					console.log("start after pause");
@@ -931,7 +1032,7 @@ function open_file(atr, atr2){
 
 
 				var current = 0;
-  
+
 				do_ajax();
 				function do_ajax(){
 
@@ -949,6 +1050,7 @@ function open_file(atr, atr2){
 							data: { data: atr, fsize: NumberofLines, tim: rec  , gridLen: val[current]},
 							dataType: 'json',
 							success: function(data){
+
 								console.log(rec_to_load);
 								console.log("val" + val[current]);
 								console.log("number of lines " + NumberofLines);
@@ -1041,7 +1143,6 @@ function open_file(atr, atr2){
 						data: { data: atr, fsize: NumberofLines},
 						dataType: 'json',
 						success: function(data){
-
 							if(w2ui.grid.records.length > 0)
 								w2ui.grid.clear();
 
@@ -1100,41 +1201,209 @@ function open_file(atr, atr2){
 
 
 	},
-  error: function(xhr, status, error) {
-    var err = eval("(" + xhr.responseText + ")");
-    console.log(xhr + " " + status + " " + error);
-    alert(xhr + " " + status + " " + error);
+    error: function(xhr, status, error) {
+      var err = eval("(" + xhr.responseText + ")");
+      console.log(xhr + " " + status + " " + error);
+      alert(xhr + " " + status + " " + error);
+    }
+
+  });
+
 }
-		});
-
-
-
-
-	}
 
 function zniffer_status() {
-	var status;
+	var status=2
+  ;
 	$.ajax({
 		url: 'ajax/zniffer_status.php',
 		success: function(response){
-			if (response == 1){
+console.log(response);
+  		if (response === 1){
 				radioButton = "start";
-				status = true;
+				status = 1;
 			}
-			else if (response == 0){
+			else if (response === 0){
 				radioButton = "stop";
-				status = false;
+				status = 0;
 			}
 				console.log(" zniffer status checkin");
 				console.log(radioButton);
 		},
-		error: function () {
-			console.log("zniffer status error");
-		}
+    error: function(xhr, status, error) {
+      var err = eval("(" + xhr.responseText + ")");
+      console.log(xhr + " " + status + " " + error);
+      alert(xhr + " " + status + " " + error);
+    }
 
-});
+  });
 return status;
 }
+
+
+function CSVToArray( strData, strDelimiter ){
+       // Check to see if the delimiter is defined. If not,
+       // then default to comma.
+       strDelimiter = (strDelimiter || ",");
+
+       // Create a regular expression to parse the CSV values.
+       var objPattern = new RegExp(
+           (
+               // Delimiters.
+               "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+
+               // Quoted fields.
+               "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+               // Standard fields.
+               "([^\"\\" + strDelimiter + "\\r\\n]*))"
+           ),
+           "gi"
+           );
+
+
+       // Create an array to hold our data. Give the array
+       // a default empty first row.
+       var arrData = [[]];
+
+       // Create an array to hold our individual pattern
+       // matching groups.
+       var arrMatches = null;
+
+
+       // Keep looping over the regular expression matches
+       // until we can no longer find a match.
+       while (arrMatches = objPattern.exec( strData )){
+
+           // Get the delimiter that was found.
+           var strMatchedDelimiter = arrMatches[ 1 ];
+
+           // Check to see if the given delimiter has a length
+           // (is not the start of string) and if it matches
+           // field delimiter. If id does not, then we know
+           // that this delimiter is a row delimiter.
+           if (
+               strMatchedDelimiter.length &&
+               strMatchedDelimiter !== strDelimiter
+               ){
+
+               // Since we have reached a new row of data,
+               // add an empty row to our data array.
+               arrData.push( [] );
+
+           }
+
+           var strMatchedValue;
+
+           // Now that we have our delimiter out of the way,
+           // let's check to see which kind of value we
+           // captured (quoted or unquoted).
+           if (arrMatches[ 2 ]){
+
+               // We found a quoted value. When we capture
+               // this value, unescape any double quotes.
+               strMatchedValue = arrMatches[ 2 ].replace(
+                   new RegExp( "\"\"", "g" ),
+                   "\""
+                   );
+
+           } else {
+
+               // We found a non-quoted value.
+               strMatchedValue = arrMatches[ 3 ];
+
+           }
+
+
+           // Now that we have our value string, let's add
+           // it to the data array.
+           arrData[ arrData.length - 1 ].push( strMatchedValue );
+       }
+
+       // Return the parsed data.
+       return( arrData );
+   }
+
+
+function BETA_open_file(arg, atr2){
+  w2ui.grid.lock("Loading. Please wait.", true);
+
+  $.ajax({
+    url: "ajax/files_size.php",
+    type: "POST",
+    data: { DisplayedRecords: atr2},
+    dataType: 'json',
+    success: function(response){
+      NumberofLines= response[1]-1;
+      home_id = String(response[0]);
+      home_id =	home_id.slice(0, -1);
+
+
+
+  $.ajax({
+  	 url: arg,
+  	 type: 'GET',
+  	//dataType: 'json',
+
+  	 success: function(responseText) {
+
+       if(w2ui.grid.records.length > 0)
+         w2ui.grid.clear();
+
+      var color = "#AD3232";
+      var ZWCommandParsed = "";
+      var ZWparsedRoute = "";
+      var ZWparsedSource = "";
+      var ZWparsedDestination = "";
+
+  		var data = CSVToArray( responseText );
+      console.log(data.length);
+      for(x=0; x<	data.length; x++){
+
+        color = "#AD3232";
+        if (data[x][2] != home_id)
+        {
+          ZWparsedSource = '-';
+          ZWparsedDestination = '-';
+          ZWparsedRoute = '-';
+        }
+        else
+        {
+          color = parse_sqnum(x, data);
+          ZWCommandParsed = parseCommand(data[x]);
+          ZWparsedRoute = parseRoute(data[x]);
+          ZWparsedSource = parseInt(data[x][3],10);
+          ZWparsedDestination = parseInt(data[x][5],10);
+        }
+        w2ui['grid'].records.push({
+          recid : x+1,
+          id: x+1,
+          rssi: data[x][1],
+          data: data[x][0],
+          source: ZWparsedSource,
+          route: ZWparsedRoute,
+          destination: ZWparsedDestination,
+          command: ZWCommandParsed,
+          h_id: data[x][2],
+          style: "background-color: " + color
+         });
+       }
+      w2ui.grid.reload();
+      w2ui.grid.unlock();
+
+  	 },
+
+  	error: function(xhr, status, error) {
+  		var err = eval("(" + xhr.responseText + ")");
+
+  	 // alert("1" + err.Message);
+  		console.log(xhr + " " + status + " " + error);
+  	}
+  	});
+}
+});
+}
+
+
 
 
 
@@ -1202,16 +1471,22 @@ return status;
 
 	$(document).ready(function() {
 
-				if (zniffer_status()) {
+    var test = function(){
+      return 1
+    }
+
+console.log(zniffer_status());
+				if (zniffer_status() == 1) {
 					$("#play-a1").attr('class', 'btn btn-default btn-xs active');
 					radioButton = "start";
 					load();
 					is_zniffer_on = true;
 					setTimeout(refresh, 1000);
-
-				}else if (!zniffer_status()) {
+          console.log('znif on');
+				}else if (zniffer_status() == 0) {
 					$("#stop-a1").attr('class', 'btn btn-default btn-xs active');
 					radioButton = "stop";
+          console.log('znif oof');
 					load();
 					if (is_zniffer_on) {
 						is_zniffer_on = false;

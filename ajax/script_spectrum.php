@@ -24,14 +24,14 @@ for ($i = 0; $i < $max; ++$i) {
     // c$AnalyzerData.sizeofode..$AnalyzerData.sizeof.
    $AnalyzerData[$i][0] = (float) $AnalyzerData[$i][0];
     $AnalyzerData[$i][0] = (int) $AnalyzerData[$i][0] / 1000;
-    $rssi = $AnalyzerData[$i][1];
+/*    $rssi = $AnalyzerData[$i][1];
     $rssi = $rssi * 1.7;
     $rssi = $rssi - 30;
     $rssi = (int) $rssi;
     if ($rssi > 100) {
         $rssi = 100;
     }
-    $AnalyzerData[$i][1] = $rssi;
+    $AnalyzerData[$i][1] = $rssi;*/
 }
 
 $csvFileMax = '../zniffer/data/MaxAnalyzerData.csv';
@@ -41,14 +41,14 @@ $maxM = count($MaxAnalyzerData) - 1;
 for ($i = 0; $i < $max; ++$i) {
     $MaxAnalyzerData[$i][0] = (float) $MaxAnalyzerData[$i][0];
     $MaxAnalyzerData[$i][0] = (int) $MaxAnalyzerData[$i][0] / 1000;
-    $mrssi = $MaxAnalyzerData[$i][1];
+  /*  $mrssi = $MaxAnalyzerData[$i][1];
     $mrssi = $mrssi * 1.7;
     $mrssi = $mrssi - 30;
     $mrssi = (int) $mrssi;
     if ($mrssi > 100) {
         $mrssi = 100;
     }
-    $MaxAnalyzerData[$i][1] = $mrssi;
+    $MaxAnalyzerData[$i][1] = $mrssi;*/
 }
 
 //copy($csvFile, $csvFileMax);

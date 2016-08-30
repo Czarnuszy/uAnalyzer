@@ -76,7 +76,8 @@ $(function () {
 		var NumberofLines = 0;
     w2ui.grid.lock('Getting ready.', true);
   //  progrssInt = setInterval(function() {progressbar(pd);}, 200);
-		open_file(atr, atr2);
+	//	open_file(atr, atr2);
+		BETA_open_file(atr, atr2);
     w2ui.grid.refresh();
     $('#gbod').w2render('grid');
 });

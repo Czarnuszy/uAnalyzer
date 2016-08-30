@@ -4,7 +4,7 @@ $scanned_directory = array_diff(scandir($directory), array('..', '.'));
 //$scanned_directory = array_diff($scanned_directory, array('zlfFiles', 'txtFiles'));
 $amount_files = count($scanned_directory);
 $fi = '../data/Saves/'.$scanned_directory[2];
-echo json_encode($scanned_directory);
+//echo json_encode($scanned_directory);
 date_default_timezone_set('America/New_York');
 
 if (file_exists($fi)) {
@@ -35,15 +35,16 @@ function getSymbolByQuantity($bytes)
   getSymbolByQuantity($total_disk_space).'  '.$si_prefix[$class].'</li></div>';
 
   for ($i = 2; $i <= $amount_files+1;  ++$i) {
-      $filesize = filesize('../data/Saves/'.$scanned_directory[$i]);
-      $filesize = getSymbolByQuantity($filesize);
+      $filesizeB = filesize('../data/Saves/'.$scanned_directory[$i]);
+      $filesize = getSymbolByQuantity($filesizeB);
       $f = $scanned_directory[$i];
       $fn = substr($f, 0, -4);
       $d = $scanned_directory[$i];
       $fi = '../data/Saves/'.$scanned_directory[$i];
+      $fileSizePrefix = min((int) log($filesizeB, $base), count($si_prefix) - 1);
 
   //    $t = date("F d Y H:i:s.", filectime($fi));
-      echo     '<button class='.'filesButtons'.' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.' '.$filesize.'<br>'.$t.'</p>'.
+      echo     '<button class='.'filesButtons'.' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.' | '.$filesize.$si_prefix[$fileSizePrefix].'<br>'.$t.'</p>'.
           '</button>'.'<button class='.'"delFilButtons" data-id ='."$fn".'> <p><i class="fa fa-trash-o"></i><br> Delete'.'</button>'.
           '</button>'.'<button class='.'"renameFileBtn" data-id ='."$fn".'> <p><i class="fa fa-file-text-o"></i><br> Rename'.'</button>'.
       '</button>'.'<button class='.'"sendFileBtn" data-id ='."$fn".'> <p><i class="fa fa-paper-plane"></i><br> Send'.'</button>'.
@@ -79,8 +80,9 @@ $('.filesButtons').on('click', function(){
     var NumberofLines = 0;
     atrh = atrh.slice(0, -4);
     var atr2 = '../data/SaveData/' + atrh + '.txt';
-    open_file(atr,atr2 );
-		$("#opened_filename").text("Opened file: " + atrh.slice(0, -4));
+  //  open_file(atr,atr2 );
+    BETA_open_file(atr, atr2);
+		$("#opened_filename").text("Opened file: " + atrh);
 
 
 w2popup.close();
