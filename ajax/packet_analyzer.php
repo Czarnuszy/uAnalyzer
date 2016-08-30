@@ -1211,24 +1211,52 @@ function open_file(atr, atr2){
 
 }
 
-function zniffer_status() {
-	var status=2
-  ;
+function onloadZnifferStatus(response) {
+  if (response == 1) {
+    $("#play-a1").attr('class', 'btn btn-default btn-xs active');
+    radioButton = "start";
+    load();
+    is_zniffer_on = true;
+    setTimeout(refresh, 1000);
+    console.log('znif on');
+  }else if (response == 0) {
+    $("#stop-a1").attr('class', 'btn btn-default btn-xs active');
+    radioButton = "stop";
+    console.log('znif oof');
+    load();
+    if (is_zniffer_on) {
+      is_zniffer_on = false;
+    }
+
+  }else {
+    console.log("zniffer status error");
+
+  }
+console.log(radioButton);
+return response;
+}
+
+
+function returnZnifferStatus(response){
+  if (response == 1){
+    radioButton = "start";
+
+    console.log('Zniffer ON');
+  }
+  else if (response == 0){
+    radioButton = "stop";
+    console.log('Zniffer OFF');
+
+  }
+  return response;
+}
+
+function zniffer_status(setZnifferStatus) {
+
 	$.ajax({
 		url: 'ajax/zniffer_status.php',
-		success: function(response){
-console.log(response);
-  		if (response === 1){
-				radioButton = "start";
-				status = 1;
-			}
-			else if (response === 0){
-				radioButton = "stop";
-				status = 0;
-			}
-				console.log(" zniffer status checkin");
-				console.log(radioButton);
-		},
+    dataType: 'json',
+		success: setZnifferStatus,
     error: function(xhr, status, error) {
       var err = eval("(" + xhr.responseText + ")");
       console.log(xhr + " " + status + " " + error);
@@ -1236,9 +1264,14 @@ console.log(response);
     }
 
   });
-return status;
 }
 
+function testZniffStat() {
+
+ return Promise.resolve($.ajax({
+     url: "ajax/zniffer_status.php"
+ }));
+}
 
 function CSVToArray( strData, strDelimiter ){
        // Check to see if the delimiter is defined. If not,
@@ -1405,7 +1438,9 @@ function BETA_open_file(arg, atr2){
 
 
 
+function onLoad_zniffer_status(){
 
+}
 
 
 		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -1470,33 +1505,13 @@ function BETA_open_file(arg, atr2){
 
 
 	$(document).ready(function() {
+    var d = testZniffStat();
+console.log(d);
+  zniffer_status(onloadZnifferStatus);
 
-    var test = function(){
-      return 1
-    }
-
-console.log(zniffer_status());
-				if (zniffer_status() == 1) {
-					$("#play-a1").attr('class', 'btn btn-default btn-xs active');
-					radioButton = "start";
-					load();
-					is_zniffer_on = true;
-					setTimeout(refresh, 1000);
-          console.log('znif on');
-				}else if (zniffer_status() == 0) {
-					$("#stop-a1").attr('class', 'btn btn-default btn-xs active');
-					radioButton = "stop";
-          console.log('znif oof');
-					load();
-					if (is_zniffer_on) {
-						is_zniffer_on = false;
-					}
-
-				}else {
-					console.log("zniffer status error");
-
-				}
-				setInterval(zniffer_status, 8000);
+			checkStatusINt = 	setInterval(function(){
+        zniffer_status(returnZnifferStatus);
+      }, 8000);
 
 
 	});
