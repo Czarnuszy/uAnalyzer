@@ -3,6 +3,7 @@ Created on 29/06/2011
 
 @author: aes
 '''
+
 import binascii
 import serial
 import thread
@@ -23,7 +24,7 @@ from ZW_transport_api import TRANSMIT_OPTION_ACK,\
 from LoggedSerial import LoggedSerial
 #import xml.etree.ElementTree
 import xml.sax
-
+from ZW_transport_api import *
 EV_ACK = 0x1
 EV_NAK = 0x2
 EV_SEND_START = 0x3
@@ -31,7 +32,11 @@ EV_TIMEOUT = 0x4
 
 TX_IDLE = 0x1
 TX_SEND = 0x2
-
+ZW_GET_ROUTING_INFO_ANY = 0x0000
+ZW_GET_ROUTING_INFO_9600 = 0x0001
+ZW_GET_ROUTING_INFO_40K = 0x0002
+ZW_GET_ROUTING_INFO_100K = 0x0003
+ZW_GET_ROUTING_INFO_SPEED_MASK = 0x0007
 
 class ZWapi(threading.Thread):
     '''
@@ -847,7 +852,8 @@ if __name__ == '__main__':
 
     print ni
     save_node_info_csv(ni)
-
+    print ZW_GET_ROUTING_INFO_9600
+    print binascii.hexlify(zw.ZW_GetRoutingInfo(2, ZW_GET_ROUTING_INFO_9600))
 
     zw.stop()
     print "Exit"
