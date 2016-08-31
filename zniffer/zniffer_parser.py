@@ -13,7 +13,7 @@ from y_bintools import *
 from y_timestamp import *
 from zniffer_globals import  *
 from state_machine import *
-from y_dbglog import * 
+from y_dbglog import *
 
 import binascii
 
@@ -67,6 +67,20 @@ class ZnifferFrame(object):
 
     def get_csv_header(self):
         s=""
+        s+="-"+CSV_DELIM #1
+        # s+="RSSI"+CSV_DELIM#2
+        # s+="HOME_ID"+CSV_DELIM #3
+        # s+="SOURCE_ID"+CSV_DELIM#4
+        # s+="ROUTING_NODES"+CSV_DELIM
+        # s+="DESTINATION_ID"+CSV_DELIM
+        # s+="HEADER_TYPE"+CSV_DELIM
+        # s+="PAYLOAD"+CSV_DELIM#8
+        # s+="SEQ_NUM"+CSV_DELIM #9
+        # s+="ROUTE_COUNT"+CSV_DELIM#10
+        # s+="_COUNT"+CSV_DELIM
+        # s+= "PROPERTIES" + CSV_DELIM
+
+        s+="\n"
 
         return s
 
@@ -187,7 +201,7 @@ class ZnifferFrame(object):
             elif hop == "04":
                 #self.route = self.route
                 self.command = " "
-		
+
             s += str(self.route) + CSV_DELIM
             s += str(self.command) + CSV_DELIM
             s+="\n"
@@ -197,8 +211,8 @@ class ZnifferFrame(object):
 
 class ZnifferSerialDataParser(object):
     def clean(self):
-        self.serial_frames=[] 
-        self.current_serial_frame=ZnifferFrame() 
+        self.serial_frames=[]
+        self.current_serial_frame=ZnifferFrame()
         self.parsed_frames=[]
 
     def __init__(self, dbg=DISABLE):
@@ -227,7 +241,7 @@ class ZnifferSerialDataParser(object):
             self.serial_frames.append(self.current_serial_frame)
             self.current_serial_frame=ZnifferFrame()
             #print self.serial_frames
-        
+
     def zw_4x_sof_hunt(self, serial_data):
         dbglog(self.CRASHDBG,"")
         self.save()
@@ -243,7 +257,7 @@ class ZnifferSerialDataParser(object):
             return ["CMD_TYPE", serial_data]
         else:
             return ["SOF_HUNT", serial_data]
-        
+
     def zw_4x_type(self, serial_data):
         dbglog(self.CRASHDBG,"")
         [b, serial_data] = self.nibble_byte(serial_data)
@@ -273,7 +287,7 @@ class ZnifferSerialDataParser(object):
         [b, serial_data] = self.nibble_byte(serial_data)
         if b == None:
             return ["NO_MORE_PAYLOAD", serial_data]
-        
+
         self.current_serial_frame.ts = (b <<8)
         return ["WAKE_UP_START_TIME_STAMP_2", serial_data]
 
@@ -300,11 +314,11 @@ class ZnifferSerialDataParser(object):
         [b, serial_data] = self.nibble_byte(serial_data)
         if b == None:
             return ["NO_MORE_PAYLOAD", serial_data]
-        
+
         self.current_serial_frame.ts = (b <<8)
         return ["WAKE_UP_START_SPEED_CHANNEL", serial_data]
 
-    def zw_4x_wu_stop_ts_2(self, serial_data):     
+    def zw_4x_wu_stop_ts_2(self, serial_data):
         dbglog(self.CRASHDBG,"")
         [b, serial_data] = self.nibble_byte(serial_data)
         if b == None:
@@ -430,7 +444,7 @@ class ZnifferSerialDataParser(object):
                 dbglog(self.CRASHDBG, "new data_length!")
             elif b != self.current_serial_frame.data_length: #something wrong! transfer layer length differs from zniffer layer length, they should be equal!
                 dbglog(self.CRASHDBG, "WARNING: transfer layer data length ="+str(b)+" differs from data length previously advertised by zniffer="+ str(self.current_serial_frame.data_length))
-                
+
             dbglog(self.CRASHDBG, "data_length: "+str(b))
             return ["DATA", serial_data]
 
@@ -439,7 +453,7 @@ class ZnifferSerialDataParser(object):
         if self.current_serial_frame.home_id == INVALID:
             return ["HOME_ID", serial_data]
         else: #already been there, parsed properties1 and frame header bits, routed bits, so now get destination id and so on
-            return ["DESTINATION_ID", serial_data] 
+            return ["DESTINATION_ID", serial_data]
 
     def zw_4x_destination_id(self, serial_data):
         dbglog(self.CRASHDBG,"")
@@ -449,7 +463,7 @@ class ZnifferSerialDataParser(object):
         self.current_serial_frame.destination_id=b
         if self.current_serial_frame.routed != 0:
             return [ "ROUTING_PROPERTIES_3", serial_data]
-        else: 
+        else:
             return [ "TRANSPORT_PAYLOAD", serial_data]
 
     def zw_4x_routing_properties_3(self,serial_data):
@@ -477,7 +491,7 @@ class ZnifferSerialDataParser(object):
                 return ["NO_MORE_PAYLOAD", serial_data]
             self.current_serial_frame.hops_nodes.append(b)
         return [ "TRANSPORT_PAYLOAD", serial_data]
-            
+
     def zw_4x_transport_payload(self,serial_data): #consume blindly the transport payload
         dbglog(self.CRASHDBG,"")
         self.current_serial_frame.transport_payload_idx=len(self.current_serial_frame.raw_payload)-1
@@ -569,7 +583,7 @@ class ZnifferSerialDataParser(object):
         [b, serial_data] = self.nibble_byte(serial_data)
         if b == None:
             return ["NO_MORE_PAYLOAD", serial_data]
-        if b == 1 :        
+        if b == 1 :
             return ["WAKE_UP_START_HOME_ID_HASH", serial_data]
         else:
             for i in range(self.current_serial_frame.cmd_length):
@@ -592,7 +606,7 @@ class ZnifferSerialDataParser(object):
             return ["NO_MORE_PAYLOAD", serial_data]
         if b in ZnifferCommandTypesEnum:
             return ["CMD_LENGTH", serial_data]
-        else:         
+        else:
             return ["SOF_HUNT", serial_data]
 
     def zw_4x_cmd_length(self,serial_data): #zniffer command length. this is to configure zniffer / pure zniffer replies
@@ -656,11 +670,11 @@ class ZnifferSerialDataParser(object):
             self.m.add_state("WAKE_UP_START_BEAM_DESTINATION", self.zw_4x_wu_start_beam_destination )
             self.m.add_state("WAKE_UP_START_BEAM_VERSION", self.zw_4x_wu_start_beam_version )
             self.m.add_state("WAKE_UP_START_HOME_ID_HASH", self.zw_4x_wu_start_home_id_hash )
-            self.m.add_state("WAKE_UP_STOP_RSSI", self.zw_4x_wu_stop_rssi ) 
+            self.m.add_state("WAKE_UP_STOP_RSSI", self.zw_4x_wu_stop_rssi )
             self.m.add_state("WAKE_UP_STOP_COUNT_1", self.zw_4x_wu_stop_count_1 )
             self.m.add_state("WAKE_UP_STOP_COUNT_2", self.zw_4x_wu_stop_count_2 )
             self.m.add_state("CMD_TYPE", self.zw_4x_cmd_type )
-            self.m.add_state("CMD_LENGTH", self.zw_4x_cmd_length ) 
+            self.m.add_state("CMD_LENGTH", self.zw_4x_cmd_length )
             self.m.add_state("CMD_DATA", self.zw_4x_cmd_data )
             self.m_is_inited=True
 

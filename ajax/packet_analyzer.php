@@ -191,7 +191,7 @@ function refresh(){
   if(is_zniffer_on){
     var grid_rec = w2ui.grid.records.length;
     var NumberofLines;
-    if(w2ui.grid.records.length > 0)
+    if(w2ui.grid.records.length > 2)
       w2ui.grid.unlock();
 
              $.ajax({
@@ -202,7 +202,8 @@ function refresh(){
                    success: function(data) {
                      if (data == null){
                        console.log("null");
-                     }else{
+                     }else
+                     {
 
                     NumberofLines =  data.length;
                     console.log("records: " + NumberofLines);
@@ -214,8 +215,9 @@ function refresh(){
 
                     console.log("more");
                     grid_rec = w2ui.grid.records.length;
-                    for(x=0; x < NumberofLines; x++)
+                    for(x=0; x < NumberofLines-1; x++)
                     {
+                  
                       color = "#AD3232";
                       if (data[x][2] != home_id)
                       {
@@ -413,6 +415,38 @@ function refresh(){
     return false;
   }
 
+  function setActiveButton(button){
+    var $play = $('#play-a1');
+    var $stop = $('#stop-a1');
+    var $pause = $('#pause-a1');
+
+    switch (button) {
+      case 'start':
+          $stop.removeClass('active');
+          $pause.removeClass('active');
+          $play.addClass('active');
+          radioButton = "start";
+
+        break;
+        case 'stop':
+            $stop.addClass('active');
+            $pause.removeClass('active');
+            $play.removeClass('active');
+            radioButton = "stop";
+
+          break;
+        case 'pause':
+            $stop.removeClass('active');
+            $pause.addClass('active');
+            $play.removeClass('active');
+            radioButton = "pause";
+
+          break;
+      default:
+
+    }
+  }
+
 
 	$("#open").click(function(){
 		openPopup();
@@ -439,18 +473,22 @@ function refresh(){
 
 					setTimeout(refresh, 600);
 			//		myInterval = setInterval(refresh, 3500);
-			}else if (!zniffer_status && !is_zniffer_on){
-				start_analyzer();
-				is_zniffer_on = true;
-				refresh();
-			}else if (!zniffer_status && is_zniffer_on) {
-				start_analyzer();
-				refresh();
-			}else if (!is_zniffer_on && zniffer_status) {
-				is_zniffer_on = true;
-				refresh();
-
-			}
+    }else {
+      console.log(radioButton);
+      console.log('start button exception');
+    }
+      // else if (!zniffer_status && !is_zniffer_on){
+			// 	start_analyzer();
+			// 	is_zniffer_on = true;
+			// 	refresh();
+			// }else if (!zniffer_status && is_zniffer_on) {
+			// 	start_analyzer();
+			// 	refresh();
+			// }else if (!is_zniffer_on && zniffer_status) {
+			// 	is_zniffer_on = true;
+			// 	refresh();
+      //
+			// }
 
 				  $.smallBox({
 			title : "Z-Wave Packet Analyzer",
@@ -1213,15 +1251,18 @@ function open_file(atr, atr2){
 
 function onloadZnifferStatus(response) {
   if (response == 1) {
-    $("#play-a1").attr('class', 'btn btn-default btn-xs active');
+  //  $("#play-a1").attr('class', 'btn btn-default btn-xs active');
     radioButton = "start";
     load();
     is_zniffer_on = true;
     setTimeout(refresh, 1000);
     console.log('znif on');
+    setActiveButton('start');
   }else if (response == 0) {
-    $("#stop-a1").attr('class', 'btn btn-default btn-xs active');
+  //  $("#stop-a1").attr('class', 'btn btn-default btn-xs active');
     radioButton = "stop";
+    setActiveButton('stop');
+
     console.log('znif oof');
     load();
     if (is_zniffer_on) {
@@ -1239,12 +1280,23 @@ return response;
 
 function returnZnifferStatus(response){
   if (response == 1){
-    radioButton = "start";
-
+    if (is_zniffer_on) {
+    //  radioButton = "start";
+      setActiveButton('start');
+    }else if (!is_zniffer_on) {
+      setActiveButton('pause');
+    }
     console.log('Zniffer ON');
   }
   else if (response == 0){
-    radioButton = "stop";
+    if (is_zniffer_on) {
+      is_zniffer_on = false;
+      setActiveButton('stop');
+    }else if (!is_zniffer_on) {
+      setActiveButton('stop');
+    }
+
+  //  radioButton = "stop";
     console.log('Zniffer OFF');
 
   }
@@ -1390,7 +1442,7 @@ function BETA_open_file(arg, atr2){
 
   		var data = CSVToArray( responseText );
       console.log(data.length);
-      for(x=0; x<	data.length; x++){
+      for(x=1; x<	data.length-1; x++){
 
         color = "#AD3232";
         if (data[x][2] != home_id)
@@ -1420,8 +1472,11 @@ function BETA_open_file(arg, atr2){
           style: "background-color: " + color
          });
        }
+
       w2ui.grid.reload();
-      w2ui.grid.unlock();
+      if (w2ui.grid.records.length > 20) {
+        w2ui.grid.unlock();
+      }
 
   	 },
 
@@ -1505,13 +1560,12 @@ function onLoad_zniffer_status(){
 
 
 	$(document).ready(function() {
-    var d = testZniffStat();
-console.log(d);
+
   zniffer_status(onloadZnifferStatus);
 
 			checkStatusINt = 	setInterval(function(){
         zniffer_status(returnZnifferStatus);
-      }, 8000);
+      }, 1000);
 
 
 	});

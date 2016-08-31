@@ -71,6 +71,7 @@ function progressbar(x, max){
 $(function () {
     // initialization
     $().w2grid(config.grid);
+
 		var atr = '../zniffer/data/zniffer.csv';
 		var atr2 = '../zniffer/data/zniffer.txt';
 		var NumberofLines = 0;
@@ -78,8 +79,11 @@ $(function () {
   //  progrssInt = setInterval(function() {progressbar(pd);}, 200);
 	//	open_file(atr, atr2);
 		BETA_open_file(atr, atr2);
+
     w2ui.grid.refresh();
+
     $('#gbod').w2render('grid');
+
 });
 w2ui['grid'].hideColumn('h_id');
 </script>
