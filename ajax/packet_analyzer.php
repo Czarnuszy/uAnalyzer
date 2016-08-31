@@ -144,54 +144,21 @@ var is_zniffer_on = false;
 
 var home_id= <?php  echo "'".$homeid."'"; ?>;
  $('input').on('change', function() {
-		radioButton = $('input[name=button]:checked').val();
+	//	radioButton = $('input[name=button]:checked').val();
 		console.log(radioButton);
  });
 
 
 
-function parse_sqnum(x, data){
-	var color = "";
-	if (data[x][8]== "01")
-		color = "#f0f0f0";
-	else if (data[x][8]  === "02")
-		color = "#E8E8E8";
-	else if (data[x][8] == "03")
-		color = "#E0E0E0";
-	else if (data[x][8]  == "04")
-		color = "#D8D8D8";
-	else if (data[x][8]  == "05")
-		color = "#D0D0D0";
-	else if (data[x][8]  == "06")
-		color = "#C8C8C8";
-	else if (data[x][8]  == "07")
-		color = "#C0C0C0";
-	else if (data[x][8]  == "08")
-		color = "#B8B8B8";
-	else if (data[x][8]  == "09")
-		color = "#B0B0B0";
-	else if (data[x][8] == "10")
-		color = "#A8A8A8";
-	else if (data[x][8] == "11")
-		color = "#A0A0A0";
-	else if (data[x][8]  == "12")
-		color = "#989898";
-	else if (data[x][8]  == "13")
-		color = "#909090";
-	else if (data[x][8]  == "14")
-		color = "#888888";
-	else if (data[x][8] == "15")
-		color = "#808080";
-
-	return color;
-}
 
 function refresh(){
 
   if(is_zniffer_on){
     var grid_rec = w2ui.grid.records.length;
     var NumberofLines;
-    if(w2ui.grid.records.length > 2)
+  //  w2ui.grid.lock('Getting ready.', true);
+
+    if(w2ui.grid.records.length > 1)
       w2ui.grid.unlock();
 
              $.ajax({
@@ -217,7 +184,7 @@ function refresh(){
                     grid_rec = w2ui.grid.records.length;
                     for(x=0; x < NumberofLines-1; x++)
                     {
-                  
+
                       color = "#AD3232";
                       if (data[x][2] != home_id)
                       {
@@ -460,7 +427,7 @@ function refresh(){
 				console.log("start after stop");
 			    w2ui.grid.clear();
 					w2ui.grid.lock('Getting ready.', true);
-          load();
+        //  load();
           is_zniffer_on = true;
 
           setTimeout(refresh, 2600);
@@ -764,6 +731,45 @@ function get_homeid(){
 								}
 						});
 }
+
+
+
+function parse_sqnum(x, data){
+	var color = "";
+	if (data[x][8]== "01")
+		color = "#f0f0f0";
+	else if (data[x][8]  === "02")
+		color = "#E8E8E8";
+	else if (data[x][8] == "03")
+		color = "#E0E0E0";
+	else if (data[x][8]  == "04")
+		color = "#D8D8D8";
+	else if (data[x][8]  == "05")
+		color = "#D0D0D0";
+	else if (data[x][8]  == "06")
+		color = "#C8C8C8";
+	else if (data[x][8]  == "07")
+		color = "#C0C0C0";
+	else if (data[x][8]  == "08")
+		color = "#B8B8B8";
+	else if (data[x][8]  == "09")
+		color = "#B0B0B0";
+	else if (data[x][8] == "10")
+		color = "#A8A8A8";
+	else if (data[x][8] == "11")
+		color = "#A0A0A0";
+	else if (data[x][8]  == "12")
+		color = "#989898";
+	else if (data[x][8]  == "13")
+		color = "#909090";
+	else if (data[x][8]  == "14")
+		color = "#888888";
+	else if (data[x][8] == "15")
+		color = "#808080";
+
+	return color;
+}
+
 
 function parseRoute(all_data)
 {
@@ -1253,6 +1259,7 @@ function onloadZnifferStatus(response) {
   if (response == 1) {
   //  $("#play-a1").attr('class', 'btn btn-default btn-xs active');
     radioButton = "start";
+  //  $('#play-a1').click();
     load();
     is_zniffer_on = true;
     setTimeout(refresh, 1000);
@@ -1262,7 +1269,7 @@ function onloadZnifferStatus(response) {
   //  $("#stop-a1").attr('class', 'btn btn-default btn-xs active');
     radioButton = "stop";
     setActiveButton('stop');
-
+    //$('#stop-a1').click();
     console.log('znif oof');
     load();
     if (is_zniffer_on) {
@@ -1326,66 +1333,42 @@ function testZniffStat() {
 }
 
 function CSVToArray( strData, strDelimiter ){
-       // Check to see if the delimiter is defined. If not,
-       // then default to comma.
+
        strDelimiter = (strDelimiter || ",");
 
-       // Create a regular expression to parse the CSV values.
        var objPattern = new RegExp(
            (
-               // Delimiters.
                "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
 
-               // Quoted fields.
                "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
 
-               // Standard fields.
                "([^\"\\" + strDelimiter + "\\r\\n]*))"
            ),
            "gi"
            );
 
 
-       // Create an array to hold our data. Give the array
-       // a default empty first row.
        var arrData = [[]];
 
-       // Create an array to hold our individual pattern
-       // matching groups.
        var arrMatches = null;
 
-
-       // Keep looping over the regular expression matches
-       // until we can no longer find a match.
        while (arrMatches = objPattern.exec( strData )){
 
-           // Get the delimiter that was found.
            var strMatchedDelimiter = arrMatches[ 1 ];
 
-           // Check to see if the given delimiter has a length
-           // (is not the start of string) and if it matches
-           // field delimiter. If id does not, then we know
-           // that this delimiter is a row delimiter.
            if (
                strMatchedDelimiter.length &&
                strMatchedDelimiter !== strDelimiter
                ){
 
-               // Since we have reached a new row of data,
-               // add an empty row to our data array.
                arrData.push( [] );
 
            }
 
            var strMatchedValue;
 
-           // Now that we have our delimiter out of the way,
-           // let's check to see which kind of value we
-           // captured (quoted or unquoted).
            if (arrMatches[ 2 ]){
 
-               // We found a quoted value. When we capture
-               // this value, unescape any double quotes.
                strMatchedValue = arrMatches[ 2 ].replace(
                    new RegExp( "\"\"", "g" ),
                    "\""
@@ -1393,18 +1376,12 @@ function CSVToArray( strData, strDelimiter ){
 
            } else {
 
-               // We found a non-quoted value.
                strMatchedValue = arrMatches[ 3 ];
-
            }
 
-
-           // Now that we have our value string, let's add
-           // it to the data array.
            arrData[ arrData.length - 1 ].push( strMatchedValue );
        }
 
-       // Return the parsed data.
        return( arrData );
    }
 
@@ -1474,7 +1451,7 @@ function BETA_open_file(arg, atr2){
        }
 
       w2ui.grid.reload();
-      if (w2ui.grid.records.length > 20) {
+      if (w2ui.grid.records.length > 0) {
         w2ui.grid.unlock();
       }
 
