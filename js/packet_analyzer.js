@@ -425,7 +425,86 @@ var packetAnalyzer = (function() {
     }
 
 
-    function parse_sqnum(x, data) {
+    function openFile(arg, atr2) {
+        w2ui.grid.lock("Loading. Please wait.", true);
+
+        $.ajax({
+            url: "ajax/open_homeid.php",
+            type: "POST",
+            data: {
+                DisplayedRecords: atr2
+            },
+            success: function(response) {
+                home_id = response;
+                $.ajax({
+                    url: arg,
+                    type: 'GET',
+                    success: function(responseText) {
+                        if (w2ui.grid.records.length > 0)
+                            w2ui.grid.clear();
+
+                        var color = "#AD3232";
+                        var ZWCommandParsed = "";
+                        var ZWparsedRoute = "";
+                        var ZWparsedSource = "";
+                        var ZWparsedDestination = "";
+
+                        var data = parse.CSVToArray(responseText);
+
+                        for (x = 1; x < data.length - 1; x++) {
+                            color = "#AD3232";
+
+                            if (data[x][2] != home_id) {
+                                ZWparsedSource = '-';
+                                ZWparsedDestination = '-';
+                                ZWparsedRoute = '-';
+                            } else {
+                                color = parse.sqNum(x, data);
+                                //color = parse_sqnum(x, data);
+                                ZWCommandParsed = parse.command(data[x]);
+                                ZWparsedRoute = parse.route(data[x]);
+                                ZWparsedSource = parseInt(data[x][3], 10);
+                                ZWparsedDestination = parseInt(data[x][5], 10);
+                            }
+                            w2ui['grid'].records.push({
+                                recid: x + 1,
+                                id: x + 1,
+                                rssi: data[x][1],
+                                data: data[x][0],
+                                source: ZWparsedSource,
+                                route: ZWparsedRoute,
+                                destination: ZWparsedDestination,
+                                command: ZWCommandParsed,
+                                h_id: data[x][2],
+                                style: "background-color: " + color
+                            });
+                        }
+
+                        w2ui.grid.reload();
+                        if (w2ui.grid.records.length > 0) {
+                            w2ui.grid.unlock();
+                        }
+
+                    },
+
+                    error: errorFun
+                });
+            },
+            error: errorFun
+        });
+    }
+
+    return {
+        homeid: returnHI,
+        openFile: openFile,
+        load: load,
+    };
+
+})();
+
+
+var parse = (function() {
+    function sqnum(x, data) {
         var color = "";
         if (data[x][8] == "01")
             color = "#f0f0f0";
@@ -460,7 +539,6 @@ var packetAnalyzer = (function() {
 
         return color;
     }
-
 
     function parseRoute(all_data) {
         var hop = all_data[9];
@@ -690,79 +768,10 @@ var packetAnalyzer = (function() {
         return (arrData);
     }
 
-
-    function openFile(arg, atr2) {
-        w2ui.grid.lock("Loading. Please wait.", true);
-
-        $.ajax({
-            url: "ajax/open_homeid.php",
-            type: "POST",
-            data: {
-                DisplayedRecords: atr2
-            },
-            success: function(response) {
-                home_id = response;
-                $.ajax({
-                    url: arg,
-                    type: 'GET',
-                    success: function(responseText) {
-                        if (w2ui.grid.records.length > 0)
-                            w2ui.grid.clear();
-
-                        var color = "#AD3232";
-                        var ZWCommandParsed = "";
-                        var ZWparsedRoute = "";
-                        var ZWparsedSource = "";
-                        var ZWparsedDestination = "";
-
-                        var data = CSVToArray(responseText);
-
-                        for (x = 1; x < data.length - 1; x++) {
-                            color = "#AD3232";
-
-                            if (data[x][2] != home_id) {
-                                ZWparsedSource = '-';
-                                ZWparsedDestination = '-';
-                                ZWparsedRoute = '-';
-                            } else {
-                                color = parse_sqnum(x, data);
-                                ZWCommandParsed = parseCommand(data[x]);
-                                ZWparsedRoute = parseRoute(data[x]);
-                                ZWparsedSource = parseInt(data[x][3], 10);
-                                ZWparsedDestination = parseInt(data[x][5], 10);
-                            }
-                            w2ui['grid'].records.push({
-                                recid: x + 1,
-                                id: x + 1,
-                                rssi: data[x][1],
-                                data: data[x][0],
-                                source: ZWparsedSource,
-                                route: ZWparsedRoute,
-                                destination: ZWparsedDestination,
-                                command: ZWCommandParsed,
-                                h_id: data[x][2],
-                                style: "background-color: " + color
-                            });
-                        }
-
-                        w2ui.grid.reload();
-                        if (w2ui.grid.records.length > 0) {
-                            w2ui.grid.unlock();
-                        }
-
-                    },
-
-                    error: errorFun
-                });
-            },
-            error: errorFun
-        });
-    }
-
     return {
-        homeid: returnHI,
-        openFile: openFile,
-        load: load,
-    };
-
+        sqNum: sqnum,
+        route: parseRoute,
+        command: parseCommand,
+        CSVToArray: CSVToArray,
+    }
 })();
