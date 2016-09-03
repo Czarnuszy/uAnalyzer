@@ -3,8 +3,8 @@ $rename = $_POST['todo'];
 $fname = $_POST['fileName'];
 
 $csvname = '../data/Saves/'. $fname. ".csv";
-$txtname = '../data/SaveData/' .$fname. ".txt";
-$zlfname = '../data/SaveData/' .$fname. ".zlf";
+$txtname = '../data/SaveData/'. $fname. ".txt";
+$zlfname = '../data/SaveData/'.$fname. ".zlf";
 
 if ($rename == 1){
   $newName = $_POST['newName'];

@@ -26,7 +26,7 @@ class ZIPClient(ZIPClient2.ZIPClient):
     pass
 
 # class ZIPClient(threading.Thread,socket.socket):
-# 
+#
 #     ZIP_PACKET_FLAGS0_ACK_REQ =0x80
 #     ZIP_PACKET_FLAGS0_ACK_RES = 0x40
 #     ZIP_PACKET_FLAGS0_NACK_RES= 0x20
@@ -36,29 +36,29 @@ class ZIPClient(ZIPClient2.ZIPClient):
 #     ZIP_PACKET_FLAGS1_ZW_CMD_INCL      = 0x40
 #     ZIP_PACKET_FLAGS1_MORE_INFORMATION = 0x20
 #     ZIP_PACKET_FLAGS1_SECURE_ORIGIN    = 0x10
-#     
+#
 #     STATE_SENT = 1
 #     STATE_WAITING =2
 #     STATE_ACK = 3
 #     STATE_NACK = 4
 #     STATE_QF = 5
 #     STATE_IDLE = 6
-#     
+#
 #     INFINITE_LIFE = 0xFFFF
-#     
+#
 #     def create_socket(self,host):
 #         if(host):
 #             new_ip = IPAddress(host)
 #             if hasattr(new_ip, 'ipv4_mapped') and new_ip.ipv4_mapped:
 #                 new_ip = new_ip.ipv4_mapped
 #                 host = str(new_ip)
-#             
+#
 #         if(host != "<broadcast>"):
 #             family = socket.getaddrinfo(host,4123)[0][0]
 #         else:
 #             family = socket.AF_INET
-#                 
-# 
+#
+#
 #         if(self.secure):
 #             psk = array.array('B',[0x12,0x34,0x56,0x78,0x90])
 #             self.sock = dtls_client.create_dtls_psk_sock((host,41230) , lambda x: (None,psk.tostring()), family)
@@ -68,29 +68,29 @@ class ZIPClient(ZIPClient2.ZIPClient):
 #                 self.sock.bind(("",4123))
 #             else:
 #                 self.sock.bind((host,4123))
-#         
+#
 #         if(host == "<broadcast>"):
-#             
-#             self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)            
+#
+#             self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 #             self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST,1)
 #             #self.bind(("192.168.1.10",0))
 #         self.sock.settimeout(0.5)
-#         
-#     
+#
+#
 #     '''
-#     If host is None, we will listen on all interfaces on port 4123 
+#     If host is None, we will listen on all interfaces on port 4123
 #     '''
-#     def __init__(self, host=None, lifetime=INFINITE_LIFE,defaultHandler = None, secure=True):        
+#     def __init__(self, host=None, lifetime=INFINITE_LIFE,defaultHandler = None, secure=True):
 #         if isinstance(host, IPv6Address) or isinstance(host, IPv4Address):
 #             host = str(host)
-#         
+#
 #         self.host = host
 #         self.secure = secure
 #         self.create_socket(host)
-#         
+#
 #         self.state = self.STATE_IDLE
 #         self.seq =random.randint(0,0xff)
-#         
+#
 #         self.cmdHandler = dict()
 #         self.lifetime = lifetime
 #         self.defaultHandler =  defaultHandler
@@ -98,26 +98,26 @@ class ZIPClient(ZIPClient2.ZIPClient):
 #         self.advEv = threading.Event()
 #         self.enableACK =True #Test parameter to simulate a non responding client
 #         self.running = True
-#         threading.Thread.__init__(self)        
+#         threading.Thread.__init__(self)
 #         self.start()
 #         self.lock = threading.Lock()
-#             
+#
 #     def stop(self):
 #         self.running = False
 #         self.join()
-#                 
+#
 #     def do_read(self):
 #         try:
 #             pkt = self.sock.recv(512+4)
-#             
+#
 #         except:
 #             return
-#         (cmdClass,cmd) = unpack("2b",pkt[0:2])   
+#         (cmdClass,cmd) = unpack("2b",pkt[0:2])
 #         #logging.debug("Data....." + pkt.encode("hex"))
 #         print ("Data....." + pkt.encode("hex"))
 #         if(cmdClass==COMMAND_CLASS_ZIP and cmd == COMMAND_ZIP_PACKET):
 #             (flags0,flags1,seq) = unpack("3B",pkt[2:5])
-# 
+#
 #             if(flags0 & self.ZIP_PACKET_FLAGS0_ACK_REQ and self.enableACK):
 #                 ack = pack("7B",
 #                     COMMAND_CLASS_ZIP,
@@ -126,39 +126,39 @@ class ZIPClient(ZIPClient2.ZIPClient):
 #                     self.ZIP_PACKET_FLAGS1_SECURE_ORIGIN,
 #                     seq & 0xFF,ord(pkt[6]),ord(pkt[5]));
 #                 self.sock.send( ack )
-#                 
-#             if(flags0 & self.ZIP_PACKET_FLAGS0_NACK_RES and seq == self.seq ):                
+#
+#             if(flags0 & self.ZIP_PACKET_FLAGS0_NACK_RES and seq == self.seq ):
 #                 if(flags0 & self.ZIP_PACKET_FLAGS0_WAIT_RES and seq == self.seq ):
 #                     logging.debug("NACK Waiting")
 #                     self.state = self.STATE_WAITING
 #                 elif(flags0 & self.ZIP_PACKET_FLAGS0_NACK_QF):
 #                     self.state = self.STATE_QF
 #                     logging.error("Target reported Queue full")
-#                 else:                        
+#                 else:
 #                     self.state = self.STATE_NACK
 #                 self.response.set()
-#             
+#
 #             if(flags0 & self.ZIP_PACKET_FLAGS0_ACK_RES):
-#                 if(seq == self.seq):                
+#                 if(seq == self.seq):
 #                     self.state = self.STATE_ACK
 #                     self.response.set()
 #                 else:
 #                     print "ACK with unexpected seq", seq,self.seq
-#                  
-#             if(flags1 & self.ZIP_PACKET_FLAGS1_ZW_CMD_INCL and len(pkt)>7 ):             
-#                 if( (self.lifetime != self.INFINITE_LIFE) ) : self.lifetime -= 1 
+#
+#             if(flags1 & self.ZIP_PACKET_FLAGS1_ZW_CMD_INCL and len(pkt)>7 ):
+#                 if( (self.lifetime != self.INFINITE_LIFE) ) : self.lifetime -= 1
 #                 try:
 #                     (zwclass,zwcmd) = unpack("2B",pkt[7:9])
-#                     hid = zwclass<< 8 | zwcmd;                                                 
+#                     hid = zwclass<< 8 | zwcmd;
 #                     f= self.cmdHandler[hid]
-#                     #del self.cmdHandler[hid]                
-#                 except KeyError as detail:                    
-#                     f = self.defaultHandler 
+#                     #del self.cmdHandler[hid]
+#                 except KeyError as detail:
+#                     f = self.defaultHandler
 #                     logging.debug("Key Error: ", str(detail),str(hid))
-# 
-#                 if(f and len(pkt) > 7): 
+#
+#                 if(f and len(pkt) > 7):
 #                     frame =pkt[7:]
-#                     # Old cmd handler functions cannot receive the source ip of 
+#                     # Old cmd handler functions cannot receive the source ip of
 #                     # the incoming ZIP packet. New function handlers need it.
 #                     # So we inspect the function handler and supplies the
 #                     # source ip if the function supports it.
@@ -174,14 +174,14 @@ class ZIPClient(ZIPClient2.ZIPClient):
 #                         thread.start_new_thread(f,(frame,))
 #                 else:
 #                     logging.warn("No handler registered for this command %2.2x %2.2x" % (zwclass,zwcmd) )
-#         elif(cmdClass==COMMAND_CLASS_ZIP_ND and cmd == ZIP_NODE_ADVERTISEMENT):            
+#         elif(cmdClass==COMMAND_CLASS_ZIP_ND and cmd == ZIP_NODE_ADVERTISEMENT):
 #             self.nodeADV = pkt
 #             self.advEv.set()
 #         else:
 #             print "Garbage " , pkt.encode("hex")
-#             
+#
 #         if(self.lifetime == 0): self.stop()
-#         
+#
 #     def zip_hdr(self,sEndpoint=0,dEndpoint=0):
 #         self.seq = (self.seq + 1) & 0xFF
 #         return pack("7B",
@@ -189,7 +189,7 @@ class ZIPClient(ZIPClient2.ZIPClient):
 #                     COMMAND_ZIP_PACKET,
 #                     self.ZIP_PACKET_FLAGS0_ACK_REQ,
 #                     self.ZIP_PACKET_FLAGS1_ZW_CMD_INCL | self.ZIP_PACKET_FLAGS1_SECURE_ORIGIN,
-#                     self.seq & 0xFF,sEndpoint,dEndpoint                                       
+#                     self.seq & 0xFF,sEndpoint,dEndpoint
 #                     )
 #     #Wait for a new state, return false on timeout
 #     def wait_for_new_state(self,to):
@@ -197,73 +197,73 @@ class ZIPClient(ZIPClient2.ZIPClient):
 #         self.response.wait(to)
 #         self.response.clear()
 #         #print "State is " + str(self.state)
-#         return (t + to > time.time())        
-#                 
+#         return (t + to > time.time())
+#
 #     def sendData(self,cmd,endpoint=0,max_time=0,retransmit=True):
 #         '''
 #         Returns True if ZIP ACK received
 #                 False if ZIP NACK received
-#                 Raises TimeoutErrir if no ACK/NACK received before timeout 
+#                 Raises TimeoutErrir if no ACK/NACK received before timeout
 #         '''
-#         
+#
 #         self.lock.acquire()
-#             
+#
 #         self.state = self.STATE_SENT
 #         if retransmit==True:
 #             retx_count = 3
 #         else:
-#             retx_count = 1    
+#             retx_count = 1
 #         for i in range(1,retx_count):
 #             self.response.clear()
-#             
+#
 #             try:
 #                 self.sock.send(self.zip_hdr(dEndpoint=endpoint) +cmd)
 #                 if(self.wait_for_new_state(10)):
 #                     break
 #             except socket.error:
 #                 self.create_socket(self.host)
-#                 
+#
 #         c =0
 #         while max_time >  0 and c < max_time and self.state == self.STATE_WAITING:
-#             c = c + 1                
+#             c = c + 1
 #             self.wait_for_new_state(1)
 #             logging.debug("Waiting for queued command %is of %is state %i" % (c,max_time,self.state))
-# 
+#
 #         if (self.state == self.STATE_NACK):
 #             self.lock.release()
 #             return False
 #         if (self.state != self.STATE_ACK):
 #             self.lock.release()
 #             raise TimeoutError()
-# 
+#
 #         self.lock.release()
 #         return True
-# 
+#
 #     def registerHandler(self,cmdClass,cmd, fun):
-#         hid = cmdClass<< 8 | cmd;                            
+#         hid = cmdClass<< 8 | cmd;
 #         self.cmdHandler[hid] = fun
-#         
+#
 #     def ipOfNode(self,node):
 #         self.nodeADV = None
 #         self.advEv.clear()
 #         self.sock.send(pack("4B",
 #              COMMAND_CLASS_ZIP_ND,ZIP_INV_NODE_SOLICITATION,
 #              0, node))
-#  
-#         #On windows the timeout value does nothing, the call returns immedeatly  
+#
+#         #On windows the timeout value does nothing, the call returns immedeatly
 #         self.advEv.wait(3)
 #         return self.nodeADV
-# 
+#
 #     def run(self):
 #         while(self.running):
 #             self.do_read()
-#         self.close()   
+#         self.close()
 
 class NetworkManagement(ZIPClient):
-    #***************** Network management ****************************    
+    #***************** Network management ****************************
     #/* Mode parameters to ZW_SetLearnMode */
-         
-#************************************** COMMAND_CLASS_NETWORK_MANAGEMENT_INCLUSION *************************        
+
+#************************************** COMMAND_CLASS_NETWORK_MANAGEMENT_INCLUSION *************************
     def startAddNode(self,fun=None):
         self.registerHandler(COMMAND_CLASS_NETWORK_MANAGEMENT_INCLUSION, NODE_ADD_STATUS, fun)
         self.sendData(pack("6B", COMMAND_CLASS_NETWORK_MANAGEMENT_INCLUSION,NODE_ADD, 0 ,0,ADD_NODE_ANY,1 ))
@@ -281,7 +281,7 @@ class NetworkManagement(ZIPClient):
         self.sendData(pack("5B", COMMAND_CLASS_NETWORK_MANAGEMENT_INCLUSION,NODE_REMOVE,0 ,0,REMOVE_NODE_STOP ))
 
     def removeFailedNode(self,node,fun):
-        
+
         self.registerHandler(COMMAND_CLASS_NETWORK_MANAGEMENT_INCLUSION, FAILED_NODE_REMOVE_STATUS , fun)
         self.sendData(pack("4B", COMMAND_CLASS_NETWORK_MANAGEMENT_INCLUSION,FAILED_NODE_REMOVE ,0,node ))
 
@@ -322,9 +322,9 @@ class NetworkManagement(ZIPClient):
         self.sendData(pack("5B", COMMAND_CLASS_NETWORK_MANAGEMENT_BASIC,NODE_INFORMATION_SEND,0,0,dst))
 
     def requsetNetworkUpdate(self,fun):
-        self.registerHandler(COMMAND_CLASS_NETWORK_MANAGEMENT_BASIC, NETWORK_UPDATE_REQUEST_STATUS, fun)       
+        self.registerHandler(COMMAND_CLASS_NETWORK_MANAGEMENT_BASIC, NETWORK_UPDATE_REQUEST_STATUS, fun)
         self.sendData(pack("3B", COMMAND_CLASS_NETWORK_MANAGEMENT_BASIC,NETWORK_UPDATE_REQUEST,0))
-        
+
 #************************************** COMMAND_CLASS_NETWORK_MANAGEMENT_PROXY *************************
     def getCachedInfo(self,node,fun,maxage=0):
         self.registerHandler(COMMAND_CLASS_NETWORK_MANAGEMENT_PROXY, NODE_INFO_CACHED_REPORT, fun)
@@ -343,9 +343,9 @@ class NetworkManagement(ZIPClient):
         self.sendData(pack("5B", COMMAND_CLASS_NETWORK_MANAGEMENT_PRIMARY,CONTROLLER_CHANGE,0,0,CONTROLLER_CHANGE_STOP))
 
 class Basic(ZIPClient):
-    #***************** Network management ****************************    
+    #***************** Network management ****************************
     #/* Mode parameters to ZW_SetLearnMode */
-    def basicSet(self,value,timeout=15):        
+    def basicSet(self,value,timeout=15):
         return self.sendData( pack("3B", COMMAND_CLASS_BASIC,BASIC_SET,value),max_time=timeout)
 
     def basicGet(self,fun,timeout=15):
@@ -360,22 +360,22 @@ class IPAssociationZIPClient(ZIPClient):
         if res_name: res_name_len = len(res_name)
         else: res_name_len = 0
         self.sendData(pack("3B16s2B", COMMAND_CLASS_IP_ASSOCIATION, IP_ASSOCIATION_SET, grouping,
-                       IPAddress(res_ip).packed, endpoint, res_name_len), 
+                       IPAddress(res_ip).packed, endpoint, res_name_len),
                        endpoint=assoc_src_endpoint, max_time=timeout)
 
 def printNodeList(pkt):
     print map(ord,pkt)
-    
+
 if __name__ == '__main__':
-    
+
     client = NetworkManagement("fd00:aaaa::3")
-    
+
     print "IP" +  client.ipOfNode(1)
-    
+
     time.sleep(1)
     client.stop()
     client.join()
     print "Done"
     #client.getNodelist(printNodeList)
-    
+
     pass

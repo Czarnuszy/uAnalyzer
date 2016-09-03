@@ -37,9 +37,9 @@ if ($t == 'up') {
 function send2zwave()
 {
     $fname = $_POST['fileName'];
-    $csvFile = $fname.'.csv';
-    $txtFile = $fname.'.txt';
-    $zlfFile = $fname.'.zlf';
+    $csvFile = '../data/Saves/'. $fname.'.csv';
+    $txtFile = '../data/SaveData/'. $fname.'.txt';
+    $zlfFile = '../data/SaveData/'. $fname.'.zlf';
     $email = new PHPMailer();
 
     $email->isSMTP();
@@ -66,10 +66,12 @@ function send2zwave()
     $email->msgHTML($body);
 
     if (!$email->send()) {
-        echo 'Mailer Error: '.$email->ErrorInfo;
+      $response = $email->ErrorInfo;//  echo 'Mailer Error: '.$email->ErrorInfo;
     } else {
-        echo 'Message has been sent';
+      $response = 'done';
+      //  echo 'Message has been sent';
     }
+    echo $response;
 }
 
 function contact()

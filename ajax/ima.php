@@ -41,7 +41,19 @@
 					<h2>Network Health Tester</h2>
 
 					<div class="widget-toolbar">
+							<label class="btn btn-default btn-xs " id="save-a1"></i> Add
+								<i class="fa fa-plus"></i>
+							</label>
 
+							<label class="btn btn-default btn-xs " id="refresh-a1"></i> Remove
+									<i class="fa fa-trash-o"></i>
+							</label>
+							<label class="btn btn-default btn-xs " id="refresh-a1"></i> Reset
+									<i class="fa fa-refresh"></i>
+							</label>
+					</div>
+
+									<div class="widget-toolbar">
 
 						<div class="btn-group" data-toggle="buttons">
 					        <label class="btn btn-default btn-xs " id="play-a2">

@@ -78,7 +78,8 @@ $(function () {
     w2ui.grid.lock('Getting ready.', true);
   //  progrssInt = setInterval(function() {progressbar(pd);}, 200);
 	//	open_file(atr, atr2);
-		BETA_open_file(atr, atr2);
+	//	BETA_open_file(atr, atr2);
+		packetAnalyzer.openFile(atr, atr2);
 
     w2ui.grid.refresh();
 

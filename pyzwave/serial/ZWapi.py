@@ -726,6 +726,14 @@ class ZWapi(threading.Thread):
             nodeInfo.append(ni)
         return nodeInfo
 
+    def get_all_routing_info(self, length, speed):
+        info = []
+        for x in range(1, length):
+            i = self.ZW_GetRoutingInfo(x, speed)
+            i = binascii.hexlify(i)
+            info.append(i)
+        return info
+
 
 
 '''
@@ -812,18 +820,6 @@ class TypeDetector(threading.Thread):
 
 #***************** test ***************************
 
-class MyHandler(xml.sax.ContentHandler):
-
-    def __init__(self):
-        self._charBuffer = []
-        self._result = []
-
-    def parse(self, f):
-        xml.sax.parse(f, self)
-        return self._result
-
-
-
 def RandomCB(status, random):
     print "Random Status" , status
     print map(ord(random))
@@ -852,13 +848,18 @@ if __name__ == '__main__':
 
     print ni
     save_node_info_csv(ni)
-    print ZW_GET_ROUTING_INFO_9600
-    print binascii.hexlify(zw.ZW_GetRoutingInfo(2, ZW_GET_ROUTING_INFO_9600))
+#    print ZW_GET_ROUTING_INFO_9600
+    #print binascii.hexlify(zw.ZW_GetRoutingInfo(2, ZW_GET_ROUTING_INFO_9600))
+    print zw.get_all_routing_info(size, ZW_GET_ROUTING_INFO_9600)
+    t = 0
+    while t < 30:
+        print zw.ZW_AddNodeToNetwork(2, None)
+        time.sleep(1)
+        t+=1
 
     zw.stop()
     print "Exit"
     #    print zw.SendFrameWithResponse(pack("B", FUNC_ID_ZW_GET_VERSION))
     #    print zw.SerialAPI_GetCapabilities()
-    #    zw.ZW_AddNodeToNetwork(02, None)
     #    print zw.SerialAPI_GetRandom(10,RandomCB)
     #    print zw.ZW_SetDefault(setDefaultDone)

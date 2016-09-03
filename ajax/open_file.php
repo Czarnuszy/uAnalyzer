@@ -81,7 +81,9 @@ $('.filesButtons').on('click', function(){
     atrh = atrh.slice(0, -4);
     var atr2 = '../data/SaveData/' + atrh + '.txt';
   //  open_file(atr,atr2 );
-    BETA_open_file(atr, atr2);
+  //  BETA_open_file(atr, atr2);
+    packetAnalyzer.openFile(atr, atr2);
+
 		$("#opened_filename").text("Opened file: " + atrh);
 
 
@@ -146,7 +148,7 @@ if (ButtonPress=== "Cancel") {
 })
 
 $('.sendFileBtn').on('click', function () {
-  var atr = '../data/Saves/' + $(this).attr('data-id');
+  var atr = $(this).attr('data-id');
 
   var send_files_window_html = '<textarea rows="5" placeholder="Put your message here." name="message" id="send_files_msg"></textarea>' +
   '<button id="sendFileBtn2"> Send </button>';
