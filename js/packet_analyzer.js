@@ -187,6 +187,8 @@ var packetAnalyzer = (function() {
 
     /////End buttons binds /////////
 
+    //TODO rewrite refresh function to do not use PHP///
+
     function refresh() {
 
         if (is_zniffer_on) {
@@ -227,9 +229,9 @@ var packetAnalyzer = (function() {
                                 ZWparsedDestination = '-';
                                 ZWparsedRoute = '-';
                             } else {
-                                color = parse_sqnum(x, data);
-                                ZWCommandParsed = parseCommand(data[x]);
-                                ZWparsedRoute = parseRoute(data[x]);
+                                color = parse.sqNum(x, data);
+                                ZWCommandParsed = parse.command(data[x]);
+                                ZWparsedRoute = parse.route(data[x]);
                                 ZWparsedSource = parseInt(data[x][3], 10);
                                 ZWparsedDestination = parseInt(data[x][5], 10);
                             }
@@ -308,7 +310,6 @@ var packetAnalyzer = (function() {
         for (x = 1; x < NumberofLines; x++) {
             if (data[x][7].startsWith("FF 01 08 01")) {
                 home_id = data[x][2];
-                //home_id = data[x][2];
                 console.log(home_id);
                 w2ui['grid'].unlock();
                 stop_analyzer();
@@ -460,7 +461,6 @@ var packetAnalyzer = (function() {
                                 ZWparsedRoute = '-';
                             } else {
                                 color = parse.sqNum(x, data);
-                                //color = parse_sqnum(x, data);
                                 ZWCommandParsed = parse.command(data[x]);
                                 ZWparsedRoute = parse.route(data[x]);
                                 ZWparsedSource = parseInt(data[x][3], 10);
