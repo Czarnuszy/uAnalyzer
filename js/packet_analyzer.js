@@ -17,6 +17,7 @@ var packetAnalyzer = (function() {
     var $saveBtn = $el.find('#save-a1');
     var $refreshBtn = $el.find('#refresh-a1');
     var $networkChbx = $el.find('#network_checkbox');
+    var $widgetBody = $("#body-w");
 
     //binds events
     $startBtn.on('click', onStartClick);
@@ -39,10 +40,6 @@ var packetAnalyzer = (function() {
     }
 
     _init();
-    // function _init() {
-    //     this.cacheDom();
-    //     this.bindEvents();
-    // }
 
     //Buttons functions
 
@@ -143,7 +140,7 @@ var packetAnalyzer = (function() {
             placeholder: "Enter filename"
         }, function(ButtonPress, Value) {
             if (ButtonPress === "Save") {
-                $("#body-w").load("ajax/savetrace.php?filename=" + Value);
+                $widgetBody.load("ajax/savetrace.php?filename=" + Value);
                 $.smallBox({
                     title: "Z-Wave Packet Analyzer",
                     content: "<i>Trace saved to file :</i>",
@@ -175,13 +172,10 @@ var packetAnalyzer = (function() {
     }
 
     function onNetworkSwitch() {
-        if (this.checked) {
+        if (this.checked)
             w2ui['grid'].search('h_id', home_id);
-            console.log('Newtwork switch');
-
-        } else
+        else
             w2ui['grid'].search('h_id', '');
-
     }
 
 
@@ -267,7 +261,7 @@ var packetAnalyzer = (function() {
     }
 
     function load() {
-        $("#body-w").load("ajax/jsGrid.php");
+      $("#body-w").load("ajax/jsGrid.php");
     }
 
     function start_analyzer() {

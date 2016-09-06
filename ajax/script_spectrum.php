@@ -234,30 +234,6 @@ for ($i = 0; $i < $max; ++$i) {
 	   }
 
 
-  $('#max_checkbox').click(function() {
-  	if(this.checked){
-      if(config.data.datasets.length == 1){
-    		var maxDataSet = {
-          label: 'MaxData',
-          borderColor	: "rgba(650,96,10,1)",
-  				data : [
-            <?php
-            for ($i = 0; $i < $max; ++$i) {
-                echo $MaxAnalyzerData[$i][1].',';
-            }
-             ?>  ],
-         }
-        config.data.datasets.push(maxDataSet);
-        window.myLine.update();
-      }
-  	}
-  	else{
-      if(config.data.datasets.length == 2){
-        config.data.datasets.splice(1, 2);
-        window.myLine.update();
-      }
-    }
-    });
 
 	</script>
 
