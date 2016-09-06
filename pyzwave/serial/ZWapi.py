@@ -851,11 +851,8 @@ if __name__ == '__main__':
 #    print ZW_GET_ROUTING_INFO_9600
     #print binascii.hexlify(zw.ZW_GetRoutingInfo(2, ZW_GET_ROUTING_INFO_9600))
     print zw.get_all_routing_info(size, ZW_GET_ROUTING_INFO_9600)
-    t = 0
-    while t < 30:
-        print zw.ZW_AddNodeToNetwork(2, None)
-        time.sleep(1)
-        t+=1
+
+    #print zw.ZW_RemoveNodeFromNetwork(1, None)
 
     zw.stop()
     print "Exit"

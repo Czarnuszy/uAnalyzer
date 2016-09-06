@@ -41,14 +41,14 @@
 					<h2>Network Health Tester</h2>
 
 					<div class="widget-toolbar">
-							<label class="btn btn-default btn-xs " id="save-a1"></i> Add
+							<label class="btn btn-default btn-xs " id="addBtn"></i> Add
 								<i class="fa fa-plus"></i>
 							</label>
 
-							<label class="btn btn-default btn-xs " id="refresh-a1"></i> Remove
+							<label class="btn btn-default btn-xs " id="removeBton"></i> Remove
 									<i class="fa fa-trash-o"></i>
 							</label>
-							<label class="btn btn-default btn-xs " id="refresh-a1"></i> Reset
+							<label class="btn btn-default btn-xs " id="resetBtn"></i> Reset
 									<i class="fa fa-refresh"></i>
 							</label>
 					</div>
@@ -133,6 +133,8 @@
 
 <script type="text/javascript">
 
+	var	$addBtn = $('#addBtn');
+
 	$(document).ready(function() {
 		load_health_tester();
 		load_controller();
@@ -166,7 +168,20 @@
 
 	});
 
+	$addBtn.on('click', function(){
+		console.log('click');
+			$.ajax({
+					url: 'ajax/addDevice.php',
+					success: function () {
+						console.log('Device added');
+						load_health_tester()
+					},
+					error: function(err){
+							console.log(err);
+					}
+			})
 
+	})
 
 
 	/* DO NOT REMOVE : GLOBAL FUNCTIONS!

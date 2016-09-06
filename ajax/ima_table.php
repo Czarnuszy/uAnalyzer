@@ -8,7 +8,7 @@
 		<center>
 
             <div id="NodeInfoGridBody" style="width: 100%; height: 400px;"></div>
-
+						<div id='testingDiv'></div>
 
 		</center>
     <script>
@@ -49,6 +49,7 @@
            type: 'GET',
            dataType: 'json',
            success: function(data){
+						 $('#NodeInfoGridBody').html(data);
              $.each(data, function (i, record) {
                w2ui['NodeInfoGrid'].records.push({
                  basic: record.basic,
@@ -59,8 +60,88 @@
              w2ui['NodeInfoGrid'].refresh();
 
            }
-
          })
+
+				function CSVToArray(strData, strDelimiter) {
+
+						strDelimiter = (strDelimiter || ",");
+
+						var objPattern = new RegExp(
+								(
+										"(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+
+										"(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+										"([^\"\\" + strDelimiter + "\\r\\n]*))"
+								),
+								"gi"
+						);
+
+
+						var arrData = [
+								[]
+						];
+
+						var arrMatches = null;
+
+						while (arrMatches = objPattern.exec(strData)) {
+
+								var strMatchedDelimiter = arrMatches[1];
+
+								if (
+										strMatchedDelimiter.length &&
+										strMatchedDelimiter !== strDelimiter
+								) {
+
+										arrData.push([]);
+
+								}
+
+								var strMatchedValue;
+
+								if (arrMatches[2]) {
+
+										strMatchedValue = arrMatches[2].replace(
+												new RegExp("\"\"", "g"),
+												"\""
+										);
+
+								} else {
+
+										strMatchedValue = arrMatches[3];
+								}
+
+								arrData[arrData.length - 1].push(strMatchedValue);
+						}
+
+						return (arrData);
+				}
+
+				 $.ajax({
+					 url: '../data/ima/node_info.csv',
+					 type: 'GET',
+				//	 dataType: 'json',
+					 success: function(data){
+						data = CSVToArray(data);
+
+						 $.each(data, function (i, record) {
+							 	console.log(record	);
+								$('#testingDiv').html(record);
+
+							 w2ui['NodeInfoGrid'].records.push({
+								 basic: record[3],
+								 generic: record[4],
+								 specific: record[5],
+								});
+						 })
+						 w2ui['NodeInfoGrid'].refresh();
+
+					 },
+					 error: function () {
+					 		console.log('error');
+					 }
+				 })
+
 
     });
     </script>

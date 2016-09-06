@@ -140,7 +140,7 @@ var packetAnalyzer = (function() {
     var home_id = '';
     var is_zniffer_on = false;
     var radioButton = '';
-
+    var checkStatusIntV  ;
     //cache DOM
     var $el = $('#zniffer_header');
     var $startBtn = $el.find('#play-a1');
@@ -167,8 +167,10 @@ var packetAnalyzer = (function() {
     function _init() {
         load();
         znifferStatus(onloadZnifferStatus);
+        console.log(checkStatusIntV);
+        //clearInterval(checkStatusINt);
 
-        checkStatusINt = setInterval(function() {
+        checkStatusInt = setInterval(function() {
             znifferStatus(returnZnifferStatus);
         }, 1000);
     }
@@ -968,10 +970,11 @@ var parse = (function() {
 		var pagefunction = function() {
       //  loadScript("js/packet_analyzer.js", run_after_loaded);
 
-
-
 		};
+    $(document).ready(function() {
 
+        console.log('whaat');
+    });
 
 
 		pagefunction();

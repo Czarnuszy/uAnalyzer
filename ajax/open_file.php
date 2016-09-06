@@ -8,7 +8,6 @@ $fi = '../data/Saves/'.$scanned_directory[2];
 date_default_timezone_set('America/New_York');
 
 if (file_exists($fi)) {
-    $t = date('F d Y H:i:s.', filectime($fi));
 }
 ?>
 
@@ -42,6 +41,7 @@ function getSymbolByQuantity($bytes)
       $d = $scanned_directory[$i];
       $fi = '../data/Saves/'.$scanned_directory[$i];
       $fileSizePrefix = min((int) log($filesizeB, $base), count($si_prefix) - 1);
+      $t = date('F d Y H:i:s.', filectime($fi));
 
   //    $t = date("F d Y H:i:s.", filectime($fi));
       echo     '<button class='.'filesButtons'.' data-fid ='."$f".' data-filehid ='."$d".' ><p>'.$fn.' | '.$filesize.$si_prefix[$fileSizePrefix].'<br>'.$t.'</p>'.
