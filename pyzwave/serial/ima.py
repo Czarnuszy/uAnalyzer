@@ -43,7 +43,7 @@ class IMA:
 
     def add_device(self):
         print zw.ZW_AddNodeToNetwork(01, self.callback)
-        while self.times<300:
+        while self.times<50:
             self.times += 1
             time.sleep(.1)
             print 'xxx' + str(self.endCallback)
@@ -140,10 +140,10 @@ class IMA:
 
     def save_routing_info_csv(self, data):
         filepath = open("/www/data/ima/routing_info.csv", "w")
-        for i in range(len(data)):
-            filepath.write(str(data[i][0])+',')
+    #    for i in range(len(data)):
+    #        filepath.write(str(data[i][0])+',')
 
-        filepath.write("\n")
+        #filepath.write("\n")
         # tt = data[4][1]
         # print tt[::-1]
         sometab = []
@@ -154,11 +154,14 @@ class IMA:
         for i in range(len(data)):
             tt = data[i][1]
             tt = tt[::-1]
-            print tt
+            #print tt
             #for x in range(len(data[i])):
             filepath.write(str(data[i][0])+',')
             for x in sometab:
-                filepath.write(str(tt[x-1]))
+                if int(tt[x-1]) == 1:
+                    filepath.write(str(x)+',')
+            #    else:
+                #    filepath.write(',')
 
             #print data[i][0]
         #    for z in data[i]:
@@ -201,7 +204,7 @@ parser.add_argument('-rm', '--remove_device',\
 parser.add_argument('-n', '--node_info',\
                   help="Node info", action='store_true', default=False)
 parser.add_argument('-x', '--reset',\
-                  help="Resert", action='store_true', default=False)
+                  help="Reset", action='store_true', default=False)
 parser.add_argument('-l', '--learn',\
                   help="Learning mode", action='store_true', default=False)
 parser.add_argument('-rg', '--routing',\

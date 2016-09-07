@@ -10,6 +10,7 @@
 	You do not need to use widgets if you dont want to. Simply remove
 	the <section></section> and you can use wells or panels instead
 	-->
+	<script src="../js/parser.js"></script>
 
 
 
@@ -36,9 +37,15 @@
 			>
 
 
-			<header>
+			<header id="healthHeader">
 					<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
 					<h2>Network Health Tester</h2>
+
+					<div class="widget-toolbar">
+							<label class="btn btn-default btn-xs " id="refreshBtn"></i> Refresh
+									<i class="fa fa-refresh"></i>
+							</label>
+					</div>
 
 					<div class="widget-toolbar">
 							<label class="btn btn-default btn-xs " id="addBtn"></i> Add
@@ -51,23 +58,12 @@
 							<label class="btn btn-default btn-xs " id="resetBtn"></i> Reset
 									<i class="fa fa-refresh"></i>
 							</label>
+							<label class="btn btn-default btn-xs " id="learnBtn"></i> Learn
+									<i class="fa fa-refresh"></i>
+							</label>
 					</div>
 
-									<div class="widget-toolbar">
 
-						<div class="btn-group" data-toggle="buttons">
-					        <label class="btn btn-default btn-xs " id="play-a2">
-					          <input type="radio" name="style-a1" id="style-a1"> <i class="fa fa-play"></i> Start
-					        </label>
-
-					        <label class="btn btn-default btn-xs active" id="stop-a2">
-					          <input type="radio" name="style-a2" id="style-a3"> <i class="fa fa-stop"></i> Stop
-					        </label>
-					    </div>
-
-
-
-					</div>
 				</header>
 
 
@@ -102,7 +98,9 @@
 					<h2>Static Connections Table</h2>
 
 					<div class="widget-toolbar">
-
+						<label class="btn btn-default btn-xs " id="routingRefresh"></i> Refresh
+								<i class="fa fa-refresh"></i>
+						</label>
 
 						</div>
 				</header>
@@ -128,60 +126,128 @@
 		</div>
 
 	</div>
+	<style>
+		#controller-body {
 
+			height: 600px;
+		}
+	</style>
 
 
 <script type="text/javascript">
 
-	var	$addBtn = $('#addBtn');
+	var healthTester = (function () {
 
-	$(document).ready(function() {
-		load_health_tester();
-		load_controller();
+			//cache DOM
+			var $el = $('#healthHeader');
+			var	$addBtn = $el.find('#addBtn');
+			var $rmvBtn = $el.find('#removeBton');
+			var $resetBtn = $el.find('#resetBtn');
+			var $learbBtn = $el.find('#learbBtn');
+			var $refreshBtn = $el.find('#refreshBtn');
 
-			//uncomment to pseudo-responsive
-		//$(window).resize(function(){
-        //	$( "#w-body2" ).load( "ajax/ima_table.php" );
-        //	$("#controller-body").load("ajax/controller.php");
-    	//	});
 
-		});
+			//bind events
+			$addBtn.on('click', onAddClick);
+			$rmvBtn.on('click', onRmvClick);
+			$resetBtn.on('click', onResetClick);
+			$learbBtn.on('click', onLearnClick);
+			$refreshBtn.on('click', onRefreshClick);
 
-	function refresh(){
-		jQuery("#list2").trigger("reloadGrid");
-}
-	function load_health_tester(){
-		$( "#w-body2" ).load( "ajax/ima_table.php" );
-	}
+			load();
+	//		startIMA('nodeInf', load);
 
-	function load_controller(){
-		$("#controller-body").load("ajax/controller.php");
-	}
+			function load(){
+				$( "#w-body2" ).load( "ajax/ima_table.php" );
+				console.log('loadin health test');
+			}
 
-	$("#play-a2").click(function(){
-				  myInterval = setInterval(load_health_tester, 2000);
-	});
+			function onAddClick() {
+					w2ui.NodeInfoGrid.lock("Please wait.", true);
+					console.log('click');
+					startIMA('add', reloadGridCallback);
+			}
 
-	$("#stop-a2").click(function(){
+			function onRmvClick() {
+					console.log('rmv click');
+					w2ui.NodeInfoGrid.lock("Please wait.", true);
+					startIMA('rm', reloadGridCallback);
+			}
 
-				   clearInterval(myInterval);
+			function onResetClick() {
+					console.log('reset click');
+					w2ui.NodeInfoGrid.lock("Please wait.", true);
+					startIMA('reset', reloadGridCallback);
+			}
 
-	});
+			function onLearnClick() {
+					console.log('learn click');
+					w2ui.NodeInfoGrid.lock("Please wait.", true);
+					startIMA('learn', reloadGridCallback);
+			}
 
-	$addBtn.on('click', function(){
-		console.log('click');
-			$.ajax({
-					url: 'ajax/addDevice.php',
-					success: function () {
-						console.log('Device added');
-						load_health_tester()
-					},
-					error: function(err){
-							console.log(err);
-					}
-			})
+			function onRefreshClick() {
+				console.log('refresh click');
+				w2ui.NodeInfoGrid.clear();
+				w2ui.NodeInfoGrid.lock("Please wait.", true);
+				startIMA('nodeInf', loadNodeInfoCallback);
+			}
 
-	})
+			function loadNodeInfoCallback() {
+					console.log('node info loaded');
+					load();
+					w2ui.NodeInfoGrid.unlock();
+
+			}
+
+			function reloadGridCallback() {
+					console.log('done');
+					w2ui.NodeInfoGrid.clear();
+					startIMA('nodeInf', loadNodeInfoCallback);
+			}
+
+
+			function startIMA(_req, onSuccess) {
+					$.ajax({
+							url: 'ajax/startIMA.php',
+							type: 'POST',
+							data: {req: _req},
+							success: onSuccess,
+							error: errorFun
+					})
+			}
+
+			function errorFun(xhr, status, error) {
+					var err = eval("(" + xhr.responseText + ")");
+					console.log(xhr + " " + status + " " + error);
+			}
+
+			return{
+				startIMA: startIMA,
+				error: errorFun
+			}
+
+	})();
+
+
+	var connectionTable = (function () {
+
+
+			//cache DOM
+			var $refreshBtn = $('#routingRefresh');
+
+			//Bind events
+			$refreshBtn.on('click', load_controller);
+
+
+			load_controller();
+
+
+			function load_controller(){
+					$("#controller-body").load("ajax/controller.php");
+			}
+	})();
+
 
 
 	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -240,6 +306,7 @@
 	 */
 
 	// pagefunction
+
 
 	var pagefunction = function() {
 		// clears the variable if left blank

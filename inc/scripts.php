@@ -35,6 +35,7 @@
 			<script src="<?php echo ASSETS_URL; ?>/js/w2ui-1.4.3.min.js"></script>
 			<script src="<?php echo ASSETS_URL; ?>/js/jquery.validate.min.js"></script>
 
+			<script src="<?php echo ASSETS_URL; ?>/js/sigma.min.js"></script>
 
 
 !-- CUSTOM NOTIFICATION -->
