@@ -706,9 +706,13 @@ class ZWapi(threading.Thread):
     def SetApplicationCommandHandlerBridge(self, fun):
         self.RegisterHandler(FUNC_ID_APPLICATION_COMMAND_HANDLER_BRIDGE, "4B", fun)
 
+    def get_node_dic(self):
+        InitData = self.SerialAPI_GetInitData()
+        return InitData
+
     def get_node_len(self):
         InitData = self.SerialAPI_GetInitData()
-        print InitData
+        #print InitData
         return len(InitData['nodelist']) + 1
 
     def nodeInfo_to_dic(self, nodeInfo):
@@ -717,20 +721,22 @@ class ZWapi(threading.Thread):
             nodeByts.append(nodeInfo[x:x+2])
         return nodeByts
 
-    def get_all_node_info(self, length):
+    def get_all_node_info(self, data):
         nodeInfo = []
-        for x in range(1, length):
+        for x in  data:
             ni = self.ZW_GetNodeProtocolInfo(x)
             ni = binascii.hexlify(ni)
+
             ni = self.nodeInfo_to_dic(ni)
             nodeInfo.append(ni)
         return nodeInfo
 
-    def get_all_routing_info(self, length, speed):
+    def get_all_routing_info(self, data, speed):
         info = []
-        for x in range(1, length):
+        for x in data:
             i = self.ZW_GetRoutingInfo(x, speed)
             i = binascii.hexlify(i)
+        #    i = binascii.unhexlify(i)
             info.append(i)
         return info
 
@@ -844,13 +850,15 @@ if __name__ == '__main__':
     nodeByts = []
     size = zw.get_node_len()
 
-    ni = zw.get_all_node_info(size)
+    nodeDic = zw.get_node_dic()
 
+    print nodeDic
+    ni = zw.get_all_node_info(nodeDic['nodelist'])
     print ni
     save_node_info_csv(ni)
 #    print ZW_GET_ROUTING_INFO_9600
     #print binascii.hexlify(zw.ZW_GetRoutingInfo(2, ZW_GET_ROUTING_INFO_9600))
-    print zw.get_all_routing_info(size, ZW_GET_ROUTING_INFO_9600)
+    print zw.get_all_routing_info(nodeDic['nodelist'], ZW_GET_ROUTING_INFO_9600)
 
     #print zw.ZW_RemoveNodeFromNetwork(1, None)
 

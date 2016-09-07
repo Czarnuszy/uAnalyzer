@@ -155,7 +155,7 @@
 	}
 
 	function load_controller(){
-	//	$("#controller-body").load("ajax/controller.php");
+		$("#controller-body").load("ajax/controller.php");
 	}
 
 	$("#play-a2").click(function(){
