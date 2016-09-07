@@ -75,7 +75,7 @@ class IMA:
         ni = zw.get_all_node_info(nodeDic['nodelist'])
         print ni
         save_node_info_csv(ni)
-        print zw.get_all_routing_info(nodeDic['nodelist'], ZW_GET_ROUTING_INFO_9600)
+        #print zw.get_all_routing_info(nodeDic['nodelist'], ZW_GET_ROUTING_INFO_9600)
 
 
     def get_routing_info(self):

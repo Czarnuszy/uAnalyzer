@@ -7,7 +7,7 @@
 
 		<center>
 
-            <div id="NodeInfoGridBody" style="width: 100%; height: 400px;"></div>
+            <div id="NodeInfoGridBody" style="width: 100%; height: 600px;"></div>
 						<div id='testingDiv'></div>
 
 		</center>
@@ -50,6 +50,8 @@
            dataType: 'json',
            success: function(data){
 						 $('#NodeInfoGridBody').html(data);
+						 w2ui.NodeInfoGrid.clear();
+
              $.each(data, function (i, record) {
                w2ui['NodeInfoGrid'].records.push({
                  basic: record.basic,
@@ -69,6 +71,7 @@
 				//	 dataType: 'json',
 					 success: function(data){
 						data = parse.CSVToArray(data);
+						w2ui.NodeInfoGrid.clear();
 
 						 $.each(data, function (i, record) {
 							// 	console.log(record	);

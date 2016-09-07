@@ -237,13 +237,21 @@
 			var $refreshBtn = $('#routingRefresh');
 
 			//Bind events
-			$refreshBtn.on('click', load_controller);
+			$refreshBtn.on('click', onRefreshClick);
 
 
 			load_controller();
+			var spinnerHTML = '<i class="'+'fa fa-spinner fa-spin fa-3x fa-fw"'+'></i>';
 
+			function onRefreshClick() {
+					$("#controller-body").html(spinnerHTML);
+
+					console.log('click');
+					healthTester.startIMA('routingInf', load_controller);
+			}
 
 			function load_controller(){
+				console.log('loaded');
 					$("#controller-body").load("ajax/controller.php");
 			}
 	})();

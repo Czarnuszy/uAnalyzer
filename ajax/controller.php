@@ -1,57 +1,8 @@
-
-<?php
-
-    function readCSV($csvFile)
-    {
-        $file_handle = fopen($csvFile, 'r');
-        while (!feof($file_handle)) {
-            $line_of_text[] = fgetcsv($file_handle, 1024);
-        }
-        fclose($file_handle);
-
-        return $line_of_text;
-    }
-
-    $csvFile = '../data/ima/routing_info.csv';
-
-    $NetworkConnections = readCSV($csvFile);
-    $max = count($NetworkConnections);
-    // for ($i=1; $i < $max; $i++) {
-    // 	echo $NetworkConnections[$i][1];
-    // 	echo "\n";
-		// 	echo "\n";
-		// 	echo '</br>';
-    // }
-?>
 <head>
 <script src="../js/sigma.plugins.neighborhoods.js"></script>
 
 <head>
 <div id="container">
-  <style>
-    #graph-container {
-      top: 5;
-      bottom: 5;
-      left: 0;
-      right: 0;
-			height: 600px;
-    }
-		.sigma-edge {
-      stroke: #14191C;
-    }
-    .sigma-node {
-      fill: green;
-      stroke: #14191C;
-      stroke-width: 2px;
-    }
-    .sigma-node:hover {
-      fill: blue;
-    }
-    .muted {
-      fill-opacity: 0.1;
-      stroke-opacity: 0.1;
-    }
-  </style>
   <div id="graph-container"></div>
 </div>
 <script>
@@ -63,7 +14,6 @@ $.ajax({
 			data = parse.CSVToArray(data);
 		//	data = CSVToArray(data);
 
-				console.log(Math.random());
 				var i,
 				    s,
 				    g = {
@@ -81,7 +31,7 @@ $.ajax({
 				    size: 3,
 				    color: '#666'
 				  });
-					console.log(data[i][0] + ' '+ i/8 + ' ' + 1.8*Math.random());
+				//	console.log(data[i][0] + ' '+ i/8 + ' ' + 1.8*Math.random());
 					add+= 0.1;
 				}
 
@@ -94,14 +44,8 @@ $.ajax({
 							    size: Math.random(),
 							    color: '#ccc',
 									hover_color: '#000'
-							//		type: ['line', 'curve', 'arrow', 'curvedArrow'][Math.random() * 4 | 0]
 							  });
-				// Instantiate sigma:
-				// s = new sigma({
-				//   graph: g,
-				//   container: 'graph-container'
-				// });
-				// Instantiate sigma:
+
 				s = new sigma({
 				  graph: g,
 				  settings: {

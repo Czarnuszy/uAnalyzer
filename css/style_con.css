@@ -166,11 +166,29 @@ textarea#send_files_msg{
 }
 
 
-
-
-
-
-
+/* IMA */
+#graph-container {
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 600px;
+}
+.sigma-edge {
+	stroke: #14191C;
+}
+.sigma-node {
+	fill: rgba(70,96,189,10.80);
+	stroke: #14191C;
+	stroke-width: 2px;
+}
+.sigma-node:hover {
+	fill: green;
+}
+.muted {
+	fill-opacity: 0.1;
+	stroke-opacity: 0.1;
+}
 
 
 
