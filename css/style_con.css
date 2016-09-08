@@ -173,6 +173,7 @@ textarea#send_files_msg{
 	left: 0;
 	right: 0;
 	height: 600px;
+	position: absolute;
 }
 .sigma-edge {
 	stroke: #14191C;
@@ -189,7 +190,15 @@ textarea#send_files_msg{
 	fill-opacity: 0.1;
 	stroke-opacity: 0.1;
 }
-
+#sidebar {
+		bottom: 0;
+		right: 0;
+		width: 200px;
+		height: 150px;
+		position: absolute;
+		background-color: #999;
+		padding: 10px;
+	}
 
 
 

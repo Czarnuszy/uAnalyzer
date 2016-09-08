@@ -1,6 +1,7 @@
 
 <html>
 <head>
+	<script src="../js/xml_parser.js"></script>
 
 </head>
 <body>
@@ -93,6 +94,8 @@
 
 
     });
+		xmlParser.start()
+
     </script>
 </body>
 </html>

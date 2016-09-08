@@ -11,6 +11,7 @@
 	the <section></section> and you can use wells or panels instead
 	-->
 	<script src="../js/parser.js"></script>
+	<script src="../js/xml_parser.js"></script>
 
 
 
@@ -136,6 +137,7 @@
 
 <script type="text/javascript">
 
+
 	var healthTester = (function () {
 
 			//cache DOM
@@ -158,8 +160,8 @@
 	//		startIMA('nodeInf', load);
 
 			function load(){
-				$( "#w-body2" ).load( "ajax/ima_table.php" );
-				console.log('loadin health test');
+					$( "#w-body2" ).load( "ajax/ima_table.php" );
+					console.log('loadin health test');
 			}
 
 			function onAddClick() {
@@ -187,10 +189,10 @@
 			}
 
 			function onRefreshClick() {
-				console.log('refresh click');
-				w2ui.NodeInfoGrid.clear();
-				w2ui.NodeInfoGrid.lock("Please wait.", true);
-				startIMA('nodeInf', loadNodeInfoCallback);
+					console.log('refresh click');
+					w2ui.NodeInfoGrid.clear();
+					w2ui.NodeInfoGrid.lock("Please wait.", true);
+					startIMA('nodeInf', loadNodeInfoCallback);
 			}
 
 			function loadNodeInfoCallback() {
@@ -223,8 +225,8 @@
 			}
 
 			return{
-				startIMA: startIMA,
-				error: errorFun
+					startIMA: startIMA,
+					error: errorFun
 			}
 
 	})();
@@ -232,9 +234,9 @@
 
 	var connectionTable = (function () {
 
-
 			//cache DOM
 			var $refreshBtn = $('#routingRefresh');
+			var $body = $('#controller-body');
 
 			//Bind events
 			$refreshBtn.on('click', onRefreshClick);
@@ -244,15 +246,14 @@
 			var spinnerHTML = '<i class="'+'fa fa-spinner fa-spin fa-3x fa-fw"'+'></i>';
 
 			function onRefreshClick() {
-					$("#controller-body").html(spinnerHTML);
-
+					$body.html(spinnerHTML);
 					console.log('click');
 					healthTester.startIMA('routingInf', load_controller);
 			}
 
 			function load_controller(){
-				console.log('loaded');
-					$("#controller-body").load("ajax/controller.php");
+					console.log('loaded');
+					$body.load("ajax/controller.php");
 			}
 	})();
 
