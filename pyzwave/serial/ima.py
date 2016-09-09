@@ -71,7 +71,7 @@ class IMA:
 
     def get_node_info(self):
         nodeDic = zw.get_node_dic()
-        print nodeDic
+        print nodeDic['nodelist'];
         ni = zw.get_all_node_info(nodeDic['nodelist'])
         print ni
         save_node_info_csv(ni)

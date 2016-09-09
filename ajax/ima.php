@@ -11,7 +11,6 @@
 	the <section></section> and you can use wells or panels instead
 	-->
 	<script src="../js/parser.js"></script>
-	<script src="../js/xml_parser.js"></script>
 
 
 

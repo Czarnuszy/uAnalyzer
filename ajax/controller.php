@@ -15,7 +15,8 @@ $.ajax({
 		success: function (data) {
 			data = parse.CSVToArray(data);
 		//	data = CSVToArray(data);
-
+				var xT = [1,2,2,4,4,6,6,7];
+				var yT = [4,2,6,1,7,6,2,4];
 				var i,
 				types = 'dd',
 				    s,
@@ -23,20 +24,25 @@ $.ajax({
 				      nodes: [],
 				      edges: []
 				    };
-				// Generate a random graph:
+						_x = 0;
+
 				for (i = 0; i < data.length-1; i++){
 					add = 0.3;
+					console.log(data[i][0] + ' ' +_x);
 				  g.nodes.push({
 				    id: 'n' + data[i][0],
 				    label: 'Dev ' + data[i][0],
+						x: xT[i]/7,
 				    x: i/10+0.1+0.001,
 				    y: 1.8*Math.random()+add,
+					//	y: yT[i]/7,
 				    size: 3,
 						type: types,
 				    color: '#666'
 				  });
 				//	console.log(data[i][0] + ' '+ i/8 + ' ' + 1.8*Math.random());
 					add+= 0.1;
+					_x+=0.2;
 				}
 
 					for (i = 0; i < data.length-1; i++)
