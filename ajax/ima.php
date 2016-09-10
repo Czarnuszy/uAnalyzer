@@ -31,7 +31,6 @@
 
 			data-widget-editbutton="false"
 			data-widget-collapsed="false"
-			data-widget-togglebutton="false"
 			data-widget-colorbutton="false"
 			data-widget-refreshbutton="false"
 			>
@@ -80,15 +79,10 @@
 
 				<article class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 
-
-
-
-
 				<div class="jarviswidget" id="wid-id-4"
 				data-widget-deletebutton="false"
 				data-widget-editbutton="false"
 				data-widget-collapsed="false"
-				data-widget-togglebutton="false"
 				data-widget-colorbutton="false"
 				data-widget-resizable="true">
 
@@ -119,8 +113,45 @@
 
 			</article>
 
+
+
+		<article class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+
+		<div class="jarviswidget" id="wid-id-4"
+		data-widget-deletebutton="false"
+		data-widget-editbutton="false"
+		data-widget-collapsed="false"
+		data-widget-colorbutton="false"
+		data-widget-resizable="true">
+
+
+		<header>
+			<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
+			<h2>Connections Table</h2>
+
+			<div class="widget-toolbar">
+				<label class="btn btn-default btn-xs " id="getStatusBtn"></i> Load
+						<i class="fa fa-refresh"></i>
+				</label>
+
+				</div>
+		</header>
+
+
+
+			<div class="widget-body">
+			<div id="status-table-body">
+			<center>
+				Loading...
+			</center>
+			</div>
+			</div>
+
 		</div>
 
+		</article>
+
+		</div>
 	</section>
 
 		</div>
@@ -144,7 +175,7 @@
 			var	$addBtn = $el.find('#addBtn');
 			var $rmvBtn = $el.find('#removeBton');
 			var $resetBtn = $el.find('#resetBtn');
-			var $learbBtn = $el.find('#learbBtn');
+			var $learnBtn = $el.find('#learnBtn');
 			var $refreshBtn = $el.find('#refreshBtn');
 
 
@@ -152,7 +183,7 @@
 			$addBtn.on('click', onAddClick);
 			$rmvBtn.on('click', onRmvClick);
 			$resetBtn.on('click', onResetClick);
-			$learbBtn.on('click', onLearnClick);
+			$learnBtn.on('click', onLearnClick);
 			$refreshBtn.on('click', onRefreshClick);
 
 			load();
@@ -256,6 +287,13 @@
 			}
 	})();
 
+
+var statusTable = (function () {
+	var $body = $('#status-table-body');
+
+
+	$body.load("ajax/status_table.php");
+})();
 
 
 	/* DO NOT REMOVE : GLOBAL FUNCTIONS!

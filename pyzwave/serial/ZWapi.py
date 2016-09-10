@@ -451,7 +451,7 @@ class ZWapi(threading.Thread):
     # 5.3.3    Z-Wave Transport API
 
     # TEST OK
-    def ZW_SendData(self, nodeID, data, txOptions=TRANSMIT_OPTION_ACK|TRANSMIT_OPTION_AUTO_ROUTE, fun=None):
+    def ZW_SendData(self, nodeID, data, fun,  txOptions=0x25):#TRANSMIT_OPTION_ACK|TRANSMIT_OPTION_AUTO_ROUTE):
         logging.debug("ZW_SendData")
         f = self.SendWithCallback(FUNC_ID_ZW_SEND_DATA,
                                   chr(nodeID) + chr(len(data)) + data + chr(txOptions), fun)

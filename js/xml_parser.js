@@ -160,6 +160,7 @@ var xmlParser = (function() {
     }
 
 
+
     function errorFun(xhr, status, error) {
         var err = eval("(" + xhr.responseText + ")");
         console.log(xhr.responseText);

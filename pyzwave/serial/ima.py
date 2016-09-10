@@ -9,6 +9,7 @@ class IMA:
         self.endCallback = 'none'
         self. times = 0
         self.args = args
+        self.data = 'xxxxxxxxxxxxxxxxxxxxx'
 
 
     def callback(self, a, b, c, **args):
@@ -41,6 +42,14 @@ class IMA:
         if a == 5:
             self.endCallback=5
 
+    def status_callback(self, a,  **args):
+        print "callback"
+        print a
+        print binascii.hexlify(args['data'])
+        if a == 1 or a == 0:
+            self.endCallback = a
+            self.data = binascii.hexlify(args['data'])
+
     def add_device(self):
         print zw.ZW_AddNodeToNetwork(01, self.callback)
         while self.times<50:
@@ -70,6 +79,8 @@ class IMA:
         print "Exit"
 
     def get_node_info(self):
+        ID = zw.MemoryGetID()
+        print ID['nodeid']
         nodeDic = zw.get_node_dic()
         print nodeDic['nodelist'];
         ni = zw.get_all_node_info(nodeDic['nodelist'])
@@ -117,6 +128,29 @@ class IMA:
         print zw.ZW_SetLearnMode(5, None)
         zw.stop()
         print "Exit"
+
+
+
+    def get_status(self, dev):
+        A= [0]
+        B=''
+        B = B.join(map(chr, A))
+        print zw.ZW_SendData(int(dev), B, self.status_callback)
+        while self.times<100:
+            self.times += 1
+            time.sleep(.1)
+            print 'xxx' + str(self.endCallback)
+            print self.times
+            if self.endCallback == 1 or self.endCallback == 0:
+                break
+        if self.endCallback == 'none' or self.endCallback == 1:
+            self.endCallback = 'Fail'
+        if self.endCallback == 0:
+            self.endCallback = 'OK'
+
+        self.save_dev_status(self.endCallback, self.data, dev)
+        zw.stop()
+    #    print "Exit"
 
     def reverse_hex_string(self, string):
         mylist = list(string)
@@ -177,6 +211,47 @@ class IMA:
 
         filepath.close()
 
+    def save_dev_status(self, data, dataArray, deviceid):
+        time = self.dev_connection_time(dataArray)
+        repeaters_amount = self.dev_repeaters_amount(dataArray)
+        repeaters = self.dev_repeaters_info(dataArray, repeaters_amount, deviceid)
+        filepath = open("/www/data/ima/device_status.csv", "w")
+        filepath.write(str(data) + ',' + time  + ',' + repeaters_amount + ',' +repeaters)
+        filepath.close()
+
+    def dev_connection_time(self, data):
+        return str(int(data[0:4], 16))
+
+    def dev_repeaters_amount(self, data):
+        return str(int(data[4:6],16))
+
+    def dev_repeaters_info(self, data, repeaters_amount, deviceid):
+        toolboxid = zw.MemoryGetID()
+        toolboxid = str(toolboxid['nodeid'])
+        size = int(repeaters_amount)
+        r1 = str(int(data[22:24], 16))
+        r2 = str(int(data[24:26], 16))
+        r3 = str(int(data[26:28], 16))
+        r4 = str(int(data[28:30], 16))
+        r5 = str(int(data[30:32], 16))
+        if size == 0:
+            resp = toolboxid + ' -> ' + str(deviceid)
+            return resp
+        elif size == 1:
+            resp =  toolboxid + ' -> ' + r1 + ' -> ' + str(deviceid)
+            return resp
+        elif size == 2:
+            resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> ' + str(deviceid)
+            return resp
+        elif size == 3:
+            resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> ' + str(deviceid)
+            return resp
+        elif size == 4:
+            resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> '+ r4 + ' -> ' + str(deviceid)
+            return resp
+        elif size == 5:
+            resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> '+ r4 + ' -> ' + r5 + ' -> ' + str(deviceid)
+            return resp
 
     def start(self):
         if args.add_device == True:
@@ -191,6 +266,9 @@ class IMA:
             self.learn()
         elif args.routing == True:
             self.get_routing_info()
+        elif args.status == True:#and args.device_id == True:
+            self.get_status(args.device_id)
+
         zw.stop()
         print "Exit"
 
@@ -209,6 +287,10 @@ parser.add_argument('-l', '--learn',\
                   help="Learning mode", action='store_true', default=False)
 parser.add_argument('-rg', '--routing',\
                   help="Routing info", action='store_true', default=False)
+parser.add_argument('-s', '--status',\
+                  help="Status info", action='store_true', default=False)
+parser.add_argument('-dev', '--device_id',\
+                  help="Device id",  default=False)
 
 
 args = parser.parse_args()

@@ -1,5 +1,7 @@
 <?php
-function actions(){
+
+function actions($todo)
+{
     if ($todo == 'add') {
         exec('python /www/pyzwave/serial/ima.py -a');
     } elseif ($todo == 'rm') {
@@ -15,12 +17,12 @@ function actions(){
     }
 }
 
-
-function saveFileData($File){
-  $file_handle = fopen($File, 'w');
-  $txt = 'ima';
-  fwrite($file_handle, $txt);
-  fclose($file_handle);
+function saveFileData($File)
+{
+    $file_handle = fopen($File, 'w');
+    $txt = 'ima';
+    fwrite($file_handle, $txt);
+    fclose($file_handle);
 }
 
 function readFileData($File)
@@ -33,24 +35,18 @@ function readFileData($File)
     return $line_of_text;
 }
 
-
-    $todo = $_POST['req'];
-    $file="../zniffer/data/actual_script.txt";
+    $Todo = $_POST['req'];
+    $file = '../zniffer/data/actual_script.txt';
     $actualScript = readFileData($file);
     echo $actualScript;
     echo $file;
-    echo $todo;
+    echo $Todo;
+  //  $Todo = 'nodeInf';
 
-    if ($actualScript == "ima") {
-      actions($todo);
-    }else {
-      exec('rwee -w -z -x -f /www/data/firmware/bridge');
-      saveFileData($file);
-      actions($todo);
+    if ($actualScript == 'ima') {
+        actions($Todo);
+    } else {
+        exec('rwee -w -z -x -f /www/data/firmware/bridge');
+        saveFileData($file);
+        actions($Todo);
     }
-
-
-
-
-
-?>

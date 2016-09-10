@@ -28,7 +28,7 @@ $.ajax({
 
 				for (i = 0; i < data.length-1; i++){
 					add = 0.3;
-					console.log(data[i][0] + ' ' +_x);
+			//		console.log(data[i][0] + ' ' +_x);
 				  g.nodes.push({
 				    id: 'n' + data[i][0],
 				    label: 'Dev ' + data[i][0],
