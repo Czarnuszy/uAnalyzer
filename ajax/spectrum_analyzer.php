@@ -261,7 +261,7 @@ var spectrumAnalyzer = (function() {
     }
 
     function startusReq(response) {
-
+        console.log(response);
         if (response == 1) {
             status = true;
             $("#play-a3").attr('class', 'btn btn-default btn-xs active');

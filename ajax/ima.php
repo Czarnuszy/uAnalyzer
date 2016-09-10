@@ -1,6 +1,9 @@
 
 <?php require_once("inc/init.php"); ?>
+<head>
+  <script src="../js/parser.js"></script>
 
+</head>
 <!-- row -->
 
 <!-- end row -->
@@ -10,153 +13,167 @@
 	You do not need to use widgets if you dont want to. Simply remove
 	the <section></section> and you can use wells or panels instead
 	-->
-	<script src="../js/parser.js"></script>
-
-
-
 	<div class="row">
 
-		<!-- a blank row to get started -->
-		<div class="col-sm-12">
-			<!-- your contents here -->
-<section id="widget-grid" class="">
+	    <!-- a blank row to get started -->
+	    <div class="col-sm-12">
+	        <!-- your contents here -->
+	        <section id="widget-grid" class="">
 
-		<div class="row">
-
-			<article class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+	            <div class="row">
 
 
-			<div class="jarviswidget" id="wid-id-6"
-			data-widget-deletebutton="false"
-
-			data-widget-editbutton="false"
-			data-widget-collapsed="false"
-			data-widget-colorbutton="false"
-			data-widget-refreshbutton="false"
-			>
+	                <article class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 
 
-			<header id="healthHeader">
-					<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
-					<h2>Network Health Tester</h2>
-
-					<div class="widget-toolbar">
-							<label class="btn btn-default btn-xs " id="refreshBtn"></i> Refresh
-									<i class="fa fa-refresh"></i>
-							</label>
-					</div>
-
-					<div class="widget-toolbar">
-							<label class="btn btn-default btn-xs " id="addBtn"></i> Add
-								<i class="fa fa-plus"></i>
-							</label>
-
-							<label class="btn btn-default btn-xs " id="removeBton"></i> Remove
-									<i class="fa fa-trash-o"></i>
-							</label>
-							<label class="btn btn-default btn-xs " id="resetBtn"></i> Reset
-									<i class="fa fa-refresh"></i>
-							</label>
-							<label class="btn btn-default btn-xs " id="learnBtn"></i> Learn
-									<i class="fa fa-refresh"></i>
-							</label>
-					</div>
+	                    <div class="jarviswidget" id="wid-id-6" data-widget-deletebutton="false"
+											data-widget-editbutton="false" data-widget-collapsed="false" data-widget-colorbutton="false"
+											 data-widget-refreshbutton="false">
 
 
-				</header>
+	                        <header id="healthHeader">
+	                            <span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
+	                            <h2>Network Health Tester</h2>
+
+	                            <div class="widget-toolbar">
+	                                <label class="btn btn-default btn-xs " id="refreshBtn"></i> Refresh
+											                <i class="fa fa-refresh"></i>
+											            </label>
+	                            </div>
+
+	                            <div class="widget-toolbar">
+	                                <label class="btn btn-default btn-xs " id="addBtn"></i> Add
+											              <i class="fa fa-plus"></i>
+											            </label>
+
+	                                <label class="btn btn-default btn-xs " id="removeBton"></i> Remove
+											                <i class="fa fa-trash-o"></i>
+											            </label>
+	                                <label class="btn btn-default btn-xs " id="resetBtn"></i> Reset
+											                <i class="fa fa-refresh"></i>
+											            </label>
+	                                <label class="btn btn-default btn-xs " id="learnBtn"></i> Learn
+											                <i class="fa fa-refresh"></i>
+											            </label>
+	                            </div>
+
+
+	                        </header>
 
 
 
-					<div class="widget-body">
-					<div id="w-body2">
-						Loading...
-					</div>
-					</div>
+	                        <div class="widget-body">
+	                            <div id="w-body2">
+	                                Loading...
+	                            </div>
+	                        </div>
 
-				</div>
-				</article>
+	                    </div>
 
-
-				<article class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-
-				<div class="jarviswidget" id="wid-id-4"
-				data-widget-deletebutton="false"
-				data-widget-editbutton="false"
-				data-widget-collapsed="false"
-				data-widget-colorbutton="false"
-				data-widget-resizable="true">
+											<div class="jarviswidget" id="wid-id-3" data-widget-deletebutton="false"
+											 data-widget-editbutton="false" data-widget-collapsed="false"
+											 data-widget-colorbutton="false" data-widget-resizable="true">
 
 
-			<header>
-					<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
-					<h2>Static Connections Table</h2>
+													<header>
+															<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
+															<h2>Connections Table</h2>
 
-					<div class="widget-toolbar">
-						<label class="btn btn-default btn-xs " id="routingRefresh"></i> Refresh
-								<i class="fa fa-refresh"></i>
-						</label>
+															<div class="widget-toolbar">
+																	<label class="btn btn-default btn-xs " id="getStatusBtn"></i> Load
+																		<i class="fa fa-refresh"></i>
+																</label>
 
-						</div>
-				</header>
+															</div>
+													</header>
 
 
 
-					<div class="widget-body">
-					<div id="controller-body">
-					<center>
-						Loading...
-					</center>
-					</div>
-					</div>
+													<div class="widget-body">
+															<div id="status-table-body">
+																	<center>
+																			Loading...
+																	</center>
+															</div>
+													</div>
 
-				</div>
-
-			</article>
+											</div>
 
 
 
-		<article class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-
-		<div class="jarviswidget" id="wid-id-4"
-		data-widget-deletebutton="false"
-		data-widget-editbutton="false"
-		data-widget-collapsed="false"
-		data-widget-colorbutton="false"
-		data-widget-resizable="true">
-
-
-		<header>
-			<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
-			<h2>Connections Table</h2>
-
-			<div class="widget-toolbar">
-				<label class="btn btn-default btn-xs " id="getStatusBtn"></i> Load
-						<i class="fa fa-refresh"></i>
-				</label>
-
-				</div>
-		</header>
+	                </article>
 
 
 
-			<div class="widget-body">
-			<div id="status-table-body">
-			<center>
-				Loading...
-			</center>
-			</div>
-			</div>
+	                <article class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 
-		</div>
+	                    <div class="jarviswidget" id="wid-id-4" data-widget-deletebutton="false"
+											data-widget-editbutton="false" data-widget-collapsed="false" data-widget-colorbutton="false"
+											data-widget-resizable="true">
 
-		</article>
 
-		</div>
-	</section>
+	                        <header>
+	                            <span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
+	                            <h2>Static Connections Table</h2>
 
-		</div>
+	                            <div class="widget-toolbar">
+	                                <label class="btn btn-default btn-xs " id="routingRefresh"></i> Refresh
+												              <i class="fa fa-refresh"></i>
+												          </label>
+
+	                            </div>
+	                        </header>
+
+
+
+	                        <div class="widget-body">
+	                            <div id="controller-body">
+	                                <center>
+	                                    Loading...
+	                                </center>
+	                            </div>
+	                        </div>
+
+	                    </div>
+
+											<div class="jarviswidget" id="wid-id-5" data-widget-deletebutton="false"
+											data-widget-editbutton="false" data-widget-collapsed="false" data-widget-colorbutton="false"
+											data-widget-resizable="true">
+
+
+													<header>
+															<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
+															<h2> Widget 4</h2>
+
+															<div class="widget-toolbar">
+																	<label class="btn btn-default btn-xs " id=""></i> Refresh
+																			<i class="fa fa-refresh"></i>
+																	</label>
+
+															</div>
+													</header>
+
+
+
+													<div class="widget-body">
+															<div id="t4h-body">
+																	<center>
+																			Loading...
+																	</center>
+															</div>
+													</div>
+
+											</div>
+
+	                </article>
+
+	            </div>
+	        </section>
+
+	    </div>
 
 	</div>
+
 	<style>
 		#controller-body {
 

@@ -147,8 +147,10 @@ class IMA:
             self.endCallback = 'Fail'
         if self.endCallback == 0:
             self.endCallback = 'OK'
-
-        self.save_dev_status(self.endCallback, self.data, dev)
+        if self.endCallback != 'none':
+            self.save_dev_status(self.endCallback, self.data, dev)
+        else:
+            self.save_dev_noresponse_status()
         zw.stop()
     #    print "Exit"
 
@@ -219,39 +221,53 @@ class IMA:
         filepath.write(str(data) + ',' + time  + ',' + repeaters_amount + ',' +repeaters)
         filepath.close()
 
+    def save_dev_noresponse_status(self):
+        filepath = open("/www/data/ima/device_status.csv", "w")
+        filepath.write('Fail, No response, No response, No response')
+        filepath.close()
+
     def dev_connection_time(self, data):
-        return str(int(data[0:4], 16))
+        return str(float(int(data[0:4], 16))/100) + ' sec'
 
     def dev_repeaters_amount(self, data):
         return str(int(data[4:6],16))
 
     def dev_repeaters_info(self, data, repeaters_amount, deviceid):
-        toolboxid = zw.MemoryGetID()
+        repeaters = []
+        toolboxid = self.get_toolbox_id()
         toolboxid = str(toolboxid['nodeid'])
         size = int(repeaters_amount)
-        r1 = str(int(data[22:24], 16))
-        r2 = str(int(data[24:26], 16))
-        r3 = str(int(data[26:28], 16))
-        r4 = str(int(data[28:30], 16))
-        r5 = str(int(data[30:32], 16))
-        if size == 0:
-            resp = toolboxid + ' -> ' + str(deviceid)
-            return resp
-        elif size == 1:
-            resp =  toolboxid + ' -> ' + r1 + ' -> ' + str(deviceid)
-            return resp
-        elif size == 2:
-            resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> ' + str(deviceid)
-            return resp
-        elif size == 3:
-            resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> ' + str(deviceid)
-            return resp
-        elif size == 4:
-            resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> '+ r4 + ' -> ' + str(deviceid)
-            return resp
-        elif size == 5:
-            resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> '+ r4 + ' -> ' + r5 + ' -> ' + str(deviceid)
-            return resp
+        repeaters.append(str(int(data[22:24], 16)))
+        repeaters.append(str(int(data[24:26], 16)))
+        repeaters.append(str(int(data[26:28], 16)))
+        repeaters.append(str(int(data[28:30], 16)))
+        repeaters.append(str(int(data[30:32], 16)))
+        a = toolboxid + ' -> '
+        for x in range(size):
+            a += repeaters[x] + ' -> '
+        a += str(deviceid)
+        return a
+        # if size == 0:
+        #     resp = toolboxid + ' -> ' + str(deviceid)
+        #     return resp
+        # elif size == 1:
+        #     resp =  toolboxid + ' -> ' + r1 + ' -> ' + str(deviceid)
+        #     return resp
+        # elif size == 2:
+        #     resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> ' + str(deviceid)
+        #     return resp
+        # elif size == 3:
+        #     resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> ' + str(deviceid)
+        #     return resp
+        # elif size == 4:
+        #     resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> '+ r4 + ' -> ' + str(deviceid)
+        #     return resp
+        # elif size == 5:
+        #     resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> '+ r4 + ' -> ' + r5 + ' -> ' + str(deviceid)
+        #     return resp
+
+    def get_toolbox_id(self):
+        return zw.MemoryGetID()
 
     def start(self):
         if args.add_device == True:

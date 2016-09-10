@@ -71,6 +71,7 @@ var devicesStatus = (function () {
 	//		devices.push(1,7, 8, 15);
 			//		$.each(devices, function (i, dev) {
 			w2ui['connectionGrid'].refresh();
+			w2ui['connectionGrid'].clear();
 
 			var current = 0;
 			var i = 0;
