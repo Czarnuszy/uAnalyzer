@@ -51,34 +51,34 @@ $.ajax({
 			for (i = 0; i < data.length-1; i++)
 					for (var x = 0; x < data[i].length-1; x++)
 							g.edges.push({
-						    id: 'e' + data[i][0]+'to'+data[i][x+1],
-						    source:  data[i][0],
-						    target:  data[i][x],
-						    size: Math.random(),
-						    color: '#ccc',
-								hover_color: '#000'
+  						    id: 'e' + data[i][0]+'to'+data[i][x+1],
+  						    source:  data[i][0],
+  						    target:  data[i][x],
+  						    size: Math.random(),
+  						    color: '#ccc',
+  								hover_color: '#000'
 						  });
 
 				console.log(g.nodes[0].type);
 				console.log(g.edges[0].color);
 
 				s = new sigma({
-				  graph: g,
-				  settings: {
-				    enableHovering: false,
-						enableEdgeHovering: true,
-					 edgeHoverColor: 'edge',
-					 defaultEdgeHoverColor: '#000',
-					 edgeHoverSizeRatio: 1,
-					 edgeHoverExtremities: true,
-				  }
+  				  graph: g,
+  				  settings: {
+                enableHovering: false,
+                enableEdgeHovering: true,
+                edgeHoverColor: 'edge',
+                defaultEdgeHoverColor: '#000',
+                edgeHoverSizeRatio: 1,
+                edgeHoverExtremities: true,
+  				  }
 				});
 
 				s.addRenderer({
-				  id: 'main',
-				  type: 'svg',
-				  container: document.getElementById('graph-container'),
-				  freeStyle: true,
+  				  id: 'main',
+  				  type: 'svg',
+  				  container: document.getElementById('graph-container'),
+  				  freeStyle: true,
 				});
 
 				s.refresh();
@@ -86,12 +86,12 @@ $.ajax({
 				// Binding silly interactions
 				function mute(node) {
 				  if (!~node.getAttribute('class').search(/muted/))
-				    node.setAttributeNS(null, 'class', node.getAttribute('class') + ' muted');
+				      node.setAttributeNS(null, 'class', node.getAttribute('class') + ' muted');
 					//	g.edges[0].
 				}
 
 				function unmute(node) {
-				  node.setAttributeNS(null, 'class', node.getAttribute('class').replace(/(\s|^)muted(\s|$)/g, '$2'));
+				      node.setAttributeNS(null, 'class', node.getAttribute('class').replace(/(\s|^)muted(\s|$)/g, '$2'));
 				}
 
 				$('.sigma-node').click(function() {
@@ -105,24 +105,24 @@ $.ajax({
 
   				  // Muting
   				  $('.sigma-node, .sigma-edge').each(function() {
-  				    mute(this);
+  				        mute(this);
   				  });
 
   				  // Unmuting neighbors
   				  var neighbors = s.graph.neighborhood($(this).attr('data-node-id'));
 
   				  neighbors.nodes.forEach(function(node) {
-  				    unmute($('[data-node-id="' + node.id + '"]')[0]);
+  				        unmute($('[data-node-id="' + node.id + '"]')[0]);
   				  });
 
   				  neighbors.edges.forEach(function(edge) {
-  				    unmute($('[data-edge-id="' + edge.id + '"]')[0]);
+  				        unmute($('[data-edge-id="' + edge.id + '"]')[0]);
   				  });
 				});
 
 				s.bind('clickStage', function() {
   				  $('.sigma-node, .sigma-edge').each(function() {
-  				    unmute(this);
+  				        unmute(this);
   				  });
             selectedDevId = 'none';
             $neightUpdateBtn.attr('disabled', true);

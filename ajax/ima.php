@@ -308,12 +308,13 @@
 			}
 
       function onUpdateClick() {
-          console.log(selectedDevId);
-          $body.html(spinnerHTML);
-          startIMA(selectedDevId, function () {
-          healthTester.startIMA('routingInf', load_controller);
-        });
-
+        if (selectedDevId != 'none') {
+            console.log(selectedDevId);
+            $body.html(spinnerHTML);
+            startIMA(selectedDevId, function () {
+                healthTester.startIMA('routingInf', load_controller);
+            });
+        }
      }
 
 			function load_controller(){
