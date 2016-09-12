@@ -27,8 +27,6 @@
 		<script src="<?php echo ASSETS_URL; ?>/js/bootstrap/bootstrap.min.js"></script>
 
        		<script src="<?php echo ASSETS_URL; ?>/js/Chart.min.js"></script>
-		 <script src="<?php echo ASSETS_URL; ?>/js/Chart.js"></script>
-       		 <script src="<?php echo ASSETS_URL; ?>/js/Chart.Line.js"></script>
 	  	<script src="<?php echo ASSETS_URL; ?>/js/smartwidgets/jarvis.widget.min.js"></script>
 	    <script src="<?php echo ASSETS_URL; ?>/js/jquery-form/jquery-form.min.js"></script>
 	    <script src="<?php echo ASSETS_URL; ?>/js/optionMenuScripts.js"></script>
