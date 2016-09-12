@@ -9,7 +9,7 @@ class IMA:
         self.endCallback = 'none'
         self. times = 0
         self.args = args
-        self.data = 'xxxxxxxxxxxxxxxxxxxxx'
+        self.data = ''
 
 
     def callback(self, a, b, c, **args):
