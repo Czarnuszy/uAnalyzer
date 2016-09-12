@@ -9,7 +9,8 @@
 </div>
 <script>
 
-
+var selectedDevId = 'none';
+var $neightUpdateBtn = $('#updateNeighbors');
 $.ajax({
 		url: '../data/ima/routing_info.csv',
 		success: function (data) {
@@ -31,7 +32,7 @@ $.ajax({
 					add = 0.3;
 			//		console.log(data[i][0] + ' ' +_x);
 				  g.nodes.push({
-				    id: 'n' + data[i][0],
+				    id: data[i][0],
 				    label: 'Dev ' + data[i][0],
 				//		x: xT[i]/7,
 				    x: i/10+0.1+0.001,
@@ -39,7 +40,8 @@ $.ajax({
 					//	y: yT[i]/7,
 				    size: 3,
 						type: types,
-				    color: '#666'
+				    color: '#666',
+            devid: data[i][0],
 				  });
 				//	console.log(data[i][0] + ' '+ i/8 + ' ' + 1.8*Math.random());
 					add+= 0.1;
@@ -50,8 +52,8 @@ $.ajax({
 					for (var x = 0; x < data[i].length-1; x++)
 							g.edges.push({
 						    id: 'e' + data[i][0]+'to'+data[i][x+1],
-						    source: 'n' + data[i][0],
-						    target: 'n' + data[i][x],
+						    source:  data[i][0],
+						    target:  data[i][x],
 						    size: Math.random(),
 						    color: '#ccc',
 								hover_color: '#000'
@@ -93,28 +95,38 @@ $.ajax({
 				}
 
 				$('.sigma-node').click(function() {
+            console.log($(this).attr('data-node-id'));
+            selectedDevId = $(this).attr('data-node-id');
+            console.log(selectedDevId);
 
-				  // Muting
-				  $('.sigma-node, .sigma-edge').each(function() {
-				    mute(this);
-				  });
+            if (selectedDevId != 'none') {
+                $neightUpdateBtn.attr('disabled', false);
+            }
 
-				  // Unmuting neighbors
-				  var neighbors = s.graph.neighborhood($(this).attr('data-node-id'));
+  				  // Muting
+  				  $('.sigma-node, .sigma-edge').each(function() {
+  				    mute(this);
+  				  });
 
-				  neighbors.nodes.forEach(function(node) {
-				    unmute($('[data-node-id="' + node.id + '"]')[0]);
-				  });
+  				  // Unmuting neighbors
+  				  var neighbors = s.graph.neighborhood($(this).attr('data-node-id'));
 
-				  neighbors.edges.forEach(function(edge) {
-				    unmute($('[data-edge-id="' + edge.id + '"]')[0]);
-				  });
+  				  neighbors.nodes.forEach(function(node) {
+  				    unmute($('[data-node-id="' + node.id + '"]')[0]);
+  				  });
+
+  				  neighbors.edges.forEach(function(edge) {
+  				    unmute($('[data-edge-id="' + edge.id + '"]')[0]);
+  				  });
 				});
 
 				s.bind('clickStage', function() {
-				  $('.sigma-node, .sigma-edge').each(function() {
-				    unmute(this);
-				  });
+  				  $('.sigma-node, .sigma-edge').each(function() {
+  				    unmute(this);
+  				  });
+            selectedDevId = 'none';
+            $neightUpdateBtn.attr('disabled', true);
+
 				});
 
 				// var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);

@@ -33,7 +33,7 @@
 
 	                        <header id="healthHeader">
 	                            <span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
-	                            <h2>Network Health Tester</h2>
+	                            <h2>Device List</h2>
 
 	                            <div class="widget-toolbar">
 	                                <label class="btn btn-default btn-xs " id="refreshBtn"></i> Refresh
@@ -77,7 +77,7 @@
 
 													<header>
 															<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
-															<h2>Connections Table</h2>
+															<h2>Connections Tester</h2>
 
 															<div class="widget-toolbar">
 																	<label class="btn btn-default btn-xs " id="getStatusBtn"></i> Load
@@ -145,13 +145,15 @@
 
 													<header>
 															<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
-															<h2> Test Devices</h2>
+															<h2> Netwok Health Tester</h2>
 
 															<div class="widget-toolbar">
 																	<label class="btn btn-default btn-xs " id="testBtn"></i> Test
 																			<i class="fa fa-refresh"></i>
 																	</label>
-
+                                  <label class="btn btn-default btn-xs " id="stopTestBtn"></i> Stop
+                                      <i class="fa fa-stop"></i>
+                                  </label>
 															</div>
 													</header>
 
@@ -249,7 +251,6 @@
 					load();
 					w2ui.NodeInfoGrid.unlock();
           connectionTable.refresh();
-
 			}
 
 			function reloadGridCallback() {
@@ -289,6 +290,10 @@
 			var $refreshBtn = $('#routingRefresh');
 			var $body = $('#controller-body');
 
+    //  $neightUpdateBtn.toggle();
+      $neightUpdateBtn.attr('disabled', true);
+
+
 			//Bind events
 			$refreshBtn.on('click', onRefreshClick);
       $neightUpdateBtn.on('click', onUpdateClick);
@@ -301,10 +306,12 @@
 					console.log('click');
 					healthTester.startIMA('routingInf', load_controller);
 			}
+
       function onUpdateClick() {
-        $body.html(spinnerHTML);
-        healthTester.startIMA('neighborsUpdate', function () {
-         healthTester.startIMA('routingInf', load_controller);
+          console.log(selectedDevId);
+          $body.html(spinnerHTML);
+          startIMA(selectedDevId, function () {
+          healthTester.startIMA('routingInf', load_controller);
         });
 
      }
@@ -312,7 +319,18 @@
 			function load_controller(){
 					console.log('loaded');
 					$body.load("ajax/controller.php");
+
 			}
+
+      function startIMA(_req, onSuccess) {
+          $.ajax({
+              url: 'ajax/send_neight_update.php',
+              type: 'POST',
+              data: {req: _req},
+              success: onSuccess,
+              error: healthTester.errorFun
+          })
+      }
 
       return{
         refresh: onRefreshClick,
@@ -326,6 +344,14 @@ var statusTable = (function () {
 
 	$body.load("ajax/status_table.php");
 
+  function fillGrid() {
+      $body.load("ajax/status_table.php");
+  //  devicesStatus.fillGrid();
+  }
+
+  return{
+      fillGrid: fillGrid,
+  }
 
 
 })();
@@ -335,83 +361,106 @@ var testDevice = (function () {
 
     var $body = $('#test-widget-body');
     var $testBtn = $('#testBtn');
+    var $stopBtn = $('#stopTestBtn')
+
+    $testBtn.attr('disabled', true);
+    $stopBtn.attr('disabled', true);
 
     $body.load("ajax/test_device.php");
 
     $testBtn.on('click', onTestClick);
+    $stopBtn.on('click', onStopClick);
+
+    var current = 0;
 
     function onTestClick() {
-      w2ui['testDevGrid'].lock('In progress', true);
-      size = w2ui['testDevGrid'].records.length;
-      allrec = [];
-      for (var i = 0; i < size; i++)
-        allrec.push(w2ui['testDevGrid'].get(i));
+      if (record != 'none')
+      {
+          $testBtn.attr('disabled', true);
+          $stopBtn.attr('disabled', false);
+          w2ui['testDevGrid'].lock('In progress', true);
+          size = w2ui['testDevGrid'].records.length;
+          allrec = [];
+          for (var i = 0; i < size; i++)
+            allrec.push(w2ui['testDevGrid'].get(i));
 
-      console.log('hue' + record.dev);
-      var current = 0;
-      var i = 0;
-      get_dev_status();
-      devStatusTab = [];
+          console.log('hue' + record.dev);
+          recordid = record.recid;
+          var i = 0;
+          get_dev_status();
+          devStatusTab = [];
 
-        function get_dev_status() {
-          if (current < 60) {
-            dev = record.dev;
-              $.ajax({
-                  url: 'ajax/send_dev_req.php',
-                  type: 'POST',
-                  data: {dev: dev},
-                  success: function (resp) {
-                    if (resp == 'done') {
-                      devid = dev;
-                      $.ajax({
-                          url: 'data/ima/device_status.csv',
-                          success: function (stat) {
-                              w2ui['testDevGrid'].unlock();
-                              stat = parse.CSVToArray(stat);
+            function get_dev_status() {
 
-                              devStatusTab.push(stat[0][0]);
-                              console.log(devStatusTab);
+              if (current < 60) {
+                dev = record.dev;
+                  $.ajax({
+                      url: 'ajax/send_dev_req.php',
+                      type: 'POST',
+                      data: {dev: dev},
+                      success: function (resp) {
+                        if (resp == 'done') {
+                          devid = dev;
+                          $.ajax({
+                              url: 'data/ima/device_status.csv',
+                              success: function (stat) {
+                                  w2ui['testDevGrid'].unlock();
+                                  stat = parse.CSVToArray(stat);
 
-                              progres = parseInt(current/60*100) + '% |' + testStatus(devStatusTab);
-                              allrec[record.recid].result = progres;
-                              w2ui['testDevGrid'].clear();
+                                  devStatusTab.push(stat[0][0]);
+                                  console.log(devStatusTab);
 
-                              for (var i = 0; i < size; i++) {
-                                w2ui['testDevGrid'].records.push({
-                                  recid: i,
-                                  dev: allrec[i].dev,
-                                  specific:  allrec[i].specific,
-                                  result: allrec[i].result,
-                                });
+                                  progres = parseInt(current/60*100) + '% | ' + testStatus(devStatusTab);
+                                  allrec[recordid].result = progres;
+                                  w2ui['testDevGrid'].clear();
+
+                                  for (var i = 0; i < size; i++) {
+                                    w2ui['testDevGrid'].records.push({
+                                      recid: i,
+                                      dev: allrec[i].dev,
+                                      specific:  allrec[i].specific,
+                                      result: allrec[i].result,
+                                    });
+                                  }
+                                  w2ui['testDevGrid'].reload();
+
+                                    current++;
+                                    i++;
+                                    get_dev_status();
                               }
-                              w2ui['testDevGrid'].reload();
+                          })
+                        }
 
-                                current++;
-                                i++;
-                                get_dev_status();
-                          }
-                      })
-                    }
+                      },
+                      error: function () {
+                          console.log('error');
+                      }
+                  })
 
-                  },
-                  error: function () {
-                      console.log('error');
-                  }
-              })
-              }
+
+                }
+
+            function testStatus(data) {
+                fails = 0;
+                success = 0;
+                for (var i = 0; i < data.length; i++) {
+                  if (data[i] == "False")
+                    fails ++;
+                  else if (data[i] == 'OK')
+                    success++;
+                }
+              return success + '/' + data.length + ' OK';
             }
-
-        function testStatus(data) {
-            fails = 0;
-            success = 0;
-            for (var i = 0; i < data.length; i++) {
-              if (data[i] == "False")
-                fails ++;
-              else if (data[i] == 'OK')
-                success++;
-            }
-          return success + '/' + data.length + ' OK';
+          }
+        }else {
+          alert("Select device");
         }
+    }
+
+    function onStopClick() {
+        current = 60;
+        $stopBtn.attr('disabled', true);
+        $testBtn.attr('disabled', false);
 
     }
 

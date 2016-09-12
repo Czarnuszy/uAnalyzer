@@ -173,7 +173,8 @@ class IMA:
     #    print "Exit"
 
     def neighborUpdate(self, nodeid):
-        print zw.ZW_RequestNodeNeighborUpdate(nodeid, self.neigh_update_callback)
+        print nodeid
+        print zw.ZW_RequestNodeNeighborUpdate(int(nodeid), self.neigh_update_callback)
         while self.times<300:
             self.times += 1
             time.sleep(.1)
@@ -292,7 +293,7 @@ class IMA:
         elif args.status == True:#and args.device_id == True:
             self.get_status(args.device_id)
         elif args.neigh_update == True:
-            self.update_all_neighbors()
+            self.neighborUpdate(args.device_id)
         zw.stop()
         print "Exit"
 

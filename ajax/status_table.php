@@ -52,26 +52,29 @@ var devicesStatus = (function () {
 
 	$startBtn.on('click', start);
 
-	$.ajax({
-    url: 'data/ima/routing_info.csv',
-    success: function (data) {
-			w2ui['connectionGrid'].clear();
+	fillGrid();
 
-      routingInfo = parse.CSVToArray(data);
-      for (var i = 0; i < routingInfo.length-1; i++){
-          w2ui['connectionGrid'].records.push({
-          		recid: i,
-          		dev: routingInfo[i][0],
-          		status: "Pending",
-          		time: "Pending",
-          		route: "Pending",
-          });
-      }
-      w2ui['connectionGrid'].refresh();
+	function fillGrid(){
+			$.ajax({
+		    url: 'data/ima/routing_info.csv',
+		    success: function (data) {
+					w2ui['connectionGrid'].clear();
 
-    }
-  })
+		      routingInfo = parse.CSVToArray(data);
+		      for (var i = 0; i < routingInfo.length-1; i++){
+		          w2ui['connectionGrid'].records.push({
+		          		recid: i,
+		          		dev: routingInfo[i][0],
+		          		status: "Pending",
+		          		time: "Pending",
+		          		route: "Pending",
+		          });
+		      }
+		      w2ui['connectionGrid'].refresh();
 
+		    }
+		  })
+	}
 
 	function start() {
 		w2ui['connectionGrid'].lock("Please wait.", true);
@@ -126,7 +129,7 @@ var devicesStatus = (function () {
 															allrec[current].time = stat[0][1];
 															allrec[current].route = stat[0][3];
 
-													
+
 															w2ui['connectionGrid'].clear();
 															for (var i = 0; i < size; i++) {
 																if (allrec[i].status == 'Fail') {
@@ -146,17 +149,6 @@ var devicesStatus = (function () {
 
 															}
 
-
-														// 	w2ui['connectionGrid'].records.push({
-														// 			recid: i,
-														// 			dev: devid,
-														// 			status: stat[0][0],
-														// 			time: stat[0][1],
-														// //			repeaters: stat[0][2],
-														// 			route: stat[0][3],
-														// 			style: "background-color: " + color,
-														//
-														// 			});
 																w2ui['connectionGrid'].unlock();
 
 															 	w2ui['connectionGrid'].refresh();
@@ -182,6 +174,9 @@ var devicesStatus = (function () {
 				}
 		})
 
+		return{
+			fillGrid: fillGrid,
+		}
 	}
 
 

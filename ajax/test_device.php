@@ -12,6 +12,8 @@
 
 		</center>
     <script>
+    var $testBtn = $('#testBtn');
+
     var record = 'none';
     var config = {
         testDevGrid: {
@@ -34,7 +36,8 @@
     				 ],
              onClick: function (event) {
                record = this.get(event.recid);
-               
+               $testBtn.attr('disabled', false);
+
               // record = record.dev;
                console.log(record.dev);
             //   console.log(record.dev);

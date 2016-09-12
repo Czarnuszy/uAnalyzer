@@ -30,7 +30,7 @@ class LoggedSerial(serial.Serial):
         import random
         filename = 'seriallog.' + kwargs['port'].split('/')[-1]
         self.log = open(filename, 'a')
-        self.log.write('\n') # Blank line marks restart of ZWApi
+    #    self.log.write('\n') # Blank line marks restart of ZWApi
         self.log_direction=0
 
     def logTX(self, msg):
@@ -51,11 +51,11 @@ class LoggedSerial(serial.Serial):
 
     def read(self, n):
         ch = super(serial.Serial, self).read(n)
-        if ch:
-            for c in ch:
-                self.logRX(c)
+        # if ch:
+        #     for c in ch:
+        #         self.logRX(c)
         return ch
 
     def write(self, msg):
         super(serial.Serial, self).write(msg)
-        self.logTX(msg)
+    #    self.logTX(msg)

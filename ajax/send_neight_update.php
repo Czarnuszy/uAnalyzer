@@ -1,7 +1,6 @@
 <?php
 
-
-$dev = $_POST['dev'];
+$dev = $_POST['req'];
 $file = '../zniffer/data/actual_script.txt';
 $actualScript = readFileData($file);
 
@@ -11,7 +10,7 @@ if ($actualScript == 'ima') {
 } else {
     exec('rwee -w -z -x -f /www/data/firmware/ima');
     saveFileData($file);
-    exec('python /www/pyzwave/serial/ima.py -s -dev '.$dev);
+    exec('python /www/pyzwave/serial/ima.py -nu -dev '.$dev);
     echo 'done';
 }
 
