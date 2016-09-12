@@ -76,6 +76,7 @@ var devicesStatus = (function () {
 	function start() {
 		w2ui['connectionGrid'].lock("Please wait.", true);
 
+
 		$.ajax({
 				url: 'data/ima/routing_info.csv',
 				success: function (data) {
@@ -87,14 +88,17 @@ var devicesStatus = (function () {
 
 					}
 
-			w2ui['connectionGrid'].refresh();
-			w2ui['connectionGrid'].clear();
+
+			//		console.log(allrec);
+					w2ui['connectionGrid'].refresh();
+
 
 			var current = 0;
 			var i = 0;
 			get_dev_status();
 
 				function get_dev_status() {
+
 					if (current < devices.length) {
 						dev = devices[current];
 					//	console.log();
@@ -110,24 +114,49 @@ var devicesStatus = (function () {
 											$.ajax({
 													url: 'data/ima/device_status.csv',
 													success: function (stat) {
+														size = w2ui['connectionGrid'].records.length;
+														allrec = [];
+														for (var x = 0; x < size; x++)
+															allrec.push(w2ui['connectionGrid'].get(x));
+
 															console.log(stat);
-															console.log(i);
 															stat = parse.CSVToArray(stat);
+															console.log(current);
+															allrec[current].status = stat[0][0];
+															allrec[current].time = stat[0][1];
+															allrec[current].route = stat[0][3];
 
-															color = '';
-															if (stat[0][0] == 'Fail') {
-																color = "#FF4C4C"
+													
+															w2ui['connectionGrid'].clear();
+															for (var i = 0; i < size; i++) {
+																if (allrec[i].status == 'Fail') {
+																	color = "#FF4C4C"
+																}else {
+																	color = '';
+																}
+																w2ui['connectionGrid'].records.push({
+																		recid: i,
+																		dev: allrec[i].dev,
+																		status: allrec[i].status,
+																		time: allrec[i].time,
+															//			repeaters: stat[0][2],
+																		route: allrec[i].route,
+																		style: "background-color: " + color,
+																		});
+
 															}
-															w2ui['connectionGrid'].records.push({
-																	recid: i,
-																	dev: devid,
-																	status: stat[0][0],
-																	time: stat[0][1],
-														//			repeaters: stat[0][2],
-																	route: stat[0][3],
-																	style: "background-color: " + color,
 
-																	});
+
+														// 	w2ui['connectionGrid'].records.push({
+														// 			recid: i,
+														// 			dev: devid,
+														// 			status: stat[0][0],
+														// 			time: stat[0][1],
+														// //			repeaters: stat[0][2],
+														// 			route: stat[0][3],
+														// 			style: "background-color: " + color,
+														//
+														// 			});
 																w2ui['connectionGrid'].unlock();
 
 															 	w2ui['connectionGrid'].refresh();

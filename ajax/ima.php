@@ -346,28 +346,26 @@ var testDevice = (function () {
         function get_dev_status() {
           if (current < 60) {
             dev = record.dev;
-          //	console.log();
               $.ajax({
                   url: 'ajax/send_dev_req.php',
                   type: 'POST',
                   data: {dev: dev},
                   success: function (resp) {
-                  //	console.log(resp);
                     if (resp == 'done') {
-                  //		console.log(dev);
                       devid = dev;
                       $.ajax({
                           url: 'data/ima/device_status.csv',
                           success: function (stat) {
                               w2ui['testDevGrid'].unlock();
-                              console.log(stat);
                               stat = parse.CSVToArray(stat);
+
                               devStatusTab.push(stat[0][0]);
                               console.log(devStatusTab);
+
                               progres = parseInt(current/60*100) + '% |' + testStatus(devStatusTab);
-                              console.log(devStatusTab.indexOf('Fail'));
                               allrec[record.recid].result = progres;
                               w2ui['testDevGrid'].clear();
+
                               for (var i = 0; i < size; i++) {
                                 w2ui['testDevGrid'].records.push({
                                   recid: i,
@@ -378,20 +376,6 @@ var testDevice = (function () {
                               }
                               w2ui['testDevGrid'].reload();
 
-                              // color = '';
-                              // if (stat[0][0] == 'Fail') {
-                              //   color = "#FF4C4C"
-                              // }
-                              // w2ui['testDevGrid'].records.push({
-                              //     recid: i,
-                              //     dev: devid,
-                              //     specific: 'd',
-                              //     style: "background-color: " + color,
-                              //
-                              //     });
-                              //   w2ui['testDevGrid'].unlock();
-                              //
-                              //   w2ui['testDevGrid'].refresh();
                                 current++;
                                 i++;
                                 get_dev_status();
