@@ -24,10 +24,10 @@
             columns: [
 							{ field: 'dev', caption: 'dev', size: '10%', sortable: true, searchable: 'int', resizable: true, attr: "align=center" },
 
-          			{ field: 'basic', caption: 'basic', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
-                { field: 'generic', caption: 'generic', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+        			{ field: 'basic', caption: 'basic', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+              { field: 'generic', caption: 'generic', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
 
-                { field: 'specific', caption: 'specific', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+              { field: 'specific', caption: 'specific', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
         //        { field: 'source', caption: 'Source', size: '10%', resizable: true, searchable: 'int', sortable: true, attr: "align=center" },
 
     		//{ field: 'test2', caption: 'test2', size: '100px', type: "text", sortable: true, searchable: 'text',  resizable: true },
@@ -88,7 +88,7 @@
 				//  })
 
 			 xmlParser.start();
-			
+
     });
 
 

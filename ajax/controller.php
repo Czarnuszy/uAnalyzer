@@ -14,6 +14,7 @@ $.ajax({
 		url: '../data/ima/routing_info.csv',
 		success: function (data) {
 			data = parse.CSVToArray(data);
+      console.log(data);
 		//	data = CSVToArray(data);
 				var xT = [1,2,2,4,4,6,6,7];
 				var yT = [4,2,6,1,7,6,2,4];
@@ -32,7 +33,7 @@ $.ajax({
 				  g.nodes.push({
 				    id: 'n' + data[i][0],
 				    label: 'Dev ' + data[i][0],
-						x: xT[i]/7,
+				//		x: xT[i]/7,
 				    x: i/10+0.1+0.001,
 				    y: 1.8*Math.random()+add,
 					//	y: yT[i]/7,
@@ -45,18 +46,19 @@ $.ajax({
 					_x+=0.2;
 				}
 
-					for (i = 0; i < data.length-1; i++)
-							for (var x = 0; x < data[i].length-2; x++)
-									g.edges.push({
-								    id: 'e' + [i]+[x+1],
-								    source: 'n' + data[i][0],
-								    target: 'n' + data[i][x+1],
-								    size: Math.random(),
-								    color: '#ccc',
-										hover_color: '#000'
-								  });
+			for (i = 0; i < data.length-1; i++)
+					for (var x = 0; x < data[i].length-1; x++)
+							g.edges.push({
+						    id: 'e' + data[i][0]+'to'+data[i][x+1],
+						    source: 'n' + data[i][0],
+						    target: 'n' + data[i][x],
+						    size: Math.random(),
+						    color: '#ccc',
+								hover_color: '#000'
+						  });
 
 				console.log(g.nodes[0].type);
+				console.log(g.edges[0].color);
 
 				s = new sigma({
 				  graph: g,
@@ -74,7 +76,7 @@ $.ajax({
 				  id: 'main',
 				  type: 'svg',
 				  container: document.getElementById('graph-container'),
-				  freeStyle: true
+				  freeStyle: true,
 				});
 
 				s.refresh();
@@ -83,6 +85,7 @@ $.ajax({
 				function mute(node) {
 				  if (!~node.getAttribute('class').search(/muted/))
 				    node.setAttributeNS(null, 'class', node.getAttribute('class') + ' muted');
+					//	g.edges[0].
 				}
 
 				function unmute(node) {

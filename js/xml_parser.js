@@ -139,12 +139,14 @@ var xmlParser = (function() {
     //  console.log(data[0].length);
       for (var i = 0; i < data[0].length; i++) {
       //  console.log(data[3][i]);
-
+        color = '';
         w2ui['NodeInfoGrid'].records.push({
           dev: data[3][i],
           basic: data[0][i],
           generic: data[1][i],
           specific: data[2][i],
+          style: "background-color: " + color,
+
          });
       }
 

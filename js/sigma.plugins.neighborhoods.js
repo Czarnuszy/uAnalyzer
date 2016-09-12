@@ -83,19 +83,19 @@
       }
 
       // Add edges connecting two neighbors:
-      for (k1 in localNodesIndex)
-        if (k1 !== centerId)
-          for (k2 in localNodesIndex)
-            if (
-              k2 !== centerId &&
-              k1 !== k2 &&
-              this.allNeighborsIndex[k1][k2]
-            )
-              for (k3 in this.allNeighborsIndex[k1][k2])
-                if (!localEdgesIndex[k3]) {
-                  localEdgesIndex[k3] = true;
-                  graph.edges.push(this.edgesIndex[k3]);
-                }
+      // for (k1 in localNodesIndex)
+      //   if (k1 !== centerId)
+      //     for (k2 in localNodesIndex)
+      //       if (
+      //         k2 !== centerId &&
+      //         k1 !== k2 &&
+      //         this.allNeighborsIndex[k1][k2]
+      //       )
+      //         for (k3 in this.allNeighborsIndex[k1][k2])
+      //           if (!localEdgesIndex[k3]) {
+      //             localEdgesIndex[k3] = true;
+      //         //    graph.edges.push(this.edgesIndex[k3]);
+      //           }
 
       // Finally, let's return the final graph:
       return graph;

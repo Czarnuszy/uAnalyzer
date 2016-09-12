@@ -246,6 +246,7 @@
 					console.log('node info loaded');
 					load();
 					w2ui.NodeInfoGrid.unlock();
+          connectionTable.refresh();
 
 			}
 
@@ -302,6 +303,10 @@
 					console.log('loaded');
 					$body.load("ajax/controller.php");
 			}
+
+      return{
+        refresh: onRefreshClick,
+      }
 	})();
 
 

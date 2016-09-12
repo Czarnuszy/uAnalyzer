@@ -46,7 +46,7 @@ function readFileData($File)
     if ($actualScript == 'ima') {
         actions($Todo);
     } else {
-        exec('rwee -w -z -x -f /www/data/firmware/bridge');
+        exec('rwee -w -z -x -f /www/data/firmware/ima');
         saveFileData($file);
         actions($Todo);
     }

@@ -54,6 +54,8 @@ var devicesStatus = (function () {
 
 
 	function start() {
+		w2ui['connectionGrid'].lock("Please wait.", true);
+
 		$.ajax({
 				url: 'data/ima/routing_info.csv',
 				success: function (data) {
@@ -66,6 +68,8 @@ var devicesStatus = (function () {
 							// 		recid: i,
 							// 		dev: routingInfo[i][0],
 							// 		status: "Pending",
+							// 		time: "Pending",
+							// 		route: "Pending",
 							// });
 					}
 	//		devices.push(1,7, 8, 15);
@@ -93,23 +97,31 @@ var devicesStatus = (function () {
 											$.ajax({
 													url: 'data/ima/device_status.csv',
 													success: function (stat) {
-														console.log(stat);
-														console.log(i);
-														stat = parse.CSVToArray(stat);
-													//	w2ui['connectionGrid'].editField(i, 1, 'stat');
-												//	 w2ui['connectionGrid'].editField(i, 2, status);
-														w2ui['connectionGrid'].add({
-																recid: i,
-																dev: devid,
-																status: stat[0][0],
-																time: stat[0][1],
-													//			repeaters: stat[0][2],
-																route: stat[0][3],
-														});
-												//		 w2ui['connectionGrid'].refresh();
-														current++;
-														i++;
-														get_dev_status();
+															console.log(stat);
+															console.log(i);
+															stat = parse.CSVToArray(stat);
+														//	w2ui['connectionGrid'].editField(i, 1, 'stat');
+													//	 w2ui['connectionGrid'].editField(i, 2, status);
+															color = '';
+															if (stat[0][0] == 'Fail') {
+																color = "#FF4C4C"
+															}
+															w2ui['connectionGrid'].records.push({
+																	recid: i,
+																	dev: devid,
+																	status: stat[0][0],
+																	time: stat[0][1],
+														//			repeaters: stat[0][2],
+																	route: stat[0][3],
+																	style: "background-color: " + color,
+
+																	});
+																w2ui['connectionGrid'].unlock();
+
+															 	w2ui['connectionGrid'].refresh();
+																current++;
+																i++;
+																get_dev_status();
 													}
 											})
 										}

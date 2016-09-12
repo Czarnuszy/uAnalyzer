@@ -735,7 +735,10 @@ class ZWapi(threading.Thread):
         info = []
         for x in data:
             i = self.ZW_GetRoutingInfo(x, speed)
-            i = binascii.hexlify(i)
+            if i != None:
+                i = binascii.hexlify(i)
+            else:
+                i = 0
         #    i = binascii.unhexlify(i)
             info.append(i)
         return info

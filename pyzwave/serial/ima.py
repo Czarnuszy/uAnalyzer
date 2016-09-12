@@ -32,7 +32,9 @@ class IMA:
 
     def reset_callback(self,  **args):
         print "callback"
-        print args
+        print args['data']
+        if args['data'] == None:
+            self.endCallback = 'reset'
 
     def learn_callback(self, a, b,  **args):
         print "callback"
@@ -90,19 +92,26 @@ class IMA:
 
 
     def get_routing_info(self):
+    #    try:
         nodeDic = zw.get_node_dic()
+        print nodeDic['nodelist']
         d = zw.get_all_routing_info(nodeDic['nodelist'], ZW_GET_ROUTING_INFO_9600)
         infoTab = []
         tmptab = []
+        print d
         for x in range(len(d)):
             tmptab.append(nodeDic['nodelist'][x])
+            print d[x]
             tmptab.append(self.parse_hex_bin(str(d[x])))
             infoTab.append(tmptab)
             tmptab = []
         self.save_routing_info_csv(infoTab)
         print infoTab
         return infoTab
+#    except:
+#        print 'ups'
 
+        self.get_routing_info()
 
     def reset(self):
         zw.ZW_SetDefault(self.reset_callback)
@@ -111,6 +120,8 @@ class IMA:
             time.sleep(.1)
             print 'xxx' + str(self.endCallback)
             print self.times
+            if self.endCallback == 'reset':
+                break
 
         zw.stop()
         print "Exit"
@@ -122,14 +133,15 @@ class IMA:
             time.sleep(.1)
             print 'xxx' + str(self.endCallback)
             print self.times
-            if self.endCallback == 5:
+            if self.endCallback == 6:
+                break
+            elif self.endCallback == 7:
+                print 'ERROR'
                 break
 
         print zw.ZW_SetLearnMode(5, None)
         zw.stop()
         print "Exit"
-
-
 
     def get_status(self, dev):
         A= [0]
@@ -176,38 +188,20 @@ class IMA:
 
     def save_routing_info_csv(self, data):
         filepath = open("/www/data/ima/routing_info.csv", "w")
-    #    for i in range(len(data)):
-    #        filepath.write(str(data[i][0])+',')
-
-        #filepath.write("\n")
-        # tt = data[4][1]
-        # print tt[::-1]
         sometab = []
         for i in range(len(data)):
             sometab.append(data[i][0])
 
-        print sometab
         for i in range(len(data)):
             tt = data[i][1]
             tt = tt[::-1]
-            #print tt
-            #for x in range(len(data[i])):
+
             filepath.write(str(data[i][0])+',')
+            t=0
             for x in sometab:
-                if int(tt[x-1]) == 1:
+                if int(tt[t]) == 1:
                     filepath.write(str(x)+',')
-            #    else:
-                #    filepath.write(',')
-
-            #print data[i][0]
-        #    for z in data[i]:
-            #    print tt[z]
-        #    for y in range(len(tt)):
-            #    print tt.index(str(data[i][0]))
-            #    print data[i][0]
-                #if tt[y] == data[i][0]:
-
-                    #filepath.write(tt[y])
+                t += 1
 
             filepath.write("\n")
 
@@ -218,7 +212,7 @@ class IMA:
         repeaters_amount = self.dev_repeaters_amount(dataArray)
         repeaters = self.dev_repeaters_info(dataArray, repeaters_amount, deviceid)
         filepath = open("/www/data/ima/device_status.csv", "w")
-        filepath.write(str(data) + ',' + time  + ',' + repeaters_amount + ',' +repeaters)
+        filepath.write(str(data) + ',' + time  + ',' + repeaters_amount + ',' +repeaters + ',' + self.dev_rssi_info(dataArray))
         filepath.close()
 
     def save_dev_noresponse_status(self):
@@ -247,24 +241,9 @@ class IMA:
             a += repeaters[x] + ' -> '
         a += str(deviceid)
         return a
-        # if size == 0:
-        #     resp = toolboxid + ' -> ' + str(deviceid)
-        #     return resp
-        # elif size == 1:
-        #     resp =  toolboxid + ' -> ' + r1 + ' -> ' + str(deviceid)
-        #     return resp
-        # elif size == 2:
-        #     resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> ' + str(deviceid)
-        #     return resp
-        # elif size == 3:
-        #     resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> ' + str(deviceid)
-        #     return resp
-        # elif size == 4:
-        #     resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> '+ r4 + ' -> ' + str(deviceid)
-        #     return resp
-        # elif size == 5:
-        #     resp = toolboxid + ' -> ' + r1 + ' -> ' + r2 + ' -> '+ r3 + ' -> '+ r4 + ' -> ' + r5 + ' -> ' + str(deviceid)
-        #     return resp
+    def dev_rssi_info(self, data):
+    #    return str(data[6:16])
+        return str(int(data[6:8],16))
 
     def get_toolbox_id(self):
         return zw.MemoryGetID()
