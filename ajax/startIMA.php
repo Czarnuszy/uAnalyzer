@@ -14,6 +14,8 @@ function actions($todo)
         exec('python /www/pyzwave/serial/ima.py -rg');
     } elseif ($todo == 'learn') {
         exec('python /www/pyzwave/serial/ima.py -l');
+    }elseif ($todo == 'neighborsUpdate') {
+        exec('python /www/pyzwave/serial/ima.py -nu');
     }
 }
 

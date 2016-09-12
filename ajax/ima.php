@@ -120,7 +120,9 @@
 	                                <label class="btn btn-default btn-xs " id="routingRefresh"></i> Refresh
 												              <i class="fa fa-refresh"></i>
 												          </label>
-
+                                  <label class="btn btn-default btn-xs " id="updateNeighbors"></i> Update neighbors
+                                      <i class="fa fa-refresh"></i>
+                                  </label>
 	                            </div>
 	                        </header>
 
@@ -283,12 +285,13 @@
 	var connectionTable = (function () {
 
 			//cache DOM
+      var $neightUpdateBtn = $('#updateNeighbors');
 			var $refreshBtn = $('#routingRefresh');
 			var $body = $('#controller-body');
 
 			//Bind events
 			$refreshBtn.on('click', onRefreshClick);
-
+      $neightUpdateBtn.on('click', onUpdateClick);
 
 			load_controller();
 			var spinnerHTML = '<i class="'+'fa fa-spinner fa-spin fa-3x fa-fw"'+'></i>';
@@ -298,6 +301,13 @@
 					console.log('click');
 					healthTester.startIMA('routingInf', load_controller);
 			}
+      function onUpdateClick() {
+        $body.html(spinnerHTML);
+        healthTester.startIMA('neighborsUpdate', function () {
+         healthTester.startIMA('routingInf', load_controller);
+        });
+
+     }
 
 			function load_controller(){
 					console.log('loaded');

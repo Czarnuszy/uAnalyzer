@@ -44,6 +44,12 @@ class IMA:
         if a == 5:
             self.endCallback=5
 
+    def neigh_update_callback(self, a, **args):
+        print a
+        print args
+        if a == 34 or a == 35:
+            self.endCallback = a
+
     def status_callback(self, a,  **args):
         print "callback"
         print a
@@ -166,6 +172,28 @@ class IMA:
         zw.stop()
     #    print "Exit"
 
+    def neighborUpdate(self, nodeid):
+        print zw.ZW_RequestNodeNeighborUpdate(nodeid, self.neigh_update_callback)
+        while self.times<300:
+            self.times += 1
+            time.sleep(.1)
+            print 'xxx' + str(self.endCallback)
+            print self.times
+            if self.endCallback == 35:
+                print 'Conenction error'
+                break
+            elif self.endCallback == 34:
+                break
+        zw.stop()
+        print "Exit"
+
+    def update_all_neighbors(self):
+        nodeDic = zw.get_node_dic()
+        nodes = nodeDic['nodelist']
+        print nodes
+        for nid in nodes:
+            self.neighborUpdate(nid)
+
     def reverse_hex_string(self, string):
         mylist = list(string)
         size = len(mylist)
@@ -263,7 +291,8 @@ class IMA:
             self.get_routing_info()
         elif args.status == True:#and args.device_id == True:
             self.get_status(args.device_id)
-
+        elif args.neigh_update == True:
+            self.update_all_neighbors()
         zw.stop()
         print "Exit"
 
@@ -286,7 +315,8 @@ parser.add_argument('-s', '--status',\
                   help="Status info", action='store_true', default=False)
 parser.add_argument('-dev', '--device_id',\
                   help="Device id",  default=False)
-
+parser.add_argument('-nu', '--neigh_update',\
+                  help="Routing info", action='store_true', default=False)
 
 args = parser.parse_args()
 
