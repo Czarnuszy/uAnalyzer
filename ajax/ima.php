@@ -143,10 +143,10 @@
 
 													<header>
 															<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
-															<h2> Widget 4</h2>
+															<h2> Test Devices</h2>
 
 															<div class="widget-toolbar">
-																	<label class="btn btn-default btn-xs " id=""></i> Refresh
+																	<label class="btn btn-default btn-xs " id="testBtn"></i> Test
 																			<i class="fa fa-refresh"></i>
 																	</label>
 
@@ -156,7 +156,7 @@
 
 
 													<div class="widget-body">
-															<div id="t4h-body">
+															<div id="test-widget-body">
 																	<center>
 																			Loading...
 																	</center>
@@ -315,8 +315,113 @@ var statusTable = (function () {
 
 
 	$body.load("ajax/status_table.php");
+
+
+
 })();
 
+
+var testDevice = (function () {
+
+    var $body = $('#test-widget-body');
+    var $testBtn = $('#testBtn');
+
+    $body.load("ajax/test_device.php");
+
+    $testBtn.on('click', onTestClick);
+
+    function onTestClick() {
+      w2ui['testDevGrid'].lock('In progress', true);
+      size = w2ui['testDevGrid'].records.length;
+      allrec = [];
+      for (var i = 0; i < size; i++)
+        allrec.push(w2ui['testDevGrid'].get(i));
+
+      console.log('hue' + record.dev);
+      var current = 0;
+      var i = 0;
+      get_dev_status();
+      devStatusTab = [];
+
+        function get_dev_status() {
+          if (current < 60) {
+            dev = record.dev;
+          //	console.log();
+              $.ajax({
+                  url: 'ajax/send_dev_req.php',
+                  type: 'POST',
+                  data: {dev: dev},
+                  success: function (resp) {
+                  //	console.log(resp);
+                    if (resp == 'done') {
+                  //		console.log(dev);
+                      devid = dev;
+                      $.ajax({
+                          url: 'data/ima/device_status.csv',
+                          success: function (stat) {
+                              w2ui['testDevGrid'].unlock();
+                              console.log(stat);
+                              stat = parse.CSVToArray(stat);
+                              devStatusTab.push(stat[0][0]);
+                              console.log(devStatusTab);
+                              progres = parseInt(current/60*100) + '% |' + testStatus(devStatusTab);
+                              console.log(devStatusTab.indexOf('Fail'));
+                              allrec[record.recid].result = progres;
+                              w2ui['testDevGrid'].clear();
+                              for (var i = 0; i < size; i++) {
+                                w2ui['testDevGrid'].records.push({
+                                  recid: i,
+                                  dev: allrec[i].dev,
+                                  specific:  allrec[i].specific,
+                                  result: allrec[i].result,
+                                });
+                              }
+                              w2ui['testDevGrid'].reload();
+
+                              // color = '';
+                              // if (stat[0][0] == 'Fail') {
+                              //   color = "#FF4C4C"
+                              // }
+                              // w2ui['testDevGrid'].records.push({
+                              //     recid: i,
+                              //     dev: devid,
+                              //     specific: 'd',
+                              //     style: "background-color: " + color,
+                              //
+                              //     });
+                              //   w2ui['testDevGrid'].unlock();
+                              //
+                              //   w2ui['testDevGrid'].refresh();
+                                current++;
+                                i++;
+                                get_dev_status();
+                          }
+                      })
+                    }
+
+                  },
+                  error: function () {
+                      console.log('error');
+                  }
+              })
+              }
+            }
+
+        function testStatus(data) {
+            fails = 0;
+            success = 0;
+            for (var i = 0; i < data.length; i++) {
+              if (data[i] == "False")
+                fails ++;
+              else if (data[i] == 'OK')
+                success++;
+            }
+          return success + '/' + data.length + ' OK';
+        }
+
+    }
+
+})();
 
 	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 	 *

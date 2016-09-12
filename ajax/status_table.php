@@ -52,6 +52,26 @@ var devicesStatus = (function () {
 
 	$startBtn.on('click', start);
 
+	$.ajax({
+    url: 'data/ima/routing_info.csv',
+    success: function (data) {
+			w2ui['connectionGrid'].clear();
+
+      routingInfo = parse.CSVToArray(data);
+      for (var i = 0; i < routingInfo.length-1; i++){
+          w2ui['connectionGrid'].records.push({
+          		recid: i,
+          		dev: routingInfo[i][0],
+          		status: "Pending",
+          		time: "Pending",
+          		route: "Pending",
+          });
+      }
+      w2ui['connectionGrid'].refresh();
+
+    }
+  })
+
 
 	function start() {
 		w2ui['connectionGrid'].lock("Please wait.", true);
@@ -64,16 +84,9 @@ var devicesStatus = (function () {
 
 					for (var i = 0; i < routingInfo.length-1; i++){
 							devices.push(routingInfo[i][0]);
-							// w2ui['connectionGrid'].records.push({
-							// 		recid: i,
-							// 		dev: routingInfo[i][0],
-							// 		status: "Pending",
-							// 		time: "Pending",
-							// 		route: "Pending",
-							// });
+
 					}
-	//		devices.push(1,7, 8, 15);
-			//		$.each(devices, function (i, dev) {
+
 			w2ui['connectionGrid'].refresh();
 			w2ui['connectionGrid'].clear();
 
@@ -100,8 +113,7 @@ var devicesStatus = (function () {
 															console.log(stat);
 															console.log(i);
 															stat = parse.CSVToArray(stat);
-														//	w2ui['connectionGrid'].editField(i, 1, 'stat');
-													//	 w2ui['connectionGrid'].editField(i, 2, status);
+
 															color = '';
 															if (stat[0][0] == 'Fail') {
 																color = "#FF4C4C"

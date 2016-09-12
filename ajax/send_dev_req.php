@@ -7,10 +7,12 @@ $actualScript = readFileData($file);
 
 if ($actualScript == 'ima') {
   exec('python /www/pyzwave/serial/ima.py -s -dev '.$dev);
+  echo 'done';
 } else {
     exec('rwee -w -z -x -f /www/data/firmware/ima');
     saveFileData($file);
     exec('python /www/pyzwave/serial/ima.py -s -dev '.$dev);
+    echo 'done';
 }
 
 

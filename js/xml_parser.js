@@ -27,7 +27,7 @@ var xmlParser = (function() {
     //  console.log(tmp);
       returnData.push(tmp);
       fillNodeInfoGrid (returnData);
-
+      fillTestDevGrid(returnData);
             //  returnData.push(routingInfo)
     }
 
@@ -154,6 +154,23 @@ var xmlParser = (function() {
 
     }
 
+    function fillTestDevGrid(data) {
+      w2ui.testDevGrid.clear();
+      for (var i = 0; i < data[0].length; i++) {
+        color = '';
+        w2ui['testDevGrid'].records.push({
+          recid: i,
+          dev: data[3][i],
+          specific: data[2][i],
+          result: 'test',
+          style: "background-color: " + color,
+
+         });
+      }
+
+       w2ui['testDevGrid'].refresh();
+    }
+
     function renderRoutingTable(data){
 
 
@@ -171,6 +188,7 @@ var xmlParser = (function() {
 
     return {
         start: start,
+        fillTestGrid: fillTestDevGrid,
         data: returnData
     }
 })();
