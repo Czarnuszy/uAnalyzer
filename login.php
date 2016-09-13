@@ -1,6 +1,6 @@
 <?php
 	session_start();
-	
+
 	if ((isset($_SESSION['logged'])) && ($_SESSION['logged']==true))
 	{
 		header('Location: index.php');
@@ -61,10 +61,10 @@ include("inc/header.php");
 					<div class="pull-left login-desc-box-l">
 						<h4 class="paragraph-header">Welcome to the Z-Wave Toolbox. Your troubleshooting is about to get a lot easier.</h4>
 						<div class="login-app-icons">
-							
+
 						</div>
 					</div>
-					
+
 
 				</div>
 
@@ -79,7 +79,7 @@ include("inc/header.php");
 						</p>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-						<h5 class="about-heading">Conntact</h5>
+						<h5 class="about-heading">Contact</h5>
 						<p>
 								Zwaveproducts.com<br>
 								70 Commercial Avenue<br>
@@ -98,7 +98,7 @@ include("inc/header.php");
 						</header>
 
 						<fieldset>
-							
+
 							<section>
 								<label class="label">Login</label>
 								<label class="input"> <i class="icon-append fa fa-user"></i>
@@ -130,9 +130,9 @@ include("inc/header.php");
 					</form>
 
 				</div>
-				
-				
-				
+
+
+
 			</div>
 		</div>
 	</div>
@@ -141,13 +141,13 @@ include("inc/header.php");
 <!-- END MAIN PANEL -->
 <!-- ==========================CONTENT ENDS HERE ========================== -->
 
-<?php 
+<?php
 	//include required scripts
-	include("inc/scripts.php"); 
+	include("inc/scripts.php");
 //	echo "in login";
 ?>
 
-<!-- PAGE RELATED PLUGIN(S) 
+<!-- PAGE RELATED PLUGIN(S)
 <script src="..."></script>-->
 
 <script type="text/javascript">
@@ -188,7 +188,7 @@ include("inc/header.php");
 	});
 </script>
 
-<?php 
+<?php
 	//include footer
-	include("inc/google-analytics.php"); 
+	include("inc/google-analytics.php");
 ?>
