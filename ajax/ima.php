@@ -327,7 +327,7 @@ var connectionTable = (function() {
     function onRefreshClick() {
         $body.html(spinnerHTML);
         console.log('click');
-        healthTester.startIMA('routingInf', load_controller);
+        healthTester.startIMA('routingInf', refreshAll);
     }
 
     function onRefreshAll() {
