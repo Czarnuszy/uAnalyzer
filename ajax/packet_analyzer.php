@@ -973,7 +973,6 @@ var parse = (function() {
 		};
     $(document).ready(function() {
 
-        console.log('whaat');
     });
 
 

@@ -151,7 +151,7 @@ var spectrumAnalyzer = (function() {
             clearInterval(myInterval);
             myInterval = false;
             //	 clearTimeout(myset);
-        
+
         } else {
             stop_spectrum();
             //if(myInterval)

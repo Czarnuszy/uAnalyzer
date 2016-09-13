@@ -34,6 +34,7 @@
 			<script src="<?php echo ASSETS_URL; ?>/js/jquery.validate.min.js"></script>
 
 			<script src="<?php echo ASSETS_URL; ?>/js/sigma.min.js"></script>
+			<script src="<?php echo ASSETS_URL; ?>/js/sigma.plugins.neighborhoods.js"></script>
 
 
 !-- CUSTOM NOTIFICATION -->

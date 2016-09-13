@@ -187,178 +187,180 @@
 
 
 <script type="text/javascript">
+var healthTester = (function() {
+
+    //cache DOM
+    var $el = $('#healthHeader');
+    var $addBtn = $el.find('#addBtn');
+    var $rmvBtn = $el.find('#removeBton');
+    var $resetBtn = $el.find('#resetBtn');
+    var $learnBtn = $el.find('#learnBtn');
+    var $refreshBtn = $el.find('#refreshBtn');
 
 
-	var healthTester = (function () {
+    //bind events
+    $addBtn.on('click', onAddClick);
+    $rmvBtn.on('click', onRmvClick);
+    $resetBtn.on('click', onResetClick);
+    $learnBtn.on('click', onLearnClick);
+    $refreshBtn.on('click', onRefreshClick);
 
-			//cache DOM
-			var $el = $('#healthHeader');
-			var	$addBtn = $el.find('#addBtn');
-			var $rmvBtn = $el.find('#removeBton');
-			var $resetBtn = $el.find('#resetBtn');
-			var $learnBtn = $el.find('#learnBtn');
-			var $refreshBtn = $el.find('#refreshBtn');
+    load();
+    //		startIMA('nodeInf', load);
 
+    function load() {
+        $("#w-body2").load("ajax/ima_table.php");
+        console.log('loadin health test');
+    }
 
-			//bind events
-			$addBtn.on('click', onAddClick);
-			$rmvBtn.on('click', onRmvClick);
-			$resetBtn.on('click', onResetClick);
-			$learnBtn.on('click', onLearnClick);
-			$refreshBtn.on('click', onRefreshClick);
+    function onAddClick() {
+        w2ui.NodeInfoGrid.lock("Please wait.", true);
+        console.log('click');
+        startIMA('add', reloadGridCallback);
+    }
 
-			load();
-	//		startIMA('nodeInf', load);
+    function onRmvClick() {
+        console.log('rmv click');
+        w2ui.NodeInfoGrid.lock("Please wait.", true);
+        startIMA('rm', reloadGridCallback);
+    }
 
-			function load(){
-					$( "#w-body2" ).load( "ajax/ima_table.php" );
-					console.log('loadin health test');
-			}
+    function onResetClick() {
+        console.log('reset click');
+        w2ui.NodeInfoGrid.lock("Please wait.", true);
+        startIMA('reset', reloadGridCallback);
+    }
 
-			function onAddClick() {
-					w2ui.NodeInfoGrid.lock("Please wait.", true);
-					console.log('click');
-					startIMA('add', reloadGridCallback);
-			}
+    function onLearnClick() {
+        console.log('learn click');
+        w2ui.NodeInfoGrid.lock("Please wait.", true);
+        startIMA('learn', reloadGridCallback);
+    }
 
-			function onRmvClick() {
-					console.log('rmv click');
-					w2ui.NodeInfoGrid.lock("Please wait.", true);
-					startIMA('rm', reloadGridCallback);
-			}
+    function onRefreshClick() {
+        console.log('refresh click');
+        w2ui.NodeInfoGrid.clear();
+        w2ui.NodeInfoGrid.lock("Please wait.", true);
+        startIMA('nodeInf', loadNodeInfoCallback);
+    }
 
-			function onResetClick() {
-					console.log('reset click');
-					w2ui.NodeInfoGrid.lock("Please wait.", true);
-					startIMA('reset', reloadGridCallback);
-			}
+    function loadNodeInfoCallback() {
+        console.log('node info loaded');
+        load();
+        w2ui.NodeInfoGrid.unlock();
+        connectionTable.refresh();
+    }
 
-			function onLearnClick() {
-					console.log('learn click');
-					w2ui.NodeInfoGrid.lock("Please wait.", true);
-					startIMA('learn', reloadGridCallback);
-			}
-
-			function onRefreshClick() {
-					console.log('refresh click');
-					w2ui.NodeInfoGrid.clear();
-					w2ui.NodeInfoGrid.lock("Please wait.", true);
-					startIMA('nodeInf', loadNodeInfoCallback);
-			}
-
-			function loadNodeInfoCallback() {
-					console.log('node info loaded');
-					load();
-					w2ui.NodeInfoGrid.unlock();
-          connectionTable.refresh();
-			}
-
-			function reloadGridCallback() {
-					console.log('done');
-					w2ui.NodeInfoGrid.clear();
-					startIMA('nodeInf', loadNodeInfoCallback);
-			}
+    function reloadGridCallback() {
+        console.log('done');
+        w2ui.NodeInfoGrid.clear();
+        startIMA('nodeInf', loadNodeInfoCallback);
+    }
 
 
-			function startIMA(_req, onSuccess) {
-					$.ajax({
-							url: 'ajax/startIMA.php',
-							type: 'POST',
-							data: {req: _req},
-							success: onSuccess,
-							error: errorFun
-					})
-			}
+    function startIMA(_req, onSuccess) {
+        $.ajax({
+            url: 'ajax/startIMA.php',
+            type: 'POST',
+            data: {
+                req: _req
+            },
+            success: onSuccess,
+            error: errorFun
+        })
+    }
 
-			function errorFun(xhr, status, error) {
-					var err = eval("(" + xhr.responseText + ")");
-					console.log(xhr + " " + status + " " + error);
-			}
+    function errorFun(xhr, status, error) {
+        var err = eval("(" + xhr.responseText + ")");
+        console.log(xhr + " " + status + " " + error);
+    }
 
-			return{
-					startIMA: startIMA,
-					error: errorFun
-			}
+    return {
+        startIMA: startIMA,
+        error: errorFun
+    }
 
-	})();
+})();
 
 
-	var connectionTable = (function () {
+var connectionTable = (function() {
 
-			//cache DOM
-      var $neightUpdateBtn = $('#updateNeighbors');
-			var $refreshBtn = $('#routingRefresh');
-			var $body = $('#controller-body');
+    //cache DOM
+    var $neightUpdateBtn = $('#updateNeighbors');
+    var $refreshBtn = $('#routingRefresh');
+    var $body = $('#controller-body');
 
     //  $neightUpdateBtn.toggle();
-      $neightUpdateBtn.attr('disabled', true);
+    $neightUpdateBtn.attr('disabled', true);
 
 
-			//Bind events
-			$refreshBtn.on('click', onRefreshClick);
-      $neightUpdateBtn.on('click', onUpdateClick);
+    //Bind events
+    $refreshBtn.on('click', onRefreshClick);
+    $neightUpdateBtn.on('click', onUpdateClick);
 
-			load_controller();
-			var spinnerHTML = '<i class="'+'fa fa-spinner fa-spin fa-3x fa-fw"'+'></i>';
+    load_controller();
+    var spinnerHTML = '<i class="' + 'fa fa-spinner fa-spin fa-3x fa-fw"' + '></i>';
 
-			function onRefreshClick() {
-					$body.html(spinnerHTML);
-					console.log('click');
-					healthTester.startIMA('routingInf', load_controller);
-			}
+    function onRefreshClick() {
+        $body.html(spinnerHTML);
+        console.log('click');
+        healthTester.startIMA('routingInf', load_controller);
+    }
 
-      function onUpdateClick() {
+    function onUpdateClick() {
         if (selectedDevId != 'none') {
             console.log(selectedDevId);
             $body.html(spinnerHTML);
-            startIMA(selectedDevId, function () {
+            startIMA(selectedDevId, function() {
                 healthTester.startIMA('routingInf', load_controller);
             });
         }
-     }
+    }
 
-			function load_controller(){
-					console.log('loaded');
-					$body.load("ajax/controller.php");
+    function load_controller() {
+        console.log('loaded');
+        $body.load("ajax/controller.php");
 
-			}
+    }
 
-      function startIMA(_req, onSuccess) {
-          $.ajax({
-              url: 'ajax/send_neight_update.php',
-              type: 'POST',
-              data: {req: _req},
-              success: onSuccess,
-              error: healthTester.errorFun
-          })
-      }
+    function startIMA(_req, onSuccess) {
+        $.ajax({
+            url: 'ajax/send_neight_update.php',
+            type: 'POST',
+            data: {
+                req: _req
+            },
+            success: onSuccess,
+            error: healthTester.errorFun
+        })
+    }
 
-      return{
+    return {
         refresh: onRefreshClick,
-      }
-	})();
+    }
+})();
 
 
-var statusTable = (function () {
-	var $body = $('#status-table-body');
+var statusTable = (function() {
+    var $body = $('#status-table-body');
 
 
-	$body.load("ajax/status_table.php");
+    $body.load("ajax/status_table.php");
 
-  function fillGrid() {
-      $body.load("ajax/status_table.php");
-  //  devicesStatus.fillGrid();
-  }
+    function fillGrid() {
+        $body.load("ajax/status_table.php");
+        //  devicesStatus.fillGrid();
+    }
 
-  return{
-      fillGrid: fillGrid,
-  }
+    return {
+        fillGrid: fillGrid,
+    }
 
 
 })();
 
 
-var testDevice = (function () {
+var testDevice = (function() {
 
     var $body = $('#test-widget-body');
     var $testBtn = $('#testBtn');
@@ -375,86 +377,87 @@ var testDevice = (function () {
     var current = 0;
 
     function onTestClick() {
-      if (record != 'none')
-      {
-          $testBtn.attr('disabled', true);
-          $stopBtn.attr('disabled', false);
-          w2ui['testDevGrid'].lock('In progress', true);
-          size = w2ui['testDevGrid'].records.length;
-          allrec = [];
-          for (var i = 0; i < size; i++)
-            allrec.push(w2ui['testDevGrid'].get(i));
+        if (record != 'none') {
+            $testBtn.attr('disabled', true);
+            $stopBtn.attr('disabled', false);
+            w2ui['testDevGrid'].lock('In progress', true);
+            size = w2ui['testDevGrid'].records.length;
+            allrec = [];
+            for (var i = 0; i < size; i++)
+                allrec.push(w2ui['testDevGrid'].get(i));
 
-          console.log('hue' + record.dev);
-          recordid = record.recid;
-          var i = 0;
-          get_dev_status();
-          devStatusTab = [];
+            console.log('hue' + record.dev);
+            recordid = record.recid;
+            var i = 0;
+            get_dev_status();
+            devStatusTab = [];
 
             function get_dev_status() {
 
-              if (current < 60) {
-                dev = record.dev;
-                  $.ajax({
-                      url: 'ajax/send_dev_req.php',
-                      type: 'POST',
-                      data: {dev: dev},
-                      success: function (resp) {
-                        if (resp == 'done') {
-                          devid = dev;
-                          $.ajax({
-                              url: 'data/ima/device_status.csv',
-                              success: function (stat) {
-                                  w2ui['testDevGrid'].unlock();
-                                  stat = parse.CSVToArray(stat);
+                if (current < 60) {
+                    dev = record.dev;
+                    $.ajax({
+                        url: 'ajax/send_dev_req.php',
+                        type: 'POST',
+                        data: {
+                            dev: dev
+                        },
+                        success: function(resp) {
+                            if (resp == 'done') {
+                                devid = dev;
+                                $.ajax({
+                                    url: 'data/ima/device_status.csv',
+                                    success: function(stat) {
+                                        w2ui['testDevGrid'].unlock();
+                                        stat = parse.CSVToArray(stat);
 
-                                  devStatusTab.push(stat[0][0]);
-                                  console.log(devStatusTab);
+                                        devStatusTab.push(stat[0][0]);
+                                        console.log(devStatusTab);
 
-                                  progres = parseInt(current/60*100) + '% | ' + testStatus(devStatusTab);
-                                  allrec[recordid].result = progres;
-                                  w2ui['testDevGrid'].clear();
+                                        progres = parseInt(current / 60 * 100) + '% | ' + testStatus(devStatusTab);
+                                        allrec[recordid].result = progres;
+                                        w2ui['testDevGrid'].clear();
 
-                                  for (var i = 0; i < size; i++) {
-                                    w2ui['testDevGrid'].records.push({
-                                      recid: i,
-                                      dev: allrec[i].dev,
-                                      specific:  allrec[i].specific,
-                                      result: allrec[i].result,
-                                    });
-                                  }
-                                  w2ui['testDevGrid'].reload();
+                                        for (var i = 0; i < size; i++) {
+                                            w2ui['testDevGrid'].records.push({
+                                                recid: i,
+                                                dev: allrec[i].dev,
+                                                specific: allrec[i].specific,
+                                                result: allrec[i].result,
+                                            });
+                                        }
+                                        w2ui['testDevGrid'].reload();
 
-                                    current++;
-                                    i++;
-                                    get_dev_status();
-                              }
-                          })
+                                        current++;
+                                        i++;
+                                        get_dev_status();
+                                    }
+                                })
+                            }
+
+                        },
+                        error: function() {
+                            console.log('error');
                         }
-
-                      },
-                      error: function () {
-                          console.log('error');
-                      }
-                  })
+                    })
 
 
                 }
 
-            function testStatus(data) {
-                fails = 0;
-                success = 0;
-                for (var i = 0; i < data.length; i++) {
-                  if (data[i] == "False")
-                    fails ++;
-                  else if (data[i] == 'OK')
-                    success++;
+                function testStatus(data) {
+                    fails = 0;
+                    success = 0;
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i] == "False")
+                            fails++;
+                        else if (data[i] == 'OK')
+                            success++;
+                    }
+                    return success + '/' + data.length + ' OK';
                 }
-              return success + '/' + data.length + ' OK';
             }
-          }
-        }else {
-          alert("Select device");
+        } else {
+            alert("Select device");
         }
     }
 
@@ -467,71 +470,71 @@ var testDevice = (function () {
 
 })();
 
-	/* DO NOT REMOVE : GLOBAL FUNCTIONS!
-	 *
-	 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
-	 *
-	 * // activate tooltips
-	 * $("[rel=tooltip]").tooltip();
-	 *
-	 * // activate popovers
-	 * $("[rel=popover]").popover();
-	 *
-	 * // activate popovers with hover states
-	 * $("[rel=popover-hover]").popover({ trigger: "hover" });
-	 *
-	 * // activate inline charts
-	 * runAllCharts();
-	 *
-	 * // setup widgets
-	 * setup_widgets_desktop();
-	 *
-	 * // run form elements
-	 * runAllForms();
-	 *
-	 ********************************
-	 *
-	 * pageSetUp() is needed whenever you load a page.
-	 * It initializes and checks for all basic elements of the page
-	 * and makes rendering easier.
-	 *
-	 */
+/* DO NOT REMOVE : GLOBAL FUNCTIONS!
+ *
+ * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
+ *
+ * // activate tooltips
+ * $("[rel=tooltip]").tooltip();
+ *
+ * // activate popovers
+ * $("[rel=popover]").popover();
+ *
+ * // activate popovers with hover states
+ * $("[rel=popover-hover]").popover({ trigger: "hover" });
+ *
+ * // activate inline charts
+ * runAllCharts();
+ *
+ * // setup widgets
+ * setup_widgets_desktop();
+ *
+ * // run form elements
+ * runAllForms();
+ *
+ ********************************
+ *
+ * pageSetUp() is needed whenever you load a page.
+ * It initializes and checks for all basic elements of the page
+ * and makes rendering easier.
+ *
+ */
 
-	pageSetUp();
+pageSetUp();
 
-	/*
-	 * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
-	 * eg alert("my home function");
-	 *
-	 * var pagefunction = function() {
-	 *   ...
-	 * }
-	 * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
-	 *
-	 * TO LOAD A SCRIPT:
-	 * var pagefunction = function (){
-	 *  loadScript(".../plugin.js", run_after_loaded);
-	 * }
-	 *
-	 * OR you can load chain scripts by doing
-	 *
-	 * loadScript(".../plugin.js", function(){
-	 * 	 loadScript("../plugin.js", function(){
-	 * 	   ...
-	 *   })
-	 * });
-	 */
+/*
+ * ALL PAGE RELATED SCRIPTS CAN GO BELOW HERE
+ * eg alert("my home function");
+ *
+ * var pagefunction = function() {
+ *   ...
+ * }
+ * loadScript("js/plugin/_PLUGIN_NAME_.js", pagefunction);
+ *
+ * TO LOAD A SCRIPT:
+ * var pagefunction = function (){
+ *  loadScript(".../plugin.js", run_after_loaded);
+ * }
+ *
+ * OR you can load chain scripts by doing
+ *
+ * loadScript(".../plugin.js", function(){
+ * 	 loadScript("../plugin.js", function(){
+ * 	   ...
+ *   })
+ * });
+ */
 
-	// pagefunction
+// pagefunction
 
 
-	var pagefunction = function() {
-		// clears the variable if left blank
-	};
+var pagefunction = function() {
+    // clears the variable if left blank
+};
 
-	// end pagefunction
+// end pagefunction
 
-	// run pagefunction
-	pagefunction();
+// run pagefunction
+pagefunction();
 
 </script>
