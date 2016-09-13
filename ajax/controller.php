@@ -16,6 +16,18 @@ $.ajax({
 		success: function (data) {
 			data = parse.CSVToArray(data);
       console.log(data);
+
+      sigma.classes.graph.addMethod('neighbors', function(nodeId) {
+        var k,
+            neighbors = {},
+            index = this.allNeighborsIndex[nodeId] || {};
+
+        for (k in index)
+          neighbors[k] = this.nodesIndex[k];
+          console.log(neighbors);
+        return neighbors;
+      });
+
 		//	data = CSVToArray(data);
 				var xT = [1,2,2,4,4,6,6,7];
 				var yT = [4,2,6,1,7,6,2,4];
@@ -61,88 +73,102 @@ $.ajax({
 
 				console.log(g.nodes[0].type);
 				console.log(g.edges[0].color);
+        console.log(g.nodes[0].id);
 
-				s = new sigma({
-  				  graph: g,
-  				  settings: {
-                enableHovering: false,
-                enableEdgeHovering: true,
-                edgeHoverColor: 'edge',
-                defaultEdgeHoverColor: '#000',
-                edgeHoverSizeRatio: 1,
-                edgeHoverExtremities: true,
-  				  }
-				});
+        s = new sigma({
+        graph: g,
+        container: 'graph-container',
+        	  settings: {
+                enableHovering: true,
 
-				s.addRenderer({
-  				  id: 'main',
-  				  type: 'svg',
-  				  container: document.getElementById('graph-container'),
-  				  freeStyle: true,
-				});
+        	  }
+      });
+
+            g.nodes.forEach(function(n) {
+               n.originalColor = n.color;
+             });
+             g.edges.forEach(function(e) {
+               e.originalColor = e.color;
+             });
+
+             // When a node is clicked, we check for each node
+             // if it is a neighbor of the clicked one. If not,
+             // we set its color as grey, and else, it takes its
+             // original color.
+             // We do the same for the edges, and we only keep
+             // edges that have both extremities colored.
+             s.bind('clickNode', function(e) {
+               var nodeId = e.data.node.id,
+                   toKeep = s.graph.neighbors(nodeId);
+               toKeep[nodeId] = e.data.node;
+            //   console.log(toKeep[0][0]);
+               s.graph.nodes().forEach(function(n) {
+              //   console.log(n);
+                 if (toKeep[n.id])
+                   n.color = n.originalColor;
+                 else
+                   n.color = '#eee';
+               });
+
+               selectedDevId = nodeId;
+               console.log(selectedDevId);
+               if (selectedDevId != 'none')
+                   $neightUpdateBtn.attr('disabled', false);
+
+               s.graph.edges().forEach(function(e) {
+                 if (e.target == selectedDevId)
+                   e.color = e.originalColor;
+                 else
+                   e.color = '#eee';
+
+                //  if (toKeep[e.source] && toKeep[e.target])
+                //    e.color = e.originalColor;
+                //  else
+                //    e.color = '#eee';
+               });
+
+               // Since the data has been modified, we need to
+               // call the refresh method to make the colors
+               // update effective.
+               s.refresh();
+             });
+
+             // When the stage is clicked, we just color each
+             // node and edge with its original color.
+             s.bind('clickStage', function(e) {
+               s.graph.nodes().forEach(function(n) {
+                 n.color = n.originalColor;
+               });
+
+               s.graph.edges().forEach(function(e) {
+                 e.color = e.originalColor;
+               });
+               selectedDevId = 'none';
+               $neightUpdateBtn.attr('disabled', true);
+               // Same as in the previous event:
+               s.refresh();
+             });
+
+
+
 
 				s.refresh();
 
-				// Binding silly interactions
-				function mute(node) {
-				  if (!~node.getAttribute('class').search(/muted/))
-				      node.setAttributeNS(null, 'class', node.getAttribute('class') + ' muted');
-					//	g.edges[0].
-				}
 
-				function unmute(node) {
-				      node.setAttributeNS(null, 'class', node.getAttribute('class').replace(/(\s|^)muted(\s|$)/g, '$2'));
-				}
+				var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
 
-				$('.sigma-node').click(function() {
-            console.log($(this).attr('data-node-id'));
-            selectedDevId = $(this).attr('data-node-id');
-            console.log(selectedDevId);
-
-            if (selectedDevId != 'none') {
-                $neightUpdateBtn.attr('disabled', false);
-            }
-
-  				  // Muting
-  				  $('.sigma-node, .sigma-edge').each(function() {
-  				        mute(this);
-  				  });
-
-  				  // Unmuting neighbors
-  				  var neighbors = s.graph.neighborhood($(this).attr('data-node-id'));
-
-  				  neighbors.nodes.forEach(function(node) {
-  				        unmute($('[data-node-id="' + node.id + '"]')[0]);
-  				  });
-
-  				  neighbors.edges.forEach(function(edge) {
-  				        unmute($('[data-edge-id="' + edge.id + '"]')[0]);
-  				  });
+				dragListener.bind('startdrag', function(event) {
+				  //	console.log(event);
 				});
-
-				s.bind('clickStage', function() {
-  				  $('.sigma-node, .sigma-edge').each(function() {
-  				        unmute(this);
-  				  });
-            selectedDevId = 'none';
-            $neightUpdateBtn.attr('disabled', true);
-
+				dragListener.bind('drag', function(event) {
+				  //	console.log(event);
 				});
-
-				// var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
-				//
-				// dragListener.bind('startdrag', function(event) {
-				//   	console.log(event);
-				// });
-				// dragListener.bind('drag', function(event) {
-				//   	console.log(event);
-				// });
-				// dragListener.bind('drop', function(event) {
-				//   	console.log(event);
-				// });
-				// dragListener.bind('dragend', function(event) {
-				//   	console.log(event);
-				// });
+				dragListener.bind('drop', function(event) {
+				  //	console.log(event);
+				});
+				dragListener.bind('dragend', function(event) {
+				  	//console.log(event);
+				});
 
 		}
 })
