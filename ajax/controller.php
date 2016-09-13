@@ -76,6 +76,7 @@ $.ajax({
                 enableHovering: true,
                 zoomingRatio: 1.2,
                 doubleClickZoomingRatio: 1.8,
+                labelThreshold: 5,
             }
         });
 

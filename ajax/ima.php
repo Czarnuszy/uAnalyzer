@@ -2,6 +2,7 @@
 <?php require_once("inc/init.php"); ?>
 <head>
   <script src="../js/parser.js"></script>
+  <script src="../js/xml_parser.js"></script>
 
 </head>
 <!-- row -->
@@ -187,6 +188,27 @@
 
 
 <script type="text/javascript">
+
+var statusTable = (function() {
+    var $body = $('#status-table-body');
+
+
+    $body.load("ajax/status_table.php");
+
+    function fillGrid() {
+        $body.load("ajax/status_table.php");
+        //  devicesStatus.fillGrid();
+    }
+
+
+
+    return {
+        fillGrid: fillGrid,
+    }
+
+
+})();
+
 var healthTester = (function() {
 
     //cache DOM
@@ -277,7 +299,8 @@ var healthTester = (function() {
 
     return {
         startIMA: startIMA,
-        error: errorFun
+        error: errorFun,
+        refresh: loadNodeInfoCallback,
     }
 
 })();
@@ -307,12 +330,18 @@ var connectionTable = (function() {
         healthTester.startIMA('routingInf', load_controller);
     }
 
+    function onRefreshAll() {
+      $body.html(spinnerHTML);
+      console.log('click');
+      healthTester.startIMA('routingInf', refreshAll);
+    }
+
     function onUpdateClick() {
         if (selectedDevId != 'none') {
             console.log(selectedDevId);
             $body.html(spinnerHTML);
             startIMA(selectedDevId, function() {
-                healthTester.startIMA('routingInf', load_controller);
+                healthTester.startIMA('routingInf', refreshAll);
             });
         }
     }
@@ -321,6 +350,20 @@ var connectionTable = (function() {
         console.log('loaded');
         $body.load("ajax/controller.php");
 
+    }
+
+    function refreshAll() {
+      $body.load("ajax/controller.php");
+      statusTable.fillGrid();
+      $.ajax({
+          url: 'ajax/startIMA.php',
+          type: 'POST',
+          data: {
+              req: 'nodeInf'
+          },
+          success: xmlParser.start,
+          error: healthTester.errorFun
+      })
     }
 
     function startIMA(_req, onSuccess) {
@@ -336,28 +379,11 @@ var connectionTable = (function() {
     }
 
     return {
-        refresh: onRefreshClick,
+        refresh: onRefreshAll,
     }
 })();
 
 
-var statusTable = (function() {
-    var $body = $('#status-table-body');
-
-
-    $body.load("ajax/status_table.php");
-
-    function fillGrid() {
-        $body.load("ajax/status_table.php");
-        //  devicesStatus.fillGrid();
-    }
-
-    return {
-        fillGrid: fillGrid,
-    }
-
-
-})();
 
 
 var testDevice = (function() {
@@ -378,6 +404,7 @@ var testDevice = (function() {
 
     function onTestClick() {
         if (record != 'none') {
+            current = 0;
             $testBtn.attr('disabled', true);
             $stopBtn.attr('disabled', false);
             w2ui['testDevGrid'].lock('In progress', true);
@@ -463,8 +490,12 @@ var testDevice = (function() {
 
     function onStopClick() {
         current = 60;
+
+        if (record != 'none')
+            $testBtn.attr('disabled', false);
+
         $stopBtn.attr('disabled', true);
-        $testBtn.attr('disabled', false);
+
 
     }
 
