@@ -145,7 +145,7 @@
 
 													<header>
 															<span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
-															<h2> Netwok Health Tester</h2>
+															<h2> Network Health Tester</h2>
 
 															<div class="widget-toolbar">
 																	<label class="btn btn-default btn-xs " id="testBtn"></i> Test

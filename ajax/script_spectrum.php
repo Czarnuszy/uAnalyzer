@@ -133,10 +133,10 @@ for ($i = 0; $i < $max; ++$i) {
     //      pointHoverRadius: 5,
           data:[
             <?php
-                for ($i = 0; $i < 36; ++$i) {
+                for ($i = 0; $i < 34; ++$i) {
                     echo ' '.',';
                 }
-                for ($i = 36; $i < 42; ++$i) {
+                for ($i = 34; $i < 42; ++$i) {
                     echo '100'.',';
                 }
                 for ($i = 42; $i < 74; ++$i) {

@@ -15,8 +15,6 @@ $.ajax({
 		url: '../data/ima/routing_info.csv',
 		success: function (data) {
 			data = parse.CSVToArray(data);
-      console.log(data);
-
       sigma.classes.graph.addMethod('neighbors', function(nodeId) {
         var k,
             neighbors = {},
@@ -118,6 +116,9 @@ $.ajax({
                s.graph.edges().forEach(function(e) {
                  if (e.target == selectedDevId)
                    e.color = e.originalColor;
+                 else if (e.source == selectedDevId)
+                 e.color = e.originalColor;
+
                  else
                    e.color = '#eee';
 
