@@ -340,7 +340,7 @@ var spectrumAnalyzer = (function() {
 
         $spectrumBody.html(html);
         pd += 10;
-        if (pd >= 100) {
+        if (pd >= 120) {
             clearInterval(progrssInt);
             pd = 0;
             $spectrumBody.load("ajax/script_spectrum.php");
