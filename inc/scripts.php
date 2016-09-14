@@ -37,6 +37,7 @@
 			<script src="<?php echo ASSETS_URL; ?>/js/sigma.plugins.neighborhoods.js"></script>
 
 
+
 !-- CUSTOM NOTIFICATION -->
 	<script src="<?php echo ASSETS_URL; ?>/js/notification/SmartNotification.min.js"></script>
 

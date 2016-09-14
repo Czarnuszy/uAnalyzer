@@ -404,7 +404,7 @@ var testDevice = (function() {
 
     function onTestClick() {
         if (record != 'none') {
-            current = 0;
+            current = 1;
             $testBtn.attr('disabled', true);
             $stopBtn.attr('disabled', false);
             w2ui['testDevGrid'].lock('In progress', true);
@@ -421,7 +421,7 @@ var testDevice = (function() {
 
             function get_dev_status() {
 
-                if (current < 60) {
+                if (current < 61) {
                     dev = record.dev;
                     $.ajax({
                         url: 'ajax/send_dev_req.php',

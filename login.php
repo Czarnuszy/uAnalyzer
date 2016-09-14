@@ -75,7 +75,7 @@ include("inc/header.php");
 							For more product information<br>
 							and complete instructions, please visit<br>
 
-							<a href="img/toolbox_page.jpg">www.zwaveproducts.com/z-wave-toolbox</a>
+							<a href="http://www.zwaveproducts.com/z-wave-toolbox">www.zwaveproducts.com/z-wave-toolbox</a>
 						</p>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">

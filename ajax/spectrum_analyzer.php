@@ -117,7 +117,7 @@ var spectrumAnalyzer = (function() {
 
         setInterval(function() {
             spectrum_status(refreshStatus);
-        }, 5000);
+        }, 3000);
 
     }
 

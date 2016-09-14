@@ -173,9 +173,12 @@ var packetAnalyzer = (function() {
         checkStatusInt = setInterval(function() {
             znifferStatus(returnZnifferStatus);
         }, 1000);
+
     }
 
+
     _init();
+
 
     //Buttons functions
 
