@@ -22,8 +22,8 @@
                  lineNumbers  : true,
             },
             columns: [
-  							{ field: 'dev', caption: 'dev', size: '10%', sortable: true, searchable: 'int', resizable: true, attr: "align=center" },
-                { field: 'specific', caption: 'specific', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+  							{ field: 'dev', caption: 'Device ID', size: '10%', sortable: true, searchable: 'int', resizable: true, attr: "align=center" },
+                { field: 'specific', caption: 'Specific', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
                 { field: 'result', caption: 'Result', size: '30%', resizable: true, searchable: 'int', sortable: true, attr: "align=center" },
     				 ],
              onClick: function (event) {

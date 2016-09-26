@@ -48,13 +48,13 @@
 											            </label>
 
 	                                <label class="btn btn-default btn-xs " id="removeBton"></i> Remove
-											                <i class="fa fa-trash-o"></i>
+											                <i class="fa fa-minus"></i>
 											            </label>
 	                                <label class="btn btn-default btn-xs " id="resetBtn"></i> Reset
-											                <i class="fa fa-refresh"></i>
+											                <i class="fa fa-trash-o"></i>
 											            </label>
 	                                <label class="btn btn-default btn-xs " id="learnBtn"></i> Learn
-											                <i class="fa fa-refresh"></i>
+											                <i class="fa fa-copy"></i>
 											            </label>
 	                            </div>
 
@@ -81,9 +81,9 @@
 															<h2>Connections Tester</h2>
 
 															<div class="widget-toolbar">
-																	<label class="btn btn-default btn-xs " id="getStatusBtn"></i> Load
-																		<i class="fa fa-refresh"></i>
-																</label>
+																	<label class="btn btn-default btn-xs " id="getStatusBtn"></i>
+																		<i class="fa fa-play"></i> Load
+								                  </label>
 
 															</div>
 													</header>
@@ -115,14 +115,14 @@
 
 	                        <header>
 	                            <span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
-	                            <h2>Static Connections Table</h2>
+	                            <h2>Static Network Map</h2>
 
 	                            <div class="widget-toolbar">
 	                                <label class="btn btn-default btn-xs " id="routingRefresh"></i> Refresh
 												              <i class="fa fa-refresh"></i>
 												          </label>
                                   <label class="btn btn-default btn-xs " id="updateNeighbors"></i> Update neighbors
-                                      <i class="fa fa-refresh"></i>
+                                      <i class="fa fa-home"></i>
                                   </label>
 	                            </div>
 	                        </header>
@@ -149,11 +149,11 @@
 															<h2> Network Health Tester</h2>
 
 															<div class="widget-toolbar">
-																	<label class="btn btn-default btn-xs " id="testBtn"></i> Test
-																			<i class="fa fa-refresh"></i>
+																	<label class="btn btn-default btn-xs " id="testBtn"></i>
+																			<i class="fa fa-play"></i> Test
 																	</label>
-                                  <label class="btn btn-default btn-xs " id="stopTestBtn"></i> Stop
-                                      <i class="fa fa-stop"></i>
+                                  <label class="btn btn-default btn-xs " id="stopTestBtn"></i>
+                                      <i class="fa fa-stop"></i> Stop
                                   </label>
 															</div>
 													</header>
@@ -191,14 +191,136 @@
 
 var statusTable = (function() {
     var $body = $('#status-table-body');
+    var $startBtn = $('#getStatusBtn');
 
+    $startBtn.on('click', start);
 
     $body.load("ajax/status_table.php");
 
-    function fillGrid() {
-        $body.load("ajax/status_table.php");
-        //  devicesStatus.fillGrid();
+  //  fillGrid();
+
+    function fillGrid(){
+        $.ajax({
+          url: 'data/ima/routing_info.csv',
+          success: function (data) {
+            w2ui['connectionGrid'].clear();
+
+            routingInfo = parse.CSVToArray(data);
+            for (var i = 0; i < routingInfo.length-1; i++){
+                w2ui['connectionGrid'].records.push({
+                    recid: i,
+                    dev: routingInfo[i][0],
+                    status: "Pending",
+                    time: "Pending",
+                    route: "Pending",
+                });
+            }
+            w2ui['connectionGrid'].refresh();
+
+          }
+        })
     }
+
+    function start() {
+      w2ui['connectionGrid'].lock("Please wait.", true);
+
+
+      $.ajax({
+          url: 'data/ima/routing_info.csv',
+          success: function (data) {
+            routingInfo = parse.CSVToArray(data);
+            devices = [];
+
+            for (var i = 0; i < routingInfo.length-1; i++){
+                devices.push(routingInfo[i][0]);
+
+            }
+
+
+        //		console.log(allrec);
+            w2ui['connectionGrid'].refresh();
+
+
+        var current = 0;
+        var i = 0;
+        get_dev_status();
+
+          function get_dev_status() {
+
+            if (current < devices.length) {
+              dev = devices[current];
+            //	console.log();
+                $.ajax({
+                    url: 'ajax/send_dev_req.php',
+                    type: 'POST',
+                    data: {dev: dev},
+                    success: function (resp) {
+                    //	console.log(resp);
+                      if (resp == 'done') {
+                    //		console.log(dev);
+                        devid = dev;
+                        $.ajax({
+                            url: 'data/ima/device_status.csv',
+                            success: function (stat) {
+                              size = w2ui['connectionGrid'].records.length;
+                              allrec = [];
+                              for (var x = 0; x < size; x++)
+                                allrec.push(w2ui['connectionGrid'].get(x));
+
+                                console.log(stat);
+                                stat = parse.CSVToArray(stat);
+                                console.log(current);
+                                allrec[current].status = stat[0][0];
+                                allrec[current].time = stat[0][1];
+                                allrec[current].route = stat[0][3];
+
+
+                                w2ui['connectionGrid'].clear();
+                                for (var i = 0; i < size; i++) {
+                                  if (allrec[i].status == 'Fail') {
+                                    color = "#FF4C4C"
+                                  }else {
+                                    color = '';
+                                  }
+                                  w2ui['connectionGrid'].records.push({
+                                      recid: i,
+                                      dev: allrec[i].dev,
+                                      status: allrec[i].status,
+                                      time: allrec[i].time,
+                                //			repeaters: stat[0][2],
+                                      route: allrec[i].route,
+                                      style: "background-color: " + color,
+                                      });
+
+                                }
+
+                                  w2ui['connectionGrid'].unlock();
+
+                                  w2ui['connectionGrid'].refresh();
+                                  current++;
+                                  i++;
+                                  get_dev_status();
+                            }
+                        })
+                      }
+
+                    },
+                    error: function () {
+                        console.log('error');
+                    }
+                })
+                }
+              }
+          },
+          error: function () {
+            console.log(error);
+          }
+      })
+    }
+    // function fillGrid() {
+    //     $body.load("ajax/status_table.php");
+    //     //  devicesStatus.fillGrid();
+    // }
 
 
 

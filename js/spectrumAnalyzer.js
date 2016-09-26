@@ -28,7 +28,7 @@ var spectrumAnalyzer = (function() {
 
         setInterval(function() {
             spectrum_status(refreshStatus);
-        }, 5000);
+        }, 3000);
 
     }
 
@@ -51,13 +51,6 @@ var spectrumAnalyzer = (function() {
             console.log("ds");
             myInterval = setInterval(load, 1000);
 
-            $.smallBox({
-                title: "Z-Wave Spectrum Analyzer",
-                content: "<i class='fa fa-clock-o'></i> <i>Start</i>",
-                color: "#659265",
-                iconSmall: "fa fa-times fa-2x fadeInRight animated",
-                timeout: 3000
-            });
         } else {
 
         }
@@ -69,13 +62,7 @@ var spectrumAnalyzer = (function() {
             clearInterval(myInterval);
             myInterval = false;
             //	 clearTimeout(myset);
-            $.smallBox({
-                title: "Z-Wave Spectrum Analyzer",
-                content: "<i class='fa fa-clock-o'></i> <i>Stop</i> REMEMBER ABOUT RESET",
-                color: "#C46A69",
-                iconSmall: "fa fa-times fa-2x fadeInRight animated",
-                timeout: 3000
-            });
+
         } else {
             stop_spectrum();
             //if(myInterval)
@@ -172,7 +159,7 @@ var spectrumAnalyzer = (function() {
     }
 
     function startusReq(response) {
-
+        console.log(response);
         if (response == 1) {
             status = true;
             $("#play-a3").attr('class', 'btn btn-default btn-xs active');
@@ -257,13 +244,14 @@ var spectrumAnalyzer = (function() {
         var progress = 0;
         progress += pd;
         var pr = progress + "%";
-        var html = "Please Wait	<div class=" + "'progress progress-micro'" + ">	<div class=" +
+        var html = "<img src="+"'img/toolbox.png'"+"</img>" +
+            "Please Wait	<div class=" + "'progress progress-micro'" + ">	<div class=" +
             "'progress-bar progress-bar-primary'" + " role='progressbar'" + "style='width: " + pr + ";'" + ">" +
             "</div></div>"
 
         $spectrumBody.html(html);
         pd += 10;
-        if (pd >= 100) {
+        if (pd >= 120) {
             clearInterval(progrssInt);
             pd = 0;
             $spectrumBody.load("ajax/script_spectrum.php");

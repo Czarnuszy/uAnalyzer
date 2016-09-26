@@ -22,12 +22,12 @@
                  lineNumbers  : true,
             },
             columns: [
-							{ field: 'dev', caption: 'dev', size: '10%', sortable: true, searchable: 'int', resizable: true, attr: "align=center" },
+							{ field: 'dev', caption: 'Device ID', size: '10%', sortable: true, searchable: 'int', resizable: true, attr: "align=center" },
 
-        			{ field: 'basic', caption: 'basic', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
-              { field: 'generic', caption: 'generic', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+        			{ field: 'basic', caption: 'Basic', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+              { field: 'generic', caption: 'Generic', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
 
-              { field: 'specific', caption: 'specific', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
+              { field: 'specific', caption: 'Specific', size: '30%', sortable: true, searchable: 'text', resizable: true, attr: "align=center" },
         //        { field: 'source', caption: 'Source', size: '10%', resizable: true, searchable: 'int', sortable: true, attr: "align=center" },
 
     		//{ field: 'test2', caption: 'test2', size: '100px', type: "text", sortable: true, searchable: 'text',  resizable: true },
@@ -46,48 +46,7 @@
          w2ui['NodeInfoGrid'].refresh();
          $('#NodeInfoGridBody').w2render('NodeInfoGrid');
 
-
-        //  $.ajax({
-        //    url: 'ajax/read_xml.php',
-        //    type: 'GET',
-        //    dataType: 'json',
-        //    success: function(data){
-				// 		 $('#NodeInfoGridBody').html(data);
-				// 		 w2ui.NodeInfoGrid.clear();
-				//
-        //      $.each(data, function (i, record) {
-        //        w2ui['NodeInfoGrid'].records.push({
-        //          basic: record.basic,
-        //          generic: record.generic,
-        //          specific: record.specific,
-        //         });
-        //      })
-        //      w2ui['NodeInfoGrid'].refresh();
-				//
-        //    }
-        //  })
-				//
-				//
-				//  $.ajax({
-				// 	 url: '../data/ima/routing_info.csv',
-				// 	 type: 'GET',
-				// 	 success: function(data){
-				// 		data = parse.CSVToArray(data);
-				// 		w2ui.NodeInfoGrid.clear();
-				// 		 $.each(data, function (i, record) {
-				// 			 w2ui['NodeInfoGrid'].records.push({
-				// 				 	dev : 1,
-				// 				});
-				// 		 })
-				// 		 w2ui['NodeInfoGrid'].refresh();
-				 //
-				// 	 },
-				// 	 error: function () {
-				// 	 		console.log('error');
-				// 	 }
-				//  })
-
-			 xmlParser.start();
+				 xmlParser.start();
 
     });
 
