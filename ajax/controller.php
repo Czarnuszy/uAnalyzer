@@ -14,6 +14,7 @@ $.ajax({
     url: '../data/ima/routing_info.csv',
     success: function(data) {
         data = parse.CSVToArray(data);
+        console.log(data);
         // sigma.classes.graph.addMethod('neighbors', function(nodeId) {
         //     var k,
         //         neighbors = {},
@@ -68,7 +69,7 @@ $.ajax({
                     color: '#ccc',
                     hover_color: '#000'
                 });
-
+        console.log(g.edges);
         s = new sigma({
             graph: g,
             container: 'graph-container',

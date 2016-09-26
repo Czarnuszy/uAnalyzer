@@ -112,12 +112,13 @@ class IMA:
             infoTab.append(tmptab)
             tmptab = []
         self.save_routing_info_csv(infoTab)
-        print infoTab
+        self.save_static_routing_info(infoTab)
+
         return infoTab
 #    except:
 #        print 'ups'
 
-        self.get_routing_info()
+        #self.get_routing_info()
 
     def reset(self):
         zw.ZW_SetDefault(self.reset_callback)
@@ -228,8 +229,39 @@ class IMA:
             filepath.write(str(data[i][0])+',')
             t=0
             for x in sometab:
-                if int(tt[t]) == 1:
-                    filepath.write(str(x)+',')
+                if int(tt[sometab[t] - 1]) == 1:
+                    filepath.write(str(sometab[t])+',')
+                t += 1
+
+            filepath.write("\n")
+
+        filepath.close()
+
+    def save_static_routing_info(self, data):
+        print 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        filepath = open("/www/data/ima/static_routing_info.csv", "w")
+        sometab = []
+        for i in range(len(data)):
+            sometab.append(data[i][0])
+
+        for i in range(len(data)):
+            filepath.write(str(data[i][0])+',')
+
+        filepath.write(str('\n'))
+
+        for i in range(len(data)):
+            tt = data[i][1]
+            tt = tt[::-1]
+
+            filepath.write(str(data[i][0])+',')
+            t=0
+            #Sprawdzam kazdy wiersz, jesli jest rowny jeden = sasiad, zapisuje do pliku.
+            for x in sometab:
+                print str(tt[sometab[t] -1]) + ' ' + str(sometab[t]) + ' ' + str(t)
+                if int(tt[sometab[t] - 1] ) == 1:
+                    filepath.write(str(1)+',')
+                else:
+                    filepath.write(str(0)+',')
                 t += 1
 
             filepath.write("\n")
