@@ -1,5 +1,5 @@
 var parse = (function() {
-  
+
     function sqnum(x, data) {
         var color = "";
         if (data[x][8] == "01")

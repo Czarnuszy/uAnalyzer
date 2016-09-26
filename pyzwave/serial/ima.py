@@ -244,10 +244,7 @@ class IMA:
         for i in range(len(data)):
             sometab.append(data[i][0])
 
-        for i in range(len(data)):
-            filepath.write(str(data[i][0])+',')
 
-        filepath.write(str('\n'))
 
         for i in range(len(data)):
             tt = data[i][1]
@@ -257,8 +254,10 @@ class IMA:
             t=0
             #Sprawdzam kazdy wiersz, jesli jest rowny jeden = sasiad, zapisuje do pliku.
             for x in sometab:
-                print str(tt[sometab[t] -1]) + ' ' + str(sometab[t]) + ' ' + str(t)
-                if int(tt[sometab[t] - 1] ) == 1:
+                print str(data[i][0]) + ' ' + str(sometab[t]) + ' ' + str(t)
+                if(int(data[i][0]) == int(sometab[t])):
+                    filepath.write(str(2)+',')                    
+                elif int(tt[sometab[t] - 1] ) == 1:
                     filepath.write(str(1)+',')
                 else:
                     filepath.write(str(0)+',')
