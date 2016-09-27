@@ -3,6 +3,7 @@
 <head>
   <script src="../js/parser.js"></script>
   <script src="../js/xml_parser.js"></script>
+  <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 
 </head>
 <!-- row -->
@@ -172,6 +173,38 @@
 
 	                </article>
 
+                  <article class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+
+                      <div class="jarviswidget" id="wid-id-43" data-widget-deletebutton="false"
+                      data-widget-editbutton="false" data-widget-collapsed="false" data-widget-colorbutton="false"
+                      data-widget-resizable="true">
+
+
+                          <header>
+                              <span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
+                              <h2>Static Connection Grid</h2>
+
+                              <div class="widget-toolbar">
+                                  <label class="btn btn-default btn-xs " id=""></i> Refresh
+                                      <i class="fa fa-refresh"></i>
+                                  </label>
+
+                              </div>
+                          </header>
+
+
+
+                          <div class="widget-body">
+                              <div id="staticConnectionGridBody">
+                                  <center>
+                                      Loading...
+                                  </center>
+                              </div>
+                          </div>
+
+                      </div>
+
+                  </article>
 	            </div>
 	        </section>
 
@@ -621,6 +654,11 @@ var testDevice = (function() {
 
     }
 
+})();
+
+var staticConnectionGrid = (function () {
+
+    $('#staticConnectionGridBody').load("ajax/staticConGrid.php");
 })();
 
 /* DO NOT REMOVE : GLOBAL FUNCTIONS!

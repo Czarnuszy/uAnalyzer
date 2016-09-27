@@ -26,6 +26,21 @@ $.ajax({
         //     return neighbors;
         // });
 
+        function valueToPoint (value, index, total) {
+            var x     = 0
+            var y     = -value * 0.8
+            var angle = Math.PI * 2 / total * index
+            var cos   = Math.cos(angle)
+            var sin   = Math.sin(angle)
+            var tx    = x * cos - y * sin + 100
+            var ty    = x * sin + y * cos + 100
+            return {
+              x: tx,
+              y: ty
+            }
+          }
+          console.log(valueToPoint(100,2,4).x);
+
         //	data = CSVToArray(data);
         var xT = [1, 2, 2, 4, 4, 6, 6, 7];
         var yT = [4, 2, 6, 1, 7, 6, 2, 4];
@@ -40,15 +55,17 @@ $.ajax({
             };
 
         _x = 0;
-
-        for (i = 0; i < data.length - 1; i++) {
+        var max = data.length - 1;
+        for (i = 0; i < max; i++) {
             add = 0.3;
             g.nodes.push({
                 id: data[i][0],
                 label: 'Dev ' + data[i][0],
                 //		x: xT[i]/7,
-                x: i / 10 + 0.1 + 0.001,
-                y: 1.8 * Math.random(), //+ add,
+              //  x: i / 10 + 0.1 + 0.001,
+                x: valueToPoint(100,i,max).x,
+                y: valueToPoint(100,i,max).y,
+              //  y: 1.8 * Math.random(), //+ add,
                 //	y: yT[i]/7,
                 size: 3,
                 type: types,
