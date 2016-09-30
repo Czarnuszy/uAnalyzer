@@ -244,6 +244,10 @@ class IMA:
         for i in range(len(data)):
             sometab.append(data[i][0])
 
+        for i in range(len(data)):
+            filepath.write(str(data[i][0])+',')
+
+        filepath.write('\n')
 
 
         for i in range(len(data)):
@@ -256,7 +260,7 @@ class IMA:
             for x in sometab:
                 print str(data[i][0]) + ' ' + str(sometab[t]) + ' ' + str(t)
                 if(int(data[i][0]) == int(sometab[t])):
-                    filepath.write(str(2)+',')                    
+                    filepath.write(str(2)+',')
                 elif int(tt[sometab[t] - 1] ) == 1:
                     filepath.write(str(1)+',')
                 else:
