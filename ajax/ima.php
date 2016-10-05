@@ -177,8 +177,7 @@
 
                       <div class="jarviswidget" id="wid-id-43" data-widget-deletebutton="false"
                       data-widget-editbutton="false" data-widget-collapsed="false" data-widget-colorbutton="false"
-                      data-widget-resizable="true"
-                      data-widget-load="ajax/staticConGrid.php">
+                      data-widget-resizable="true">
 
 
                           <header>
@@ -659,7 +658,7 @@ var testDevice = (function() {
 
 var staticConnectionGrid = (function () {
 
-  //  $('#staticConnectionGridBody').load("ajax/staticConGrid.php");
+    $('#staticConnectionGridBody').load("ajax/staticConGrid.php");
 })();
 
 /* DO NOT REMOVE : GLOBAL FUNCTIONS!

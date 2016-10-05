@@ -12,7 +12,6 @@ import logging
 from ZW_SerialAPI import *
 import time
 from struct import *
-import time
 from multiprocessing import TimeoutError, BufferTooShort
 from ZW_basis_api import ZW_LIB_CONTROLLER, ZW_LIB_CONTROLLER_STATIC, \
     ZW_LIB_CONTROLLER_BRIDGE
@@ -722,25 +721,61 @@ class ZWapi(threading.Thread):
         return nodeByts
 
     def get_all_node_info(self, data):
-        nodeInfo = []
-        for x in  data:
-            ni = self.ZW_GetNodeProtocolInfo(x)
-            ni = binascii.hexlify(ni)
+        def get_info( ni):
+            if type(ni) is str:
+                print type(ni)
+                print x
 
-            ni = self.nodeInfo_to_dic(ni)
-            nodeInfo.append(ni)
+                nI = binascii.hexlify(ni)
+
+                NI = self.nodeInfo_to_dic(nI)
+                nodeInfo.append(NI)
+        nodeInfo = []
+        ni4 = self.ZW_GetNodeProtocolInfo(29)
+        print 'len'
+        print len(data)
+        for x in  data:
+            try:
+                ni = self.ZW_GetNodeProtocolInfo(x)
+                get_info(ni)
+            except:
+                ni = self.ZW_GetNodeProtocolInfo(x)
+                get_info(ni)
+
+            # ni = self.ZW_GetNodeProtocolInfo(x)
+            # print ni
+            # if type(ni) is str:
+            #     get_info(ni)
+            # else:
+            #     print 'chuj chuj'
+            #     ni = self.ZW_GetNodeProtocolInfo(x)
+            #     print ni
+            #     get_info(ni)
+
         return nodeInfo
 
     def get_all_routing_info(self, data, speed):
         info = []
+        print 'data'
+        z = 0
+
+        print data
+        print 'data'
         for x in data:
             i = self.ZW_GetRoutingInfo(x, speed)
             if i != None:
                 i = binascii.hexlify(i)
+                print i
+                print x
+                print z
             else:
-                i = 0
+                i = self.ZW_GetRoutingInfo(x, speed)
+                i = binascii.hexlify(i)
+            z+=1
         #    i = binascii.unhexlify(i)
             info.append(i)
+
+
         return info
 
 

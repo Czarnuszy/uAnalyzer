@@ -36,13 +36,28 @@ class IMA:
         if args['data'] == None:
             self.endCallback = 'reset'
 
-    def learn_callback(self, a, b,  **args):
-        print "callback"
+    def learn_callback(self, a, b, c, **args):
+        print "callback received"
         print a
         print b
+        print c
+#        print d
+#        print e
+#    def learn_callback(self, **args):
         print args
-        if a == 5:
-            self.endCallback=5
+        if a == 1:
+    	    print "Learn Mode Started"
+    	    self.endCallback=1
+    	if a == 7:
+    	    print "Learn Mode Failed"
+    	    self.endCallback=7
+    	if a == 0x80:
+    	    print "Controller Deleted"
+    	    self.endCallback=0x80
+        #Learn mode done
+        if a == 6:
+    	    print "Learn Node Done"
+            self.endCallback=6
 
     def neigh_update_callback(self, a, **args):
         print a
@@ -107,9 +122,10 @@ class IMA:
         print d
         for x in range(len(d)):
             tmptab.append(nodeDic['nodelist'][x])
-            print d[x]
+        #    print d[x]
             tmptab.append(self.parse_hex_bin(str(d[x])))
             infoTab.append(tmptab)
+        #    print tmptab
             tmptab = []
         self.save_routing_info_csv(infoTab)
         self.save_static_routing_info(infoTab)
@@ -135,20 +151,23 @@ class IMA:
 
     def learn(self):
         print zw.ZW_SetLearnMode(01, self.learn_callback)
-        while self.times<300:
+        while self.times<1200:
             self.times += 1
             time.sleep(.1)
             print 'xxx' + str(self.endCallback)
             print self.times
-            if self.endCallback == 6:
+            if self.endCallback == 1:
+        	self.times = 0
+        	self.endCallback=0
+        	print "extend timeout another 120 sec"
+            elif self.endCallback == 6:
                 break
             elif self.endCallback == 7:
                 print 'ERROR'
                 break
-
-        print zw.ZW_SetLearnMode(5, None)
+        print zw.ZW_SetLearnMode(0x00, None)
         zw.stop()
-        print "Exit"
+        print "Exit Learn mode"
 
     def get_status(self, dev):
         A= [0]
@@ -216,25 +235,66 @@ class IMA:
         binData =  bin(int(my_hexdata, scale))[2:].zfill(num_of_bits)
         return binData
 
+#     def save_routing_info_csv(self, data):
+#         filepath = open("/www/data/ima/routing_info.csv", "w")
+#         sometab = []
+#         for i in range(len(data)):
+#             sometab.append(data[i][0])
+#
+#         for i in range(len(data)):
+#             tt = data[i][1]
+#             tt = tt[::-1]
+#             print tt
+#             filepath.write(str(data[i][0])+',')
+#             t=0
+# 	    print "MAdexDebugStart"
+#
+#             for x in sometab:
+#         	#print "debug"
+#         #	print tt
+#         	#print sometab
+#         	#print t
+# #        	print "end of debug"
+#                 if int(tt[sometab[t] - 1]) == 1:
+#                     filepath.write(str(sometab[t])+',')
+#                 t += 1
+#
+#             filepath.write("\n")
+# 	    print "Madex Debug Ends"
+#         print ' o kurwa'
+#         filepath.close()
+
     def save_routing_info_csv(self, data):
         filepath = open("/www/data/ima/routing_info.csv", "w")
         sometab = []
+        l = len(data)
         for i in range(len(data)):
             sometab.append(data[i][0])
-
+    #    print data[0]
         for i in range(len(data)):
+            print data
+            print 'data gehe'
+            print len(data)
+            print 'len data'
+
             tt = data[i][1]
             tt = tt[::-1]
-
+            print tt
             filepath.write(str(data[i][0])+',')
             t=0
+            print 'hhhhhhhhhhhhhhhhdfgdffffffffffffffffffffffffffffffffffffffffffffffffff'
+            print len(tt)
             for x in sometab:
-                if int(tt[sometab[t] - 1]) == 1:
-                    filepath.write(str(sometab[t])+',')
+                # print x
+                # print str(i) + ' dlugos len data'
+            #    print tt[sometab[t] -1]
+                try:
+                    if int(tt[sometab[t] -2]) == 1:
+                        filepath.write(str(sometab[t])+',')
+                except:
+                    break
                 t += 1
-
             filepath.write("\n")
-
         filepath.close()
 
     def save_static_routing_info(self, data):
@@ -259,12 +319,16 @@ class IMA:
             #Sprawdzam kazdy wiersz, jesli jest rowny jeden = sasiad, zapisuje do pliku.
             for x in sometab:
                 print str(data[i][0]) + ' ' + str(sometab[t]) + ' ' + str(t)
-                if(int(data[i][0]) == int(sometab[t])):
-                    filepath.write(str(2)+',')
-                elif int(tt[sometab[t] - 1] ) == 1:
-                    filepath.write(str(1)+',')
-                else:
-                    filepath.write(str(0)+',')
+                try:
+                    if(int(data[i][0]) == int(sometab[t])):
+                        filepath.write(str(2)+',')
+                    elif int(tt[sometab[t] - 1] ) == 1:
+                        filepath.write(str(1)+',')
+                    else:
+                        filepath.write(str(0)+',')
+                except:
+                        filepath.write(str(0)+',')
+
                 t += 1
 
             filepath.write("\n")
